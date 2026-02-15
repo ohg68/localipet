@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Scan History" %} — {{ animal.name }} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'animals:detail' animal.pk %}">{{ animal.name }}</a></li>
+            <li class="breadcrumb-item active">{% trans "Scan History" %}</li>
+        </ol>
+    </nav>
+
+    <h3>
+        <i class="bi bi-clock-history"></i>
+        {% trans "Scan History" %} — {{ animal.name }}
+    </h3>
+
+    {% if scans %}
+    <div class="table-responsive mt-3">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Location" %}</th>
+                    <th>{% trans "IP Address" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scan in scans %}
+                <tr>
+                    <td>{{ scan.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        {% if scan.city_guess or scan.country_guess %}
+                            {{ scan.city_guess|default:"" }}{% if scan.city_guess and scan.country_guess %}, {% endif %}{{ scan.country_guess|default:"" }}
+                        {% else %}
+                            <span class="text-muted">{% trans "Unknown" %}</span>
+                        {% endif %}
+                    </td>
+                    <td><code>{{ scan.ip_address }}</code></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "components/pagination.html" %}
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-qr-code-scan text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">{% trans "No scans recorded yet." %}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

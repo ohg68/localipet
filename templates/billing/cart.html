@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Cart" %} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2><i class="bi bi-cart3"></i> {% trans "Shopping Cart" %}</h2>
+
+    {% if cart_items %}
+    <div class="table-responsive mt-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans "Product" %}</th>
+                    <th>{% trans "Price" %}</th>
+                    <th>{% trans "Quantity" %}</th>
+                    <th>{% trans "Subtotal" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>${{ item.price }}</td>
+                    <td>
+                        <form method="post" action="{% url 'billing:update-cart' item.slug %}"
+                              class="d-inline">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="{{ item.quantity }}"
+                                   min="1" max="99" class="form-control form-control-sm"
+                                   style="width: 70px; display:inline-block;"
+                                   onchange="this.form.submit()">
+                        </form>
+                    </td>
+                    <td>${{ item.subtotal }}</td>
+                    <td>
+                        <form method="post" action="{% url 'billing:remove-from-cart' item.slug %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>{% trans "Total" %}:</strong></td>
+                    <td><strong>${{ cart_total }}</strong></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- Shipping Form -->
+    <div class="card shadow-sm mt-3">
+        <div class="card-header">
+            <h5 class="mb-0">{% trans "Shipping Address" %}</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'billing:checkout' %}" id="checkoutForm">
+                {% csrf_token %}
+                <div class="row">
+                    {% for field in shipping_form %}
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-credit-card"></i>
+                    {% trans "Proceed to Payment" %} (${{ cart_total }})
+                </button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-cart text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">{% trans "Your cart is empty." %}</p>
+        <a href="{% url 'billing:shop' %}" class="btn btn-primary">
+            {% trans "Go to Shop" %}
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

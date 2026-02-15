@@ -1,0 +1,16 @@
+¡Alguien encontró a {{ animal.name }}!
+================================
+
+Hola {{ owner.first_name|default:owner.email }},
+
+Alguien escaneó el código QR de {{ animal.name }} y te envió un mensaje:
+
+Nombre: {{ finder_message.sender_name }}
+{% if finder_message.sender_phone %}Teléfono: {{ finder_message.sender_phone }}{% endif %}
+{% if finder_message.sender_email %}Email: {{ finder_message.sender_email }}{% endif %}
+Mensaje: {{ finder_message.message }}
+
+Puedes contactar a esta persona directamente usando la información de arriba.
+
+--
+Localipet - Plataforma de identificación de mascotas

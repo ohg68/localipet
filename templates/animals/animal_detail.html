@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ animal.name }} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'animals:list' %}">{% trans "My Pets" %}</a></li>
+            <li class="breadcrumb-item active">{{ animal.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Photo & QR -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                {% if animal.photo %}
+                <img src="{{ animal.photo.url }}" class="card-img-top"
+                     alt="{{ animal.name }}" style="max-height: 300px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                     style="height: 250px;">
+                    <i class="bi bi-camera text-muted" style="font-size: 4rem;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body text-center">
+                    {% if animal.qr_code and animal.qr_code.qr_image %}
+                    <img src="{{ animal.qr_code.qr_image.url }}" alt="QR"
+                         class="img-fluid mb-2" style="max-width: 150px;">
+                    {% endif %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'scanning:qr-download' animal.pk %}"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-download"></i> {% trans "Download QR" %}
+                        </a>
+                        <a href="{% url 'scanning:label-download' animal.pk %}"
+                           class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-tag"></i> {% trans "Download Label" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details -->
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        {{ animal.name }}
+                        {% if animal.is_lost %}
+                        <span class="badge bg-danger">{% trans "Lost" %}</span>
+                        {% endif %}
+                    </h4>
+                    <div>
+                        <form method="post"
+                              action="{% url 'animals:toggle-lost' animal.pk %}"
+                              class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-sm {% if animal.is_lost %}btn-success{% else %}btn-outline-danger{% endif %}">
+                                {% if animal.is_lost %}
+                                    <i class="bi bi-check-circle"></i> {% trans "Mark as Found" %}
+                                {% else %}
+                                    <i class="bi bi-exclamation-triangle"></i> {% trans "Mark as Lost" %}
+                                {% endif %}
+                            </button>
+                        </form>
+                        <a href="{% url 'animals:update' animal.pk %}"
+                           class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-pencil"></i> {% trans "Edit" %}
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <strong>{% trans "Species" %}:</strong>
+                            {{ animal.get_species_display }}
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <strong>{% trans "Breed" %}:</strong>
+                            {{ animal.breed|default:"-" }}
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <strong>{% trans "Color" %}:</strong>
+                            {{ animal.color|default:"-" }}
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <strong>{% trans "Sex" %}:</strong>
+                            {{ animal.get_sex_display|default:"-" }}
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <strong>{% trans "Date of Birth" %}:</strong>
+                            {{ animal.date_of_birth|default:"-" }}
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <strong>{% trans "Weight" %}:</strong>
+                            {% if animal.weight %}{{ animal.weight }} kg{% else %}-{% endif %}
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <strong>{% trans "Microchip" %}:</strong>
+                            <code>{{ animal.microchip_id|default:"-" }}</code>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <strong>{% trans "Neutered" %}:</strong>
+                            {% if animal.is_neutered %}
+                                <i class="bi bi-check-circle text-success"></i> {% trans "Yes" %}
+                            {% else %}
+                                <i class="bi bi-x-circle text-muted"></i> {% trans "No" %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if animal.medical_notes %}
+                    <hr>
+                    <h6>{% trans "Medical Notes" %}</h6>
+                    <p>{{ animal.medical_notes|linebreaksbr }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <a href="{% url 'scanning:history' animal.pk %}"
+                       class="card shadow-sm text-decoration-none h-100">
+                        <div class="card-body">
+                            <h6><i class="bi bi-clock-history text-info"></i> {% trans "Scan History" %}</h6>
+                            <p class="text-muted small mb-0">{% trans "See who scanned this QR code" %}</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <a href="{% url 'scanning:messages' animal.pk %}"
+                       class="card shadow-sm text-decoration-none h-100">
+                        <div class="card-body">
+                            <h6><i class="bi bi-chat-dots text-warning"></i> {% trans "Finder Messages" %}</h6>
+                            <p class="text-muted small mb-0">{% trans "Messages from people who found your pet" %}</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

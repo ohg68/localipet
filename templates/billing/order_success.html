@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Order Confirmed" %} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="text-success mb-3">
+        <i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+    </div>
+    <h2>{% trans "Order Confirmed!" %}</h2>
+    <p class="lead text-muted">
+        {% trans "Your order has been placed successfully. We'll notify you when it ships." %}
+    </p>
+    <a href="{% url 'billing:order-detail' order.pk %}" class="btn btn-primary mt-3">
+        <i class="bi bi-eye"></i> {% trans "View Order" %}
+    </a>
+    <a href="{% url 'animals:dashboard' %}" class="btn btn-outline-secondary mt-3 ms-2">
+        {% trans "Go to Dashboard" %}
+    </a>
+</div>
+{% endblock %}

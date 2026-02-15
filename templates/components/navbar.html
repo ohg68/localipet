@@ -1,0 +1,157 @@
+{% load i18n %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'animals:dashboard' %}">
+            <i class="bi bi-heart-pulse-fill"></i> Localipet
+        </a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            {% if user.is_authenticated %}
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'animals:dashboard' %}">
+                        <i class="bi bi-house"></i> {% trans "Dashboard" %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'animals:list' %}">
+                        <i class="bi bi-list-ul"></i> {% trans "My Pets" %}
+                    </a>
+                </li>
+
+                {% if user.profile.role == 'vet' or user.profile.role == 'shop' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'veterinary:dashboard' %}">
+                        <i class="bi bi-hospital"></i> {% trans "Vet Panel" %}
+                    </a>
+                </li>
+                {% endif %}
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#"
+                       data-bs-toggle="dropdown">
+                        <i class="bi bi-cart3"></i> {% trans "Shop" %}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'billing:pricing' %}">
+                                {% trans "Plans" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'billing:shop' %}">
+                                {% trans "Products" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'billing:cart' %}">
+                                {% trans "Cart" %}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav">
+                <!-- Notifications badge (HTMX polling) -->
+                <li class="nav-item">
+                    <a class="nav-link position-relative"
+                       href="{% url 'notifications:list' %}">
+                        <i class="bi bi-bell"></i>
+                        <span hx-get="{% url 'notifications:unread-count' %}"
+                              hx-trigger="load, every 30s"
+                              hx-swap="innerHTML">
+                        </span>
+                    </a>
+                </li>
+
+                <!-- Language switcher -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#"
+                       data-bs-toggle="dropdown">
+                        <i class="bi bi-translate"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <form action="{% url 'set_language' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <button type="submit" name="language" value="es"
+                                        class="dropdown-item {% if LANGUAGE_CODE == 'es' %}active{% endif %}">
+                                    Espa&ntilde;ol
+                                </button>
+                            </form>
+                        </li>
+                        <li>
+                            <form action="{% url 'set_language' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <button type="submit" name="language" value="en"
+                                        class="dropdown-item {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                                    English
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- User menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#"
+                       data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i>
+                        {{ user.get_short_name|default:user.email }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'accounts:profile' %}">
+                                <i class="bi bi-gear"></i> {% trans "Profile" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'billing:my-subscription' %}">
+                                <i class="bi bi-credit-card"></i> {% trans "Subscription" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'billing:order-list' %}">
+                                <i class="bi bi-bag"></i> {% trans "Orders" %}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger"
+                               href="{% url 'accounts:logout' %}">
+                                <i class="bi bi-box-arrow-right"></i> {% trans "Logout" %}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            {% else %}
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'billing:pricing' %}">
+                        {% trans "Plans" %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:login' %}">
+                        <i class="bi bi-box-arrow-in-right"></i> {% trans "Login" %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-light ms-2" href="{% url 'accounts:register' %}">
+                        {% trans "Register" %}
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</nav>

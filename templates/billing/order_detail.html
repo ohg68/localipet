@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Order" %} #{{ order.id|truncatechars:13 }} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'billing:order-list' %}">{% trans "Orders" %}</a></li>
+            <li class="breadcrumb-item active">#{{ order.id|truncatechars:13 }}</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between">
+            <h4 class="mb-0">{% trans "Order Details" %}</h4>
+            <span class="badge bg-{% if order.status == 'paid' %}success{% elif order.status == 'shipped' %}info{% elif order.status == 'delivered' %}primary{% else %}secondary{% endif %} fs-6">
+                {{ order.get_status_display }}
+            </span>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <strong>{% trans "Date" %}:</strong> {{ order.created_at|date:"d/m/Y H:i" }}<br>
+                    {% if order.animal %}
+                    <strong>{% trans "Pet" %}:</strong> {{ order.animal.name }}
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <strong>{% trans "Shipping to" %}:</strong><br>
+                    {{ order.shipping_name }}<br>
+                    {{ order.shipping_address }}<br>
+                    {{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_zip }}<br>
+                    {{ order.shipping_country }}
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>{% trans "Product" %}</th>
+                        <th>{% trans "Unit Price" %}</th>
+                        <th>{% trans "Qty" %}</th>
+                        <th>{% trans "Subtotal" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>${{ item.unit_price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end"><strong>{% trans "Total" %}:</strong></td>
+                        <td><strong>${{ order.total }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

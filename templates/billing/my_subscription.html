@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Subscription" %} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>{% trans "My Subscription" %}</h2>
+
+    {% if subscription %}
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>{{ subscription.plan.name }}</h4>
+                    <span class="badge {% if subscription.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                        {{ subscription.get_status_display }}
+                    </span>
+                    {% if subscription.cancel_at_period_end %}
+                    <span class="badge bg-warning text-dark">{% trans "Cancelling" %}</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-1">
+                        <strong>{% trans "Next billing" %}:</strong>
+                        {{ subscription.current_period_end|date:"d/m/Y" }}
+                    </p>
+                    <p class="mb-0">
+                        <strong>{% trans "Amount" %}:</strong>
+                        ${{ subscription.plan.price_monthly }}/{% trans "month" %}
+                    </p>
+                </div>
+            </div>
+
+            {% if subscription.status == 'active' and not subscription.cancel_at_period_end %}
+            <hr>
+            <form method="post" action="{% url 'billing:subscription-cancel' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm"
+                        onclick="return confirm('{% trans "Are you sure you want to cancel?" %}')">
+                    {% trans "Cancel Subscription" %}
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-credit-card text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">{% trans "No active subscription." %}</p>
+        <a href="{% url 'billing:pricing' %}" class="btn btn-primary">
+            {% trans "View Plans" %}
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

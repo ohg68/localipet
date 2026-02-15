@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Page not found" %} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="display-1 text-muted">404</h1>
+    <h2>{% trans "Page not found" %}</h2>
+    <p class="lead text-muted">
+        {% trans "The page you are looking for does not exist or has been moved." %}
+    </p>
+    <a href="{% url 'animals:dashboard' %}" class="btn btn-primary mt-3">
+        <i class="bi bi-house"></i> {% trans "Go to Dashboard" %}
+    </a>
+</div>
+{% endblock %}

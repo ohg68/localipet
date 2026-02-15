@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Orders" %} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>{% trans "My Orders" %}</h2>
+
+    {% if orders %}
+    <div class="table-responsive mt-3">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Order" %}</th>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Total" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><code>{{ order.id|truncatechars:13 }}</code></td>
+                    <td>{{ order.created_at|date:"d/m/Y" }}</td>
+                    <td>
+                        <span class="badge bg-{% if order.status == 'paid' %}success{% elif order.status == 'shipped' %}info{% elif order.status == 'delivered' %}primary{% else %}secondary{% endif %}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </td>
+                    <td>${{ order.total }}</td>
+                    <td>
+                        <a href="{% url 'billing:order-detail' order.pk %}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "components/pagination.html" %}
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-bag text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">{% trans "No orders yet." %}</p>
+        <a href="{% url 'billing:shop' %}" class="btn btn-primary">
+            {% trans "Go to Shop" %}
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

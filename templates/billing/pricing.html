@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Plans & Pricing" %} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2>{% trans "Plans & Pricing" %}</h2>
+        <p class="lead text-muted">
+            {% trans "Choose the plan that best fits your needs." %}
+        </p>
+    </div>
+
+    <div class="row justify-content-center">
+        {% for plan in plans %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 {% if plan.slug == 'premium' %}border-primary{% endif %}">
+                {% if plan.slug == 'premium' %}
+                <div class="card-header bg-primary text-white text-center">
+                    <i class="bi bi-star-fill"></i> {% trans "Most Popular" %}
+                </div>
+                {% endif %}
+                <div class="card-body text-center">
+                    <h4>{{ plan.name }}</h4>
+                    <div class="my-3">
+                        <span class="display-5 fw-bold">${{ plan.price_monthly }}</span>
+                        <span class="text-muted">/{% trans "month" %}</span>
+                    </div>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            {% blocktrans with max=plan.max_animals %}Up to {{ max }} pets{% endblocktrans %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            {% blocktrans with days=plan.scan_history_days %}{{ days }} days scan history{% endblocktrans %}
+                        </li>
+                        <li class="mb-2">
+                            {% if plan.has_advanced_alerts %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            {% else %}
+                            <i class="bi bi-x-circle text-muted"></i>
+                            {% endif %}
+                            {% trans "Advanced scan alerts" %}
+                        </li>
+                        <li class="mb-2">
+                            {% if plan.has_reminders %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            {% else %}
+                            <i class="bi bi-x-circle text-muted"></i>
+                            {% endif %}
+                            {% trans "Vaccination reminders" %}
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent text-center">
+                    {% if user.is_authenticated %}
+                        {% if current_subscription and current_subscription.plan == plan %}
+                        <button class="btn btn-outline-success w-100" disabled>
+                            <i class="bi bi-check-lg"></i> {% trans "Current Plan" %}
+                        </button>
+                        {% else %}
+                        <form method="post" action="{% url 'billing:subscribe' plan.slug %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn {% if plan.slug == 'premium' %}btn-primary{% else %}btn-outline-primary{% endif %} w-100">
+                                {% trans "Subscribe" %}
+                            </button>
+                        </form>
+                        {% endif %}
+                    {% else %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-outline-primary w-100">
+                        {% trans "Get Started" %}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

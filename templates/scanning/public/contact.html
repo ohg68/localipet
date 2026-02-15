@@ -1,0 +1,65 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% trans "Contact Owner" %} — Localipet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center p-3">
+    <div class="card shadow-lg" style="max-width: 420px; width: 100%; border-radius: 1rem;">
+        <div class="card-body p-4">
+            <h4 class="text-center mb-3">
+                <i class="bi bi-chat-heart text-primary"></i>
+                <br>{% trans "Contact the owner of" %} {{ animal.name }}
+            </h4>
+
+            <p class="text-muted text-center small">
+                {% trans "Your information will be shared with the pet owner so they can reach you." %}
+            </p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        <p class="mb-0">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in field.errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-send"></i> {% trans "Send Message" %}
+                </button>
+            </form>
+
+            <p class="text-center mt-3 mb-0">
+                <a href="{% url 'scanning:public-scan' token=qr_code.token %}"
+                   class="text-muted small">
+                    &larr; {% trans "Back to pet info" %}
+                </a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

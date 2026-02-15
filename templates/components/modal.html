@@ -1,0 +1,36 @@
+{% comment %}
+Generic Bootstrap modal component.
+Usage:
+    {% include "components/modal.html" with modal_id="deleteModal" modal_title="Confirm" modal_body="Are you sure?" %}
+{% endcomment %}
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1"
+     aria-labelledby="{{ modal_id }}Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{ modal_id }}Label">
+                    {{ modal_title }}
+                </h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ modal_body }}
+            </div>
+            <div class="modal-footer">
+                {% block modal_footer %}
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    {{ modal_cancel_text|default:"Cancel" }}
+                </button>
+                {% if modal_form_id %}
+                <button type="submit" form="{{ modal_form_id }}"
+                        class="btn btn-{{ modal_btn_class|default:'danger' }}">
+                    {{ modal_confirm_text|default:"Confirm" }}
+                </button>
+                {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>

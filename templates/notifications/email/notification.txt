@@ -1,0 +1,9 @@
+{{ notification.title }}
+================================
+
+{{ notification.message }}
+
+{% if action_url %}Ver detalles: {{ action_url }}{% endif %}
+
+--
+Localipet - Plataforma de identificación de mascotas
