@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Weight History" %} — {{ animal.name }} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'animals:list' %}">{% trans "My Pets" %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'animals:detail' animal.pk %}">{{ animal.name }}</a></li>
+            <li class="breadcrumb-item active">{% trans "Weight History" %}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>
+            <i class="bi bi-graph-up"></i>
+            {% trans "Weight History" %} — {{ animal.name }}
+        </h3>
+        <a href="{% url 'animals:weight-add' pk=animal.pk %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> {% trans "Add Weight" %}
+        </a>
+    </div>
+
+    <!-- Weight Chart -->
+    {% if chart_data %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <canvas id="weightChart" height="100"></canvas>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Weight Table -->
+    {% if weight_records %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Weight (kg)" %}</th>
+                    <th>{% trans "Notes" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in weight_records %}
+                <tr>
+                    <td>{{ record.date_recorded|date:"d/m/Y" }}</td>
+                    <td><strong>{{ record.weight_kg }} kg</strong></td>
+                    <td>{{ record.notes|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "components/pagination.html" %}
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-graph-up text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">{% trans "No weight records yet." %}</p>
+        <a href="{% url 'animals:weight-add' pk=animal.pk %}" class="btn btn-primary">
+            {% trans "Record first weight" %}
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if chart_data %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById("weightChart").getContext("2d");
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: {{ chart_labels|safe }},
+                datasets: [{
+                    label: "{% trans 'Weight (kg)' %}",
+                    data: {{ chart_data|safe }},
+                    borderColor: "#4CAF50",
+                    backgroundColor: "rgba(76, 175, 80, 0.1)",
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: "#4CAF50",
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.parsed.y + " kg";
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: "{% trans 'Date' %}" }
+                    },
+                    y: {
+                        title: { display: true, text: "{% trans 'kg' %}" },
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

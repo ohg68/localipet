@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Shared Access" %} — {{ animal.name }} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'animals:list' %}">{% trans "My Pets" %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'animals:detail' animal.pk %}">{{ animal.name }}</a></li>
+            <li class="breadcrumb-item active">{% trans "Shared Access" %}</li>
+        </ol>
+    </nav>
+
+    <h3 class="mb-4">
+        <i class="bi bi-people"></i>
+        {% trans "Shared Access" %} — {{ animal.name }}
+    </h3>
+
+    <!-- Current Co-owners -->
+    {% if co_owners %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">{% trans "Current Co-owners" %}</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Email" %}</th>
+                        <th>{% trans "Permission" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for co_owner in co_owners %}
+                    <tr>
+                        <td>{{ co_owner.user.get_full_name|default:co_owner.user.email }}</td>
+                        <td>{{ co_owner.user.email }}</td>
+                        <td>
+                            {% if co_owner.permission == "view" %}
+                            <span class="badge bg-info">{% trans "View Only" %}</span>
+                            {% elif co_owner.permission == "edit" %}
+                            <span class="badge bg-warning text-dark">{% trans "View & Edit" %}</span>
+                            {% elif co_owner.permission == "manage" %}
+                            <span class="badge bg-success">{% trans "Full Manage" %}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post"
+                                  action="{% url 'animals:co-owner-remove' pk=animal.pk co_owner_pk=co_owner.pk %}"
+                                  class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-danger"
+                                        title="{% trans 'Remove' %}"
+                                        onclick="return confirm('{% trans "Are you sure you want to remove this co-owner?" %}');">
+                                    <i class="bi bi-person-x"></i> {% trans "Remove" %}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-4 mb-4">
+        <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">{% trans "No co-owners added yet." %}</p>
+    </div>
+    {% endif %}
+
+    <!-- Invite New Co-owner -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-person-plus"></i> {% trans "Invite a Co-owner" %}
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted small">
+                {% trans "Share access to this pet with a family member or caregiver. They must already have a Localipet account." %}
+            </p>
+            <form method="post" action="{% url 'animals:co-owner-add' pk=animal.pk %}" novalidate>
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% if field.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in field.errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send"></i> {% trans "Send Invitation" %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

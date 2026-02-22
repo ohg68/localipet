@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Delete Vaccination" %} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> {% trans "Delete Vaccination" %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p>
+                        {% blocktrans with name=object.name animal=object.animal.name date=object.date_administered %}
+                            Are you sure you want to delete the vaccination record <strong>"{{ name }}"</strong>
+                            for <strong>{{ animal }}</strong> administered on {{ date }}?
+                        {% endblocktrans %}
+                    </p>
+                    <p class="text-muted small">{% trans "This action cannot be undone." %}</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> {% trans "Yes, delete" %}
+                            </button>
+                            <a href="{% url 'animals:vaccination-list' pk=object.animal.pk %}"
+                               class="btn btn-outline-secondary">
+                                {% trans "Cancel" %}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

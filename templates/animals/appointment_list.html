@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "My Appointments" %} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>
+            <i class="bi bi-calendar-event"></i>
+            {% trans "My Appointments" %}
+        </h3>
+    </div>
+
+    {% if appointments %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Time" %}</th>
+                    <th>{% trans "Title" %}</th>
+                    <th>{% trans "Pet" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.date|date:"d/m/Y" }}</td>
+                    <td>{{ appointment.time|time:"H:i" }}</td>
+                    <td><strong>{{ appointment.title }}</strong></td>
+                    <td>
+                        <a href="{% url 'animals:detail' appointment.animal.pk %}">
+                            {{ appointment.animal.name }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if appointment.status == "scheduled" %}
+                        <span class="badge bg-primary">{% trans "Scheduled" %}</span>
+                        {% elif appointment.status == "confirmed" %}
+                        <span class="badge bg-success">{% trans "Confirmed" %}</span>
+                        {% elif appointment.status == "completed" %}
+                        <span class="badge bg-secondary">{% trans "Completed" %}</span>
+                        {% elif appointment.status == "canceled" %}
+                        <span class="badge bg-danger">{% trans "Canceled" %}</span>
+                        {% elif appointment.status == "no_show" %}
+                        <span class="badge bg-warning text-dark">{% trans "No Show" %}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if appointment.status == "scheduled" or appointment.status == "confirmed" %}
+                        <a href="{% url 'animals:appointment-edit' appt_pk=appointment.pk %}"
+                           class="btn btn-sm btn-outline-secondary"
+                           title="{% trans 'Edit' %}">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <form method="post"
+                              action="{% url 'animals:appointment-cancel' appt_pk=appointment.pk %}"
+                              class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-danger"
+                                    title="{% trans 'Cancel' %}"
+                                    onclick="return confirm('{% trans "Are you sure you want to cancel this appointment?" %}');">
+                                <i class="bi bi-x-circle"></i>
+                            </button>
+                        </form>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "components/pagination.html" %}
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-calendar text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">{% trans "No appointments scheduled." %}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Vaccinations" %} — {{ animal.name }} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'animals:list' %}">{% trans "My Pets" %}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'animals:detail' animal.pk %}">{{ animal.name }}</a></li>
+            <li class="breadcrumb-item active">{% trans "Vaccinations" %}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>
+            <i class="bi bi-shield-plus"></i>
+            {% trans "Vaccinations" %} — {{ animal.name }}
+        </h3>
+        <a href="{% url 'animals:vaccination-add' pk=animal.pk %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> {% trans "Add Vaccination" %}
+        </a>
+    </div>
+
+    {% if vaccinations %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Vaccine" %}</th>
+                    <th>{% trans "Date Administered" %}</th>
+                    <th>{% trans "Next Due Date" %}</th>
+                    <th>{% trans "Administered By" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vaccination in vaccinations %}
+                <tr>
+                    <td><strong>{{ vaccination.name }}</strong></td>
+                    <td>{{ vaccination.date_administered|date:"d/m/Y" }}</td>
+                    <td>{{ vaccination.next_due_date|date:"d/m/Y"|default:"-" }}</td>
+                    <td>{{ vaccination.administered_by|default:"-" }}</td>
+                    <td>
+                        {% if vaccination.is_overdue %}
+                        <span class="badge bg-danger">{% trans "Overdue" %}</span>
+                        {% elif vaccination.next_due_date %}
+                        <span class="badge bg-success">{% trans "Up to date" %}</span>
+                        {% else %}
+                        <span class="badge bg-secondary">{% trans "N/A" %}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'animals:vaccination-edit' pk=animal.pk vacc_pk=vaccination.pk %}"
+                           class="btn btn-sm btn-outline-secondary"
+                           title="{% trans 'Edit' %}">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'animals:vaccination-delete' pk=animal.pk vacc_pk=vaccination.pk %}"
+                           class="btn btn-sm btn-outline-danger"
+                           title="{% trans 'Delete' %}">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "components/pagination.html" %}
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-shield text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">{% trans "No vaccination records yet." %}</p>
+        <a href="{% url 'animals:vaccination-add' pk=animal.pk %}" class="btn btn-primary">
+            {% trans "Add first vaccination" %}
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

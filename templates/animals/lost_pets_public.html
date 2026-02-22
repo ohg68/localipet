@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Lost Pets" %} — Localipet{% endblock %}
+
+{% block meta_description %}{% trans "Help us find lost pets. Browse our directory of lost animals and help reunite them with their families." %}{% endblock %}
+
+{% block meta_robots %}index, follow{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <h2>
+            <i class="bi bi-search-heart"></i>
+            {% trans "Lost Pets" %}
+        </h2>
+        <p class="text-muted">
+            {% trans "These pets have been reported as lost. If you recognize any of them, please scan their QR tag or contact Localipet." %}
+        </p>
+    </div>
+
+    {% if lost_animals %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for animal in lost_animals %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if animal.photo %}
+                <img src="{{ animal.photo.url }}" class="card-img-top"
+                     alt="{{ animal.name }}"
+                     style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                     style="height: 200px;">
+                    <i class="bi bi-camera text-muted" style="font-size: 3rem;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ animal.name }}</h5>
+                    <p class="card-text text-muted mb-1">
+                        {{ animal.get_species_display }}
+                        {% if animal.breed %} &middot; {{ animal.breed }}{% endif %}
+                    </p>
+                    {% if animal.color %}
+                    <p class="card-text small mb-1">
+                        <strong>{% trans "Color" %}:</strong> {{ animal.color }}
+                    </p>
+                    {% endif %}
+                    {% if animal.lost_since %}
+                    <p class="card-text small text-danger">
+                        <i class="bi bi-clock"></i>
+                        {% trans "Lost since" %}: {{ animal.lost_since|date:"d/m/Y" }}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent text-center">
+                    <span class="badge bg-danger">
+                        <i class="bi bi-exclamation-triangle"></i> {% trans "Lost" %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% include "components/pagination.html" %}
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-emoji-smile text-success" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">{% trans "Great news! No pets are currently reported as lost." %}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
