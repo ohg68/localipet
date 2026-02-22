@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.veterinary",
     "apps.billing",
     "apps.notifications",
+    "apps.organizations",
     "apps.odoo_sync",
 ]
 
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "apps.accounts.middleware.UserLanguageMiddleware",
+    "apps.organizations.middleware.ActiveOrganizationMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"

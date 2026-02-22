@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Staff Members" %}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            <i class="bi bi-person-badge me-2"></i>{% trans "Staff Members" %}
+        </h1>
+        <a href="{% url 'organizations:staff-invite' %}" class="btn btn-primary">
+            <i class="bi bi-envelope-plus me-1"></i>{% trans "Invite Staff" %}
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Email" %}</th>
+                            <th>{% trans "Role" %}</th>
+                            <th>{% trans "Joined" %}</th>
+                            <th class="text-end">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-person-circle me-1"></i>
+                                {{ member.user.get_full_name|default:member.user.email }}
+                            </td>
+                            <td>{{ member.user.email }}</td>
+                            <td>
+                                {% if member.role == "owner" %}
+                                    <span class="badge bg-dark">{% trans "Owner" %}</span>
+                                {% elif member.role == "admin" %}
+                                    <span class="badge bg-primary">{% trans "Admin" %}</span>
+                                {% elif member.role == "veterinarian" %}
+                                    <span class="badge bg-success">{% trans "Veterinarian" %}</span>
+                                {% elif member.role == "receptionist" %}
+                                    <span class="badge bg-info text-dark">{% trans "Receptionist" %}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ member.get_role_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ member.created_at|date:"SHORT_DATE_FORMAT" }}</td>
+                            <td class="text-end">
+                                <a href="{% url 'organizations:staff-edit' member.pk %}" class="btn btn-sm btn-outline-primary" title="{% trans 'Edit Role' %}">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% if member.role != "owner" %}
+                                <form method="post" action="{% url 'organizations:staff-remove' member.pk %}" class="d-inline" onsubmit="return confirm('{% trans "Are you sure you want to remove this member?" %}');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="{% trans 'Remove' %}">
+                                        <i class="bi bi-person-x"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                {% trans "No staff members yet." %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'organizations:dashboard' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{% trans "Back to Dashboard" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

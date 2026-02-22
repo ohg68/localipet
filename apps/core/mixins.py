@@ -43,14 +43,26 @@ class ValidConsentRequiredMixin(LoginRequiredMixin):
         return Animal.objects.get(pk=self.kwargs["animal_pk"])
 
     def dispatch(self, request, *args, **kwargs):
+        from django.db.models import Q
         from apps.veterinary.models import Consent
 
         animal = self.get_animal()
-        consent = Consent.objects.filter(
+
+        # Check individual consent OR org-level consent
+        q_filter = Q(
             requester=request.user,
             animal=animal,
             status=Consent.Status.APPROVED,
-        ).first()
+        )
+        org = getattr(request, "organization", None)
+        if org:
+            q_filter = q_filter | Q(
+                organization=org,
+                animal=animal,
+                status=Consent.Status.APPROVED,
+            )
+
+        consent = Consent.objects.filter(q_filter).first()
         if not consent or not consent.is_valid:
             raise PermissionDenied("No valid consent for this animal.")
         self.consent = consent

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Subscription" %}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="h3 mb-4">
+        <i class="bi bi-credit-card me-2"></i>{% trans "Subscription" %}
+    </h1>
+
+    {% if subscription %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>{% trans "Subscription Details" %}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{% trans "Plan" %}</dt>
+                        <dd class="col-sm-8">
+                            <strong>{{ subscription.plan.name }}</strong>
+                        </dd>
+
+                        <dt class="col-sm-4">{% trans "Status" %}</dt>
+                        <dd class="col-sm-8">
+                            {% if subscription.status == "active" %}
+                                <span class="badge bg-success fs-6">
+                                    <i class="bi bi-check-circle me-1"></i>{% trans "Active" %}
+                                </span>
+                            {% elif subscription.status == "trialing" %}
+                                <span class="badge bg-info fs-6">
+                                    <i class="bi bi-clock me-1"></i>{% trans "Trial" %}
+                                </span>
+                            {% elif subscription.status == "past_due" %}
+                                <span class="badge bg-warning text-dark fs-6">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>{% trans "Past Due" %}
+                                </span>
+                            {% elif subscription.status == "cancelled" %}
+                                <span class="badge bg-danger fs-6">
+                                    <i class="bi bi-x-circle me-1"></i>{% trans "Cancelled" %}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary fs-6">{{ subscription.get_status_display }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{% trans "Period Start" %}</dt>
+                        <dd class="col-sm-8">{{ subscription.current_period_start|date:"SHORT_DATE_FORMAT" }}</dd>
+
+                        <dt class="col-sm-4">{% trans "Period End" %}</dt>
+                        <dd class="col-sm-8">{{ subscription.current_period_end|date:"SHORT_DATE_FORMAT" }}</dd>
+
+                        <dt class="col-sm-4">{% trans "Price" %}</dt>
+                        <dd class="col-sm-8">${{ subscription.plan.price|floatformat:2 }} MXN / {% trans "month" %}</dd>
+                    </dl>
+                </div>
+                <div class="card-footer d-flex gap-2">
+                    <a href="{% url 'organizations:org-pricing' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-repeat me-1"></i>{% trans "Change Plan" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>{% trans "Plan Features" %}</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            {% blocktrans with max=subscription.plan.max_staff %}Up to {{ max }} staff members{% endblocktrans %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            {% blocktrans with max=subscription.plan.max_clients %}Up to {{ max }} clients{% endblocktrans %}
+                        </li>
+                        {% for feature in subscription.plan.features %}
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            {{ feature }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-credit-card display-4 text-muted"></i>
+            <p class="mt-3 text-muted">{% trans "You do not have an active subscription." %}</p>
+            <a href="{% url 'organizations:org-pricing' %}" class="btn btn-primary">
+                <i class="bi bi-cart-plus me-1"></i>{% trans "View Plans" %}
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'organizations:dashboard' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{% trans "Back to Dashboard" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

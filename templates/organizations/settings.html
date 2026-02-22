@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Organization Settings" %}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            <i class="bi bi-gear me-2"></i>{% trans "Organization Settings" %}
+        </h1>
+        <a href="{% url 'organizations:settings-edit' %}" class="btn btn-primary">
+            <i class="bi bi-pencil me-1"></i>{% trans "Edit" %}
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {# General info #}
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-building me-2"></i>{% trans "General Information" %}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{% trans "Name" %}</dt>
+                        <dd class="col-sm-8">{{ current_organization.name }}</dd>
+
+                        <dt class="col-sm-4">{% trans "Type" %}</dt>
+                        <dd class="col-sm-8">{{ current_organization.get_type_display }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        {# Contact info #}
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-telephone me-2"></i>{% trans "Contact Information" %}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{% trans "Phone" %}</dt>
+                        <dd class="col-sm-8">{{ current_organization.phone|default:"—" }}</dd>
+
+                        <dt class="col-sm-4">{% trans "Email" %}</dt>
+                        <dd class="col-sm-8">{{ current_organization.email|default:"—" }}</dd>
+
+                        <dt class="col-sm-4">{% trans "Website" %}</dt>
+                        <dd class="col-sm-8">
+                            {% if current_organization.website %}
+                                <a href="{{ current_organization.website }}" target="_blank" rel="noopener">
+                                    {{ current_organization.website }}
+                                </a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        {# Address #}
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-geo-alt me-2"></i>{% trans "Address" %}</h5>
+                </div>
+                <div class="card-body">
+                    {% if current_organization.address %}
+                        <p class="mb-0">{{ current_organization.address }}</p>
+                    {% else %}
+                        <p class="text-muted mb-0">{% trans "No address provided." %}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Fiscal data #}
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>{% trans "Fiscal Data" %}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">{% trans "RFC" %}</dt>
+                        <dd class="col-sm-7">{{ current_organization.rfc|default:"—" }}</dd>
+
+                        <dt class="col-sm-5">{% trans "Razon Social" %}</dt>
+                        <dd class="col-sm-7">{{ current_organization.razon_social|default:"—" }}</dd>
+
+                        <dt class="col-sm-5">{% trans "Regimen Fiscal" %}</dt>
+                        <dd class="col-sm-7">{{ current_organization.regimen_fiscal|default:"—" }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'organizations:dashboard' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{% trans "Back to Dashboard" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

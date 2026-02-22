@@ -31,6 +31,53 @@
                 </li>
                 {% endif %}
 
+                {% if current_organization %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#"
+                       data-bs-toggle="dropdown">
+                        <i class="bi bi-building"></i> {{ current_organization.name }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'organizations:dashboard' %}">
+                                <i class="bi bi-speedometer2"></i> {% trans "Org Dashboard" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'organizations:client-list' %}">
+                                <i class="bi bi-people"></i> {% trans "Clients" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'organizations:sales-list' %}">
+                                <i class="bi bi-cart-check"></i> {% trans "Sales" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'organizations:staff-list' %}">
+                                <i class="bi bi-person-badge"></i> {% trans "Staff" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'organizations:bulk-labels' %}">
+                                <i class="bi bi-printer"></i> {% trans "Bulk Labels" %}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'organizations:settings' %}">
+                                <i class="bi bi-gear"></i> {% trans "Org Settings" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'organizations:select-org' %}">
+                                <i class="bi bi-arrow-left-right"></i> {% trans "Switch Org" %}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% endif %}
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#"
                        data-bs-toggle="dropdown">

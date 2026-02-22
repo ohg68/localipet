@@ -56,6 +56,16 @@ class Consent(TimeStampedModel):
         ),
     )
 
+    # Organization (optional — for org-level consents)
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="consents",
+        verbose_name=_("organization"),
+    )
+
     # Scoped permissions
     can_view_medical = models.BooleanField(
         _("can view medical history"), default=True
@@ -116,6 +126,14 @@ class VetMedicalRecord(TimeStampedModel):
         null=True,
         help_text=_("The consent under which this record was created."),
     )
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="medical_records",
+        verbose_name=_("organization"),
+    )
     record_type = models.CharField(
         _("record type"),
         max_length=20,
@@ -157,6 +175,14 @@ class ServiceRecord(TimeStampedModel):
     )
     consent = models.ForeignKey(
         Consent, on_delete=models.SET_NULL, null=True
+    )
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="service_records",
+        verbose_name=_("organization"),
     )
     service_name = models.CharField(_("service"), max_length=255)
     description = models.TextField(_("description"), blank=True)

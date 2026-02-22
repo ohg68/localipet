@@ -11,4 +11,8 @@ def global_context(request):
         context["unread_notifications_count"] = (
             request.user.notifications.filter(is_read=False).count()
         )
+    # Organization context (set by ActiveOrganizationMiddleware)
+    if hasattr(request, "organization") and request.organization:
+        context["current_organization"] = request.organization
+        context["org_membership"] = getattr(request, "org_membership", None)
     return context

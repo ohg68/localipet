@@ -48,6 +48,14 @@ class Subscription(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name="subscriptions",
     )
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="billing_subscriptions",
+        verbose_name=_("organization"),
+    )
     plan = models.ForeignKey(SubscriptionPlan, on_delete=models.PROTECT)
     stripe_subscription_id = models.CharField(
         max_length=255, unique=True, db_index=True
@@ -109,6 +117,14 @@ class Order(TimeStampedModel):
         "accounts.User",
         on_delete=models.CASCADE,
         related_name="orders",
+    )
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="orders",
+        verbose_name=_("organization"),
     )
     stripe_checkout_session_id = models.CharField(
         max_length=255, blank=True, db_index=True
@@ -189,6 +205,20 @@ class Invoice(TimeStampedModel):
         "accounts.User",
         on_delete=models.CASCADE,
         related_name="invoices",
+    )
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="invoices",
+        verbose_name=_("organization"),
+    )
+    org_rfc = models.CharField(
+        _("organization RFC"), max_length=13, blank=True
+    )
+    org_razon_social = models.CharField(
+        _("organization business name"), max_length=255, blank=True
     )
     invoice_number = models.CharField(
         _("invoice number"), max_length=50, unique=True, db_index=True

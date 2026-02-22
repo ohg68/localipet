@@ -45,7 +45,11 @@ def handle_checkout_completed(event):
     session = event["data"]["object"]
     metadata = session.get("metadata", {})
 
-    if session.get("mode") == "subscription":
+    if metadata.get("type") == "org_subscription":
+        _handle_org_subscription_checkout(session, metadata)
+    elif metadata.get("type") == "org_product_purchase":
+        _handle_org_product_checkout(session, metadata)
+    elif session.get("mode") == "subscription":
         _handle_subscription_checkout(session, metadata)
     elif metadata.get("type") == "product_purchase":
         _handle_product_checkout(session, metadata)
@@ -143,6 +147,117 @@ def _handle_product_checkout(session, metadata):
         logger.exception("Failed to queue Odoo sync for order %s", order.pk)
 
 
+def _handle_org_subscription_checkout(session, metadata):
+    """Create local org subscription after Stripe checkout."""
+    from apps.organizations.models import (
+        Organization,
+        OrganizationPlan,
+        OrganizationSubscription,
+    )
+
+    org_id = metadata.get("organization_id")
+    plan_slug = metadata.get("plan_slug")
+
+    try:
+        org = Organization.objects.get(pk=org_id)
+        plan = OrganizationPlan.objects.get(slug=plan_slug)
+        stripe_sub = stripe.Subscription.retrieve(session["subscription"])
+
+        OrganizationSubscription.objects.update_or_create(
+            stripe_subscription_id=stripe_sub.id,
+            defaults={
+                "organization": org,
+                "plan": plan,
+                "status": stripe_sub.status,
+                "current_period_start": stripe_sub.current_period_start,
+                "current_period_end": stripe_sub.current_period_end,
+            },
+        )
+        logger.info("Org subscription created for %s (plan: %s)", org.name, plan.name)
+    except Organization.DoesNotExist:
+        logger.error("Webhook: Organization %s not found", org_id)
+    except OrganizationPlan.DoesNotExist:
+        logger.error("Webhook: OrgPlan '%s' not found", plan_slug)
+    except Exception:
+        logger.exception("Webhook: Error handling org subscription checkout")
+
+
+def _handle_org_product_checkout(session, metadata):
+    """Mark org order as paid, deduct stock, and create OrganizationSale."""
+    from .models import Order, Product
+    from apps.organizations.models import (
+        Organization,
+        OrganizationClient,
+        OrganizationSale,
+    )
+
+    order_id = metadata.get("order_id")
+    org_id = metadata.get("organization_id")
+
+    try:
+        order = Order.objects.prefetch_related("items__product").get(pk=order_id)
+    except Order.DoesNotExist:
+        order = (
+            Order.objects.prefetch_related("items__product")
+            .filter(stripe_checkout_session_id=session["id"])
+            .first()
+        )
+
+    if not order:
+        logger.error("Webhook: Org order not found for session %s", session["id"])
+        return
+
+    order.status = Order.Status.PAID
+    order.stripe_payment_intent_id = session.get("payment_intent", "")
+    order.save(update_fields=["status", "stripe_payment_intent_id"])
+
+    # Deduct stock
+    for item in order.items.select_related("product").all():
+        Product.objects.filter(pk=item.product_id).update(
+            stock=F("stock") - item.quantity
+        )
+
+    logger.info("Org order %s marked as paid, stock deducted", order.pk)
+
+    # Calculate commission and create sale record
+    try:
+        org = Organization.objects.get(pk=org_id)
+        sub = org.active_subscription
+        commission_rate = sub.plan.commission_rate if sub else 0
+        commission = order.total * commission_rate
+
+        # Find client
+        client = OrganizationClient.objects.filter(
+            organization=org, user=order.user
+        ).first()
+
+        OrganizationSale.objects.create(
+            organization=org,
+            order=order,
+            client=client,
+            sold_by_id=metadata.get("sold_by_user_id"),
+            commission_amount=commission,
+        )
+    except Organization.DoesNotExist:
+        logger.error("Webhook: Organization %s not found for sale record", org_id)
+    except Exception:
+        logger.exception("Webhook: Error creating org sale record for order %s", order.pk)
+
+    # Generate invoice
+    try:
+        from .invoice_utils import create_invoice_for_order
+        create_invoice_for_order(order)
+    except Exception:
+        logger.exception("Failed to generate invoice for org order %s", order.pk)
+
+    # Send notification
+    try:
+        from apps.notifications.services import notify_order_status
+        notify_order_status(order, order.get_status_display())
+    except Exception:
+        logger.exception("Failed to send notification for org order %s", order.pk)
+
+
 def handle_subscription_updated(event):
     """Handle customer.subscription.updated event."""
     from .models import Subscription
@@ -158,9 +273,22 @@ def handle_subscription_updated(event):
         )
         subscription.save(update_fields=["status", "cancel_at_period_end"])
     except Subscription.DoesNotExist:
-        logger.warning(
-            "Webhook: Subscription %s not found", sub_data["id"]
-        )
+        # Try org subscription
+        from apps.organizations.models import OrganizationSubscription
+
+        try:
+            org_sub = OrganizationSubscription.objects.get(
+                stripe_subscription_id=sub_data["id"]
+            )
+            org_sub.status = sub_data["status"]
+            org_sub.cancel_at_period_end = sub_data.get(
+                "cancel_at_period_end", False
+            )
+            org_sub.save(update_fields=["status", "cancel_at_period_end"])
+        except OrganizationSubscription.DoesNotExist:
+            logger.warning(
+                "Webhook: Subscription %s not found", sub_data["id"]
+            )
 
 
 def handle_subscription_deleted(event):

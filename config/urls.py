@@ -25,6 +25,7 @@ urlpatterns += i18n_patterns(
     path("vet/", include("apps.veterinary.urls")),
     path("billing/", include("apps.billing.urls")),
     path("notifications/", include("apps.notifications.urls")),
+    path("org/", include("apps.organizations.urls")),
     path("", include("apps.animals.urls_dashboard")),
     prefix_default_language=True,
 )
