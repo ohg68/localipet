@@ -141,6 +141,16 @@ class Order(TimeStampedModel):
     class Meta:
         verbose_name = _("order")
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(
+                fields=["user", "status", "-created_at"],
+                name="order_user_status_idx",
+            ),
+            models.Index(
+                fields=["stripe_payment_intent_id"],
+                name="order_payment_intent_idx",
+            ),
+        ]
 
 
 class OrderItem(TimeStampedModel):

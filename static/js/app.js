@@ -106,16 +106,26 @@
         const toastEl = document.createElement("div");
         toastEl.className = "toast";
         toastEl.setAttribute("role", "alert");
-        toastEl.innerHTML =
-            '<div class="toast-header">' +
-            '<strong class="me-auto text-' +
-            type +
-            '">Localipet</strong>' +
-            '<button type="button" class="btn-close" data-bs-dismiss="toast"></button>' +
-            "</div>" +
-            '<div class="toast-body">' +
-            message +
-            "</div>";
+
+        // Build toast with textContent to prevent XSS
+        const header = document.createElement("div");
+        header.className = "toast-header";
+        const strong = document.createElement("strong");
+        strong.className = "me-auto text-" + type;
+        strong.textContent = "Localipet";
+        const closeBtn = document.createElement("button");
+        closeBtn.type = "button";
+        closeBtn.className = "btn-close";
+        closeBtn.setAttribute("data-bs-dismiss", "toast");
+        header.appendChild(strong);
+        header.appendChild(closeBtn);
+
+        const body = document.createElement("div");
+        body.className = "toast-body";
+        body.textContent = message;
+
+        toastEl.appendChild(header);
+        toastEl.appendChild(body);
         container.appendChild(toastEl);
         const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
         toast.show();

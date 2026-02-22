@@ -69,6 +69,12 @@ class ScanLog(TimeStampedModel):
     class Meta:
         verbose_name = _("scan log")
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(
+                fields=["qr_code", "-created_at"],
+                name="scanlog_qr_created_idx",
+            ),
+        ]
 
 
 class FinderMessage(TimeStampedModel):

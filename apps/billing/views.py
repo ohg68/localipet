@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -261,51 +262,55 @@ class CheckoutView(LoginRequiredMixin, View):
             messages.error(request, _("Please fill in your shipping address."))
             return redirect("billing:cart")
 
-        # Create Order
-        order = Order.objects.create(
-            user=request.user,
-            status=Order.Status.PENDING,
-            shipping_name=form.cleaned_data["shipping_name"],
-            shipping_address=form.cleaned_data["shipping_address"],
-            shipping_city=form.cleaned_data["shipping_city"],
-            shipping_state=form.cleaned_data["shipping_state"],
-            shipping_zip=form.cleaned_data["shipping_zip"],
-            shipping_country=form.cleaned_data["shipping_country"],
-        )
-
-        # Optionally link to an animal (for tags/medals)
-        animal_id = request.POST.get("animal_id")
-        if animal_id:
-            try:
-                animal = Animal.objects.get(
-                    pk=animal_id, owner=request.user
+        # Create Order + OrderItems atomically
+        order = None
+        try:
+            with transaction.atomic():
+                order = Order.objects.create(
+                    user=request.user,
+                    status=Order.Status.PENDING,
+                    shipping_name=form.cleaned_data["shipping_name"],
+                    shipping_address=form.cleaned_data["shipping_address"],
+                    shipping_city=form.cleaned_data["shipping_city"],
+                    shipping_state=form.cleaned_data["shipping_state"],
+                    shipping_zip=form.cleaned_data["shipping_zip"],
+                    shipping_country=form.cleaned_data["shipping_country"],
                 )
-                order.animal = animal
-                order.save(update_fields=["animal"])
-            except Animal.DoesNotExist:
-                pass
 
-        # Create OrderItems
-        for slug, item in cart.items():
-            try:
-                product = Product.objects.get(slug=slug, is_active=True)
-                OrderItem.objects.create(
-                    order=order,
-                    product=product,
-                    quantity=item["quantity"],
-                    unit_price=product.price,
+                # Optionally link to an animal (for tags/medals)
+                animal_id = request.POST.get("animal_id")
+                if animal_id:
+                    try:
+                        animal = Animal.objects.get(
+                            pk=animal_id, owner=request.user
+                        )
+                        order.animal = animal
+                        order.save(update_fields=["animal"])
+                    except Animal.DoesNotExist:
+                        pass
+
+                # Create OrderItems
+                for slug, item in cart.items():
+                    try:
+                        product = Product.objects.get(slug=slug, is_active=True)
+                        OrderItem.objects.create(
+                            order=order,
+                            product=product,
+                            quantity=item["quantity"],
+                            unit_price=product.price,
+                        )
+                    except Product.DoesNotExist:
+                        continue
+
+                # Recalculate total
+                order.total = sum(
+                    oi.unit_price * oi.quantity for oi in order.items.all()
                 )
-            except Product.DoesNotExist:
-                continue
+                order.save(update_fields=["total"])
 
-        # Recalculate total
-        order.total = sum(
-            oi.unit_price * oi.quantity for oi in order.items.all()
-        )
-        order.save(update_fields=["total"])
-
-        if order.total <= 0:
-            order.delete()
+                if order.total <= 0:
+                    raise ValueError("No valid products in cart")
+        except ValueError:
             messages.error(request, _("No valid products in cart."))
             return redirect("billing:shop")
 

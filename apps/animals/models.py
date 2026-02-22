@@ -67,6 +67,16 @@ class Animal(TimeStampedModel):
         verbose_name = _("animal")
         verbose_name_plural = _("animals")
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(
+                fields=["owner", "is_active", "-created_at"],
+                name="animal_owner_active_idx",
+            ),
+            models.Index(
+                fields=["is_lost", "is_active"],
+                name="animal_lost_active_idx",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.name} ({self.get_species_display()})"

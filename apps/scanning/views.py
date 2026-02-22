@@ -1,7 +1,10 @@
+import logging
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import (
     CreateView,
@@ -9,6 +12,7 @@ from django.views.generic import (
     ListView,
     TemplateView,
 )
+from django_ratelimit.decorators import ratelimit
 
 from apps.core.mixins import OwnerRequiredMixin
 
@@ -16,10 +20,13 @@ from .forms import FinderContactForm
 from .models import QRCode, ScanLog, FinderMessage
 from .qr import generate_qr_image
 
+logger = logging.getLogger(__name__)
+
 
 # --- Public views (no auth required) ---
 
 
+@method_decorator(ratelimit(key="ip", rate="60/h", method="GET"), name="get")
 class PublicScanView(DetailView):
     """Public page shown when someone scans a QR code. No auth required."""
 
@@ -40,10 +47,16 @@ class PublicScanView(DetailView):
         ip = self._get_client_ip()
         user_agent = self.request.META.get("HTTP_USER_AGENT", "")
 
+        geo_data = self._geoip_lookup(ip)
+
         scan_log = ScanLog.objects.create(
             qr_code=qr_code,
             ip_address=ip,
             user_agent=user_agent,
+            latitude=geo_data.get("latitude"),
+            longitude=geo_data.get("longitude"),
+            city_guess=geo_data.get("city", ""),
+            country_guess=geo_data.get("country", ""),
         )
 
         # Trigger notification asynchronously
@@ -52,9 +65,40 @@ class PublicScanView(DetailView):
 
             notify_scan_task.delay(str(scan_log.id))
         except Exception:
-            pass
+            logger.exception("Failed to queue scan notification")
+
+    @staticmethod
+    def _geoip_lookup(ip):
+        """Attempt to geolocate an IP address using MaxMind GeoIP2 database."""
+        from django.conf import settings
+        import os
+
+        result = {}
+        geoip_path = getattr(settings, "GEOIP_PATH", "")
+        db_path = os.path.join(geoip_path, "GeoLite2-City.mmdb")
+
+        if not os.path.isfile(db_path):
+            return result
+
+        try:
+            import geoip2.database
+
+            with geoip2.database.Reader(db_path) as reader:
+                response = reader.city(ip)
+                result["latitude"] = response.location.latitude
+                result["longitude"] = response.location.longitude
+                result["city"] = response.city.name or ""
+                result["country"] = response.country.name or ""
+        except Exception:
+            logger.debug("GeoIP lookup failed for %s", ip)
+
+        return result
 
     def _get_client_ip(self):
+        # Use X-Real-IP set by nginx (trusted proxy) first
+        real_ip = self.request.META.get("HTTP_X_REAL_IP")
+        if real_ip:
+            return real_ip.strip()
         x_forwarded_for = self.request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
             return x_forwarded_for.split(",")[0].strip()
@@ -67,6 +111,7 @@ class PublicScanView(DetailView):
         return context
 
 
+@method_decorator(ratelimit(key="ip", rate="10/h", method="POST"), name="post")
 class FinderContactView(CreateView):
     """Form where a finder can send a message to the owner."""
 
@@ -91,7 +136,7 @@ class FinderContactView(CreateView):
 
             notify_finder_message_task.delay(str(self.object.id))
         except Exception:
-            pass
+            logger.exception("Failed to queue finder message notification")
 
         return response
 

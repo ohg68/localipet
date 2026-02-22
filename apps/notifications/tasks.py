@@ -137,6 +137,96 @@ def send_finder_email(finder_message_id):
 
 
 @shared_task
+def notify_scan_task(scan_log_id):
+    """Notify owner that their animal's QR was scanned."""
+    from apps.scanning.models import ScanLog
+
+    try:
+        scan_log = ScanLog.objects.select_related(
+            "qr_code__animal__owner"
+        ).get(pk=scan_log_id)
+    except ScanLog.DoesNotExist:
+        logger.warning("ScanLog %s not found", scan_log_id)
+        return
+
+    from .services import notify_scan_alert
+
+    notify_scan_alert(scan_log.qr_code.animal, scan_log)
+
+
+@shared_task
+def notify_finder_message_task(finder_message_id):
+    """Notify owner about a new finder message."""
+    from apps.scanning.models import FinderMessage
+
+    try:
+        msg = FinderMessage.objects.select_related(
+            "qr_code__animal__owner"
+        ).get(pk=finder_message_id)
+    except FinderMessage.DoesNotExist:
+        logger.warning("FinderMessage %s not found", finder_message_id)
+        return
+
+    from .services import notify_finder_message
+
+    notify_finder_message(msg)
+
+
+@shared_task
+def notify_consent_request_task(consent_id):
+    """Notify owner about a new consent request from a vet."""
+    from apps.veterinary.models import Consent
+
+    try:
+        consent = Consent.objects.select_related(
+            "animal", "owner", "requester__profile"
+        ).get(pk=consent_id)
+    except Consent.DoesNotExist:
+        logger.warning("Consent %s not found", consent_id)
+        return
+
+    from .services import notify_consent_request
+
+    notify_consent_request(consent)
+
+
+@shared_task
+def notify_consent_response_task(consent_id):
+    """Notify vet about consent approval/denial."""
+    from apps.veterinary.models import Consent
+
+    try:
+        consent = Consent.objects.select_related(
+            "animal", "owner", "requester"
+        ).get(pk=consent_id)
+    except Consent.DoesNotExist:
+        logger.warning("Consent %s not found", consent_id)
+        return
+
+    from .services import notify_consent_response
+
+    notify_consent_response(consent)
+
+
+@shared_task
+def notify_consent_revoked_task(consent_id):
+    """Notify vet that consent was revoked."""
+    from apps.veterinary.models import Consent
+
+    try:
+        consent = Consent.objects.select_related(
+            "animal", "owner", "requester"
+        ).get(pk=consent_id)
+    except Consent.DoesNotExist:
+        logger.warning("Consent %s not found", consent_id)
+        return
+
+    from .services import notify_consent_revoked
+
+    notify_consent_revoked(consent)
+
+
+@shared_task
 def cleanup_old_notifications(days=90):
     """Delete read notifications older than N days."""
     from datetime import timedelta

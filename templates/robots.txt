@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /accounts/
+Disallow: /billing/
+Disallow: /notifications/
+Disallow: /vet/
+
+Sitemap: {{ base_url }}/sitemap.xml

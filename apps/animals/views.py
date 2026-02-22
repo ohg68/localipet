@@ -25,13 +25,16 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context["animals"] = user.animals.filter(is_active=True)
-        context["animals_count"] = context["animals"].count()
-        context["lost_count"] = context["animals"].filter(is_lost=True).count()
+        animals_qs = user.animals.filter(
+            is_active=True
+        ).prefetch_related("qr_code")
+        context["animals"] = animals_qs
+        context["animals_count"] = animals_qs.count()
+        context["lost_count"] = animals_qs.filter(is_lost=True).count()
         # Recent scan activity
         from apps.scanning.models import ScanLog
 
-        animal_ids = context["animals"].values_list("id", flat=True)
+        animal_ids = animals_qs.values_list("id", flat=True)
         context["recent_scans"] = (
             ScanLog.objects.filter(qr_code__animal_id__in=animal_ids)
             .select_related("qr_code__animal")
@@ -43,6 +46,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["unread_messages"] = FinderMessage.objects.filter(
             qr_code__animal_id__in=animal_ids, is_read=False
         ).count()
+        # Unread notifications
+        context["unread_notifications"] = user.notifications.filter(
+            is_read=False
+        ).count()
         return context
 
 
@@ -53,7 +60,11 @@ class AnimalListView(LoginRequiredMixin, ListView):
     paginate_by = 12
 
     def get_queryset(self):
-        return self.request.user.animals.filter(is_active=True)
+        return (
+            self.request.user.animals.filter(is_active=True)
+            .prefetch_related("qr_code", "photos")
+            .order_by("-created_at")
+        )
 
 
 class AnimalDetailView(OwnerRequiredMixin, DetailView):
@@ -61,18 +72,26 @@ class AnimalDetailView(OwnerRequiredMixin, DetailView):
     template_name = "animals/animal_detail.html"
     context_object_name = "animal"
 
+    def get_queryset(self):
+        return Animal.objects.select_related("owner__profile").prefetch_related(
+            "qr_code", "photos"
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        animal = self.get_object()
+        animal = self.object
         context["photos"] = animal.photos.all()
-        if hasattr(animal, "qr_code"):
-            context["qr_code"] = animal.qr_code
-            context["recent_scans"] = animal.qr_code.scans.order_by(
+        try:
+            qr_code = animal.qr_code
+            context["qr_code"] = qr_code
+            context["recent_scans"] = qr_code.scans.order_by(
                 "-created_at"
             )[:5]
-        context["vet_records"] = animal.vet_records.order_by(
-            "-date_performed"
-        )[:5]
+        except Animal.qr_code.RelatedObjectDoesNotExist:
+            pass
+        context["vet_records"] = animal.vet_records.select_related(
+            "professional"
+        ).order_by("-date_performed")[:5]
         return context
 
 

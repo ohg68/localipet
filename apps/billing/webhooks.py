@@ -1,9 +1,14 @@
+import logging
+
 import stripe
 from django.conf import settings
+from django.db.models import F
 from django.http import HttpResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -19,14 +24,18 @@ class StripeWebhookView(View):
                 payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
             )
         except ValueError:
+            logger.warning("Stripe webhook: invalid payload")
             return HttpResponse(status=400)
         except stripe.error.SignatureVerificationError:
+            logger.warning("Stripe webhook: signature verification failed")
             return HttpResponse(status=400)
 
         # Dispatch to handler
         handler = WEBHOOK_HANDLERS.get(event["type"])
         if handler:
             handler(event)
+        else:
+            logger.info("Unhandled Stripe event type: %s", event["type"])
 
         return HttpResponse(status=200)
 
@@ -67,39 +76,71 @@ def _handle_subscription_checkout(session, metadata):
                 "current_period_end": stripe_sub.current_period_end,
             },
         )
+    except User.DoesNotExist:
+        logger.error("Webhook: User %s not found for subscription", user_id)
+    except SubscriptionPlan.DoesNotExist:
+        logger.error("Webhook: Plan '%s' not found", plan_slug)
     except Exception:
-        pass
+        logger.exception("Webhook: Error handling subscription checkout")
 
 
 def _handle_product_checkout(session, metadata):
-    """Create local order after Stripe product checkout."""
-    from apps.accounts.models import User
-    from .models import Order
+    """Mark order as paid, deduct stock, and sync to Odoo."""
+    from .models import Order, Product
 
-    user_id = metadata.get("user_id")
+    order_id = metadata.get("order_id")
 
     try:
-        user = User.objects.get(pk=user_id)
-        order = Order.objects.filter(
+        order = Order.objects.prefetch_related("items__product").get(
+            pk=order_id
+        )
+    except Order.DoesNotExist:
+        # Fallback: look up by checkout session ID
+        order = Order.objects.prefetch_related("items__product").filter(
             stripe_checkout_session_id=session["id"]
         ).first()
 
-        if order:
-            order.status = Order.Status.PAID
-            order.stripe_payment_intent_id = session.get(
-                "payment_intent", ""
-            )
-            order.save()
+    if not order:
+        logger.error(
+            "Webhook: Order not found for session %s", session["id"]
+        )
+        return
 
-            # Sync to Odoo if enabled
-            try:
-                from apps.odoo_sync.tasks import sync_order_to_odoo
+    order.status = Order.Status.PAID
+    order.stripe_payment_intent_id = session.get("payment_intent", "")
+    order.save(update_fields=["status", "stripe_payment_intent_id"])
 
-                sync_order_to_odoo.delay(str(order.id))
-            except Exception:
-                pass
+    # Deduct stock for each order item
+    for item in order.items.select_related("product").all():
+        Product.objects.filter(pk=item.product_id).update(
+            stock=F("stock") - item.quantity
+        )
+
+    logger.info("Order %s marked as paid, stock deducted", order.pk)
+
+    # Generate invoice PDF
+    try:
+        from .invoice_utils import create_invoice_for_order
+
+        create_invoice_for_order(order)
     except Exception:
-        pass
+        logger.exception("Failed to generate invoice for order %s", order.pk)
+
+    # Send order notification
+    try:
+        from apps.notifications.services import notify_order_status
+
+        notify_order_status(order, order.get_status_display())
+    except Exception:
+        logger.exception("Failed to send order notification for %s", order.pk)
+
+    # Sync to Odoo if enabled
+    try:
+        from apps.odoo_sync.tasks import sync_order_to_odoo
+
+        sync_order_to_odoo.delay(str(order.id))
+    except Exception:
+        logger.exception("Failed to queue Odoo sync for order %s", order.pk)
 
 
 def handle_subscription_updated(event):
@@ -115,9 +156,11 @@ def handle_subscription_updated(event):
         subscription.cancel_at_period_end = sub_data.get(
             "cancel_at_period_end", False
         )
-        subscription.save()
+        subscription.save(update_fields=["status", "cancel_at_period_end"])
     except Subscription.DoesNotExist:
-        pass
+        logger.warning(
+            "Webhook: Subscription %s not found", sub_data["id"]
+        )
 
 
 def handle_subscription_deleted(event):
@@ -132,11 +175,82 @@ def handle_subscription_deleted(event):
         subscription.status = "canceled"
         subscription.save(update_fields=["status"])
     except Subscription.DoesNotExist:
-        pass
+        logger.warning(
+            "Webhook: Subscription %s not found for deletion",
+            sub_data["id"],
+        )
+
+
+def handle_payment_failed(event):
+    """Handle payment_intent.payment_failed event."""
+    intent = event["data"]["object"]
+    logger.warning(
+        "Payment failed for intent %s: %s",
+        intent["id"],
+        intent.get("last_payment_error", {}).get("message", "unknown"),
+    )
+
+
+def handle_charge_refunded(event):
+    """Handle charge.refunded event."""
+    from .models import Order
+
+    charge = event["data"]["object"]
+    payment_intent_id = charge.get("payment_intent")
+
+    if not payment_intent_id:
+        return
+
+    try:
+        order = Order.objects.get(
+            stripe_payment_intent_id=payment_intent_id
+        )
+        order.status = Order.Status.REFUNDED
+        order.save(update_fields=["status"])
+        logger.info("Order %s marked as refunded", order.pk)
+
+        from apps.notifications.services import notify_order_status
+
+        notify_order_status(order, order.get_status_display())
+    except Order.DoesNotExist:
+        logger.warning(
+            "Webhook: Order not found for refund, payment_intent=%s",
+            payment_intent_id,
+        )
+
+
+def handle_invoice_payment_failed(event):
+    """Handle invoice.payment_failed for subscription renewals."""
+    from .models import Subscription
+
+    invoice = event["data"]["object"]
+    stripe_sub_id = invoice.get("subscription")
+
+    if not stripe_sub_id:
+        return
+
+    try:
+        subscription = Subscription.objects.get(
+            stripe_subscription_id=stripe_sub_id
+        )
+        subscription.status = "past_due"
+        subscription.save(update_fields=["status"])
+        logger.warning(
+            "Subscription %s marked as past_due (invoice payment failed)",
+            stripe_sub_id,
+        )
+    except Subscription.DoesNotExist:
+        logger.warning(
+            "Webhook: Subscription %s not found for failed invoice",
+            stripe_sub_id,
+        )
 
 
 WEBHOOK_HANDLERS = {
     "checkout.session.completed": handle_checkout_completed,
     "customer.subscription.updated": handle_subscription_updated,
     "customer.subscription.deleted": handle_subscription_deleted,
+    "payment_intent.payment_failed": handle_payment_failed,
+    "charge.refunded": handle_charge_refunded,
+    "invoice.payment_failed": handle_invoice_payment_failed,
 }

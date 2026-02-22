@@ -46,11 +46,11 @@ def _should_send_email(user, notification_type):
 
     # Map notification types to profile preferences
     pref_map = {
-        Notification.Type.SCAN_ALERT: profile.notify_scan_email,
-        Notification.Type.FINDER_MESSAGE: profile.notify_finder_email,
-        Notification.Type.CONSENT_REQUEST: profile.notify_consent_email,
-        Notification.Type.CONSENT_RESPONSE: profile.notify_consent_email,
-        Notification.Type.CONSENT_REVOKED: profile.notify_consent_email,
+        Notification.Type.SCAN_ALERT: profile.email_on_scan,
+        Notification.Type.FINDER_MESSAGE: profile.email_on_message,
+        Notification.Type.CONSENT_REQUEST: profile.email_on_consent_request,
+        Notification.Type.CONSENT_RESPONSE: profile.email_on_consent_request,
+        Notification.Type.CONSENT_REVOKED: profile.email_on_consent_request,
     }
 
     return pref_map.get(notification_type, True)
