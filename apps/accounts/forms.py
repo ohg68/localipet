@@ -12,6 +12,15 @@ class OwnerRegistrationForm(UserCreationForm):
     last_name = forms.CharField(
         max_length=150, required=True, label=_("Last name")
     )
+    accept_privacy = forms.BooleanField(
+        required=True,
+        label=_("I accept the Privacy Policy and Terms of Service"),
+        error_messages={
+            "required": _(
+                "You must accept the Privacy Policy and Terms of Service to register."
+            ),
+        },
+    )
 
     class Meta:
         model = User
@@ -41,6 +50,15 @@ class VetRegistrationForm(UserCreationForm):
     role = forms.ChoiceField(
         choices=[("vet", _("Veterinarian")), ("shop", _("Pet Shop"))],
         label=_("Account type"),
+    )
+    accept_privacy = forms.BooleanField(
+        required=True,
+        label=_("I accept the Privacy Policy and Terms of Service"),
+        error_messages={
+            "required": _(
+                "You must accept the Privacy Policy and Terms of Service to register."
+            ),
+        },
     )
 
     class Meta:

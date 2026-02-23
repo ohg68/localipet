@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Data & Privacy" %}{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 900px;">
+    <h1 class="mb-4"><i class="bi bi-person-lock"></i> {% trans "My Data & Privacy" %}</h1>
+    <p class="text-muted">{% trans "Manage your personal data, view consents, and exercise your privacy rights." %}</p>
+
+    <!-- Data Actions -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-primary">
+                <div class="card-body text-center">
+                    <i class="bi bi-download fs-1 text-primary"></i>
+                    <h5 class="mt-2">{% trans "Export My Data" %}</h5>
+                    <p class="small text-muted">{% trans "Download all your personal data in JSON format (GDPR Art. 20)." %}</p>
+                    <form method="post" action="{% url 'compliance:data-export' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-file-earmark-arrow-down"></i> {% trans "Download" %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-pencil-square fs-1 text-success"></i>
+                    <h5 class="mt-2">{% trans "Edit My Profile" %}</h5>
+                    <p class="small text-muted">{% trans "Update or correct your personal information (Art. 16 GDPR / Rectification ARCO)." %}</p>
+                    <a href="{% url 'accounts:profile-edit' %}" class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-person-gear"></i> {% trans "Edit Profile" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-danger">
+                <div class="card-body text-center">
+                    <i class="bi bi-trash3 fs-1 text-danger"></i>
+                    <h5 class="mt-2">{% trans "Delete My Account" %}</h5>
+                    <p class="small text-muted">{% trans "Permanently delete your account and all data (GDPR Art. 17 / Cancellation ARCO)." %}</p>
+                    <a href="{% url 'compliance:data-delete' %}" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-exclamation-triangle"></i> {% trans "Delete Account" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Documents -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-file-text"></i> {% trans "Legal Documents" %}</h5>
+        </div>
+        <div class="card-body">
+            <div class="list-group list-group-flush">
+                <a href="{% url 'compliance:privacy-policy' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-shield-lock"></i> {% trans "Privacy Policy" %}</span>
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+                <a href="{% url 'compliance:terms-of-service' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-file-earmark-text"></i> {% trans "Terms of Service" %}</span>
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+                <a href="{% url 'compliance:cookie-policy' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-cookie"></i> {% trans "Cookie Policy" %}</span>
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+                <a href="{% url 'compliance:refund-policy' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-arrow-return-left"></i> {% trans "Refund Policy" %}</span>
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Consents -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-check-circle"></i> {% trans "My Consents" %}</h5>
+        </div>
+        <div class="card-body">
+            {% if consents %}
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>{% trans "Document" %}</th>
+                        <th>{% trans "Accepted On" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consent in consents %}
+                    <tr>
+                        <td>{{ consent.document }}</td>
+                        <td>{{ consent.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            <form method="post" action="{% url 'compliance:withdraw-consent' consent.id %}"
+                                  onsubmit="return confirm('{% trans "Are you sure you want to withdraw this consent? Some features may be affected." %}');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-warning btn-sm">
+                                    <i class="bi bi-x-circle"></i> {% trans "Withdraw" %}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted mb-0">{% trans "No active consents recorded." %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-clock-history"></i> {% trans "Recent Account Activity" %}</h5>
+        </div>
+        <div class="card-body">
+            {% if recent_audit %}
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>{% trans "Date" %}</th>
+                        <th>{% trans "Action" %}</th>
+                        <th>{% trans "IP Address" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in recent_audit %}
+                    <tr>
+                        <td>{{ log.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>{{ log.get_action_display }}</td>
+                        <td><code>{{ log.ip_address|default:"-" }}</code></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted mb-0">{% trans "No recent activity." %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> {% trans "Back to Profile" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

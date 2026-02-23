@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "apps.billing",
     "apps.notifications",
     "apps.organizations",
+    "apps.compliance",
     "apps.odoo_sync",
 ]
 
@@ -175,3 +176,21 @@ ODOO_SYNC_ENABLED = env.bool("ODOO_SYNC_ENABLED", default=False)
 
 # GeoIP
 GEOIP_PATH = env("GEOIP_PATH", default=str(BASE_DIR / "geoip"))
+
+# ── Tax / Fiscal ────────────────────────────────────────────────────────
+from decimal import Decimal
+
+TAX_RATE = Decimal(env("TAX_RATE", default="0.16"))  # IVA Mexico 16%
+
+# ── Session & Cookie Security ───────────────────────────────────────────
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 1 week
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = "Lax"
+# In production, set these to True (requires HTTPS):
+SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=False)
+CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=False)
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"

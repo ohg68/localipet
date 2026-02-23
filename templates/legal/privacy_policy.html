@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Privacy Policy" %}{% endblock %}
+{% block meta_description %}{% trans "Localipet Privacy Policy. Learn how we collect, use, and protect your personal data in compliance with Mexican (LFPDPPP) and European (GDPR) data protection laws." %}{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 860px;">
+
+    <h1 class="mb-3">{% trans "Privacy Policy" %}</h1>
+    <p class="text-muted mb-4">
+        {% trans "Last updated:" %} {% now "Y-m-d" %}
+    </p>
+
+    <!-- Table of Contents -->
+    <nav class="card mb-5" aria-label="{% trans 'Table of Contents' %}">
+        <div class="card-body">
+            <h2 class="h5 card-title">{% trans "Table of Contents" %}</h2>
+            <ol class="mb-0">
+                <li><a href="#data-controller">{% trans "Data Controller" %}</a></li>
+                <li><a href="#data-we-collect">{% trans "Data We Collect" %}</a></li>
+                <li><a href="#legal-basis">{% trans "Legal Basis for Processing" %}</a></li>
+                <li><a href="#how-we-use-data">{% trans "How We Use Your Data" %}</a></li>
+                <li><a href="#data-sharing">{% trans "Data Sharing and Third Parties" %}</a></li>
+                <li><a href="#international-transfers">{% trans "International Data Transfers" %}</a></li>
+                <li><a href="#data-retention">{% trans "Data Retention" %}</a></li>
+                <li><a href="#your-rights">{% trans "Your Rights" %}</a></li>
+                <li><a href="#mexican-regulations">{% trans "Mexican Regulatory Authority (INAI)" %}</a></li>
+                <li><a href="#eu-regulations">{% trans "EU Regulatory Authorities" %}</a></li>
+                <li><a href="#cookies">{% trans "Cookie Policy" %}</a></li>
+                <li><a href="#contact">{% trans "Contact Information" %}</a></li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Introduction -->
+    <p class="lead mb-4">
+        {% trans "At Localipet, we are committed to protecting your privacy and personal data. This Privacy Policy explains how we collect, use, store, and share your information when you use our pet identification platform and related services." %}
+    </p>
+    <p class="mb-5">
+        {% trans "This policy applies to users in Mexico and the European Union. We comply with the Mexican Federal Law on Protection of Personal Data Held by Private Parties (LFPDPPP), the General Law on Protection of Personal Data in Possession of Obligated Subjects (LGPD), and the European Union General Data Protection Regulation (GDPR)." %}
+    </p>
+
+    <!-- Section 1: Data Controller -->
+    <section id="data-controller" class="mb-5">
+        <h2>{% trans "1. Data Controller" %}</h2>
+        <p>{% trans "The data controller responsible for your personal data is:" %}</p>
+        <address class="ps-3 border-start border-3 border-primary">
+            <strong>Localipet</strong><br>
+            {% trans "Email:" %} <a href="mailto:privacidad@localipet.com">privacidad@localipet.com</a><br>
+            {% trans "Website:" %} <a href="https://www.localipet.com">www.localipet.com</a>
+        </address>
+        <p>{% trans "For any questions regarding this policy or the processing of your personal data, you may contact our Data Protection Officer at the email address above." %}</p>
+    </section>
+
+    <!-- Section 2: Data We Collect -->
+    <section id="data-we-collect" class="mb-5">
+        <h2>{% trans "2. Data We Collect" %}</h2>
+
+        <h3 class="h5 mt-4">{% trans "2.1 Personal Data" %}</h3>
+        <ul>
+            <li>{% trans "Full name" %}</li>
+            <li>{% trans "Email address" %}</li>
+            <li>{% trans "Phone number" %}</li>
+            <li>{% trans "Postal address" %}</li>
+            <li>{% trans "Account credentials (encrypted)" %}</li>
+            <li>{% trans "Profile photograph (optional)" %}</li>
+            <li>{% trans "Language and communication preferences" %}</li>
+        </ul>
+
+        <h3 class="h5 mt-4">{% trans "2.2 Pet Data" %}</h3>
+        <ul>
+            <li>{% trans "Pet name, species, breed, color, and distinguishing features" %}</li>
+            <li>{% trans "Date of birth or approximate age" %}</li>
+            <li>{% trans "Sex and spay/neuter status" %}</li>
+            <li>{% trans "Microchip number (if applicable)" %}</li>
+            <li>{% trans "Photographs of your pet" %}</li>
+            <li>{% trans "Medical records and veterinary history (when provided)" %}</li>
+            <li>{% trans "Vaccination records" %}</li>
+            <li>{% trans "Medications and allergies" %}</li>
+        </ul>
+
+        <h3 class="h5 mt-4">{% trans "2.3 Scan and Location Data" %}</h3>
+        <ul>
+            <li>{% trans "QR code scan events (date, time)" %}</li>
+            <li>{% trans "Approximate geographic location of scans (when permitted by the scanner)" %}</li>
+            <li>{% trans "IP address of the scanning device" %}</li>
+            <li>{% trans "Device type and browser information of the scanner" %}</li>
+        </ul>
+
+        <h3 class="h5 mt-4">{% trans "2.4 Payment Data" %}</h3>
+        <ul>
+            <li>{% trans "Billing name and address" %}</li>
+            <li>{% trans "Transaction history and subscription status" %}</li>
+            <li>{% trans "Payment method details are processed and stored exclusively by our payment processor, Stripe. Localipet does not store credit card numbers or full payment instrument details." %}</li>
+        </ul>
+    </section>
+
+    <!-- Section 3: Legal Basis -->
+    <section id="legal-basis" class="mb-5">
+        <h2>{% trans "3. Legal Basis for Processing" %}</h2>
+        <p>{% trans "We process your personal data on the following legal bases:" %}</p>
+
+        <h3 class="h5 mt-4">{% trans "3.1 Consent" %}</h3>
+        <p>{% trans "When you create an account and accept this Privacy Policy, you provide your consent for us to process your personal data for the purposes described herein. You may withdraw your consent at any time by contacting us. Withdrawal of consent does not affect the lawfulness of processing carried out prior to withdrawal." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "3.2 Performance of a Contract" %}</h3>
+        <p>{% trans "Processing is necessary to provide you with the Localipet services you have requested, including pet registration, QR code generation, scan notifications, and marketplace transactions." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "3.3 Legitimate Interest" %}</h3>
+        <p>{% trans "We may process data based on our legitimate interests, such as improving our services, preventing fraud, ensuring platform security, and conducting analytics. We balance these interests against your rights and freedoms." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "3.4 Legal Obligation" %}</h3>
+        <p>{% trans "We may process your data when required by applicable law, including tax regulations, consumer protection laws, and regulatory requirements in Mexico and the EU." %}</p>
+    </section>
+
+    <!-- Section 4: How We Use Data -->
+    <section id="how-we-use-data" class="mb-5">
+        <h2>{% trans "4. How We Use Your Data" %}</h2>
+        <ul>
+            <li>{% trans "To create and manage your Localipet account" %}</li>
+            <li>{% trans "To register your pets and generate unique QR code identifiers" %}</li>
+            <li>{% trans "To send you real-time notifications when your pet's QR code is scanned" %}</li>
+            <li>{% trans "To display your pet's public profile information to persons who scan the QR code" %}</li>
+            <li>{% trans "To store and share medical records with authorized veterinary professionals" %}</li>
+            <li>{% trans "To process subscription payments and marketplace transactions" %}</li>
+            <li>{% trans "To send service-related communications (account updates, security alerts)" %}</li>
+            <li>{% trans "To send marketing communications (only with your explicit consent)" %}</li>
+            <li>{% trans "To improve our platform through aggregated, anonymized analytics" %}</li>
+            <li>{% trans "To comply with legal and regulatory obligations" %}</li>
+            <li>{% trans "To prevent fraud, abuse, and unauthorized access" %}</li>
+        </ul>
+    </section>
+
+    <!-- Section 5: Data Sharing -->
+    <section id="data-sharing" class="mb-5">
+        <h2>{% trans "5. Data Sharing and Third Parties" %}</h2>
+        <p>{% trans "We do not sell your personal data. We share data only in the following circumstances:" %}</p>
+
+        <h3 class="h5 mt-4">{% trans "5.1 Stripe (Payment Processing)" %}</h3>
+        <p>{% trans "We use Stripe as our payment processor. When you make a purchase or subscribe, your payment information is transmitted directly to Stripe. Stripe's processing of your data is governed by their own privacy policy." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "5.2 Veterinary Professionals" %}</h3>
+        <p>{% trans "When you explicitly authorize a veterinarian to access your pet's medical records through our platform, we share the relevant pet and medical data with that professional. You control which veterinarians have access and may revoke access at any time." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "5.3 Odoo Integration (If Enabled)" %}</h3>
+        <p>{% trans "If our Odoo ERP integration is enabled, certain order and billing data may be synchronized with our Odoo instance for accounting and inventory management purposes. This data remains under our control and is subject to the same protections described in this policy." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "5.4 QR Code Scanners" %}</h3>
+        <p>{% trans "When someone scans your pet's QR code, they will see the public profile information you have chosen to display. You can configure which information is visible in your pet's profile settings." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "5.5 Legal Requirements" %}</h3>
+        <p>{% trans "We may disclose your data when required by law, court order, or governmental regulation, or when necessary to protect our rights, property, or the safety of our users." %}</p>
+    </section>
+
+    <!-- Section 6: International Transfers -->
+    <section id="international-transfers" class="mb-5">
+        <h2>{% trans "6. International Data Transfers" %}</h2>
+        <p>{% trans "Localipet operates in Mexico and may serve users in the European Union. Your data may be transferred to and processed in countries other than your own. When we transfer data internationally, we ensure appropriate safeguards are in place:" %}</p>
+        <ul>
+            <li>{% trans "For transfers from the EU: We rely on Standard Contractual Clauses (SCCs) approved by the European Commission, adequacy decisions, or your explicit consent." %}</li>
+            <li>{% trans "For transfers from Mexico: We comply with the LFPDPPP requirements for international transfers, including ensuring the receiving party adheres to equivalent data protection standards." %}</li>
+            <li>{% trans "Our third-party processors (such as Stripe) maintain their own compliance programs for international data transfers." %}</li>
+        </ul>
+    </section>
+
+    <!-- Section 7: Data Retention -->
+    <section id="data-retention" class="mb-5">
+        <h2>{% trans "7. Data Retention" %}</h2>
+        <p>{% trans "We retain your data for as long as necessary to fulfill the purposes described in this policy, unless a longer retention period is required or permitted by law:" %}</p>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>{% trans "Data Type" %}</th>
+                        <th>{% trans "Retention Period" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{% trans "Account data" %}</td>
+                        <td>{% trans "Duration of account plus 2 years after deletion request" %}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Pet profiles and medical records" %}</td>
+                        <td>{% trans "Duration of account plus 1 year after deletion request" %}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "QR scan logs" %}</td>
+                        <td>{% trans "2 years from the date of the scan event" %}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Payment and transaction data" %}</td>
+                        <td>{% trans "5 years (as required by Mexican tax and commercial law)" %}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Marketing consent records" %}</td>
+                        <td>{% trans "Duration of consent plus 3 years" %}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Support correspondence" %}</td>
+                        <td>{% trans "3 years from resolution" %}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>{% trans "After the applicable retention period, your data will be securely deleted or anonymized." %}</p>
+    </section>
+
+    <!-- Section 8: Your Rights -->
+    <section id="your-rights" class="mb-5">
+        <h2>{% trans "8. Your Rights" %}</h2>
+        <p>{% trans "Depending on your location, you have the following rights regarding your personal data:" %}</p>
+
+        <h3 class="h5 mt-4">{% trans "8.1 Right of Access" %}</h3>
+        <p>{% trans "You have the right to request a copy of the personal data we hold about you. We will provide this information in a commonly used, machine-readable format." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "8.2 Right of Rectification" %}</h3>
+        <p>{% trans "You have the right to request correction of inaccurate or incomplete personal data. You can also update most of your information directly through your account settings." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "8.3 Right of Deletion (Right to Be Forgotten)" %}</h3>
+        <p>{% trans "You have the right to request the deletion of your personal data. We will comply with your request unless we are legally required to retain certain information." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "8.4 Right to Data Portability" %}</h3>
+        <p>{% trans "You have the right to receive your personal data in a structured, commonly used, and machine-readable format, and to transmit that data to another controller." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "8.5 Right to Object" %}</h3>
+        <p>{% trans "You have the right to object to the processing of your personal data based on legitimate interests. You also have the right to object to processing for direct marketing purposes at any time." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "8.6 Right to Restrict Processing" %}</h3>
+        <p>{% trans "You have the right to request restriction of processing of your personal data in certain circumstances, such as when you contest the accuracy of the data or have objected to processing." %}</p>
+
+        <h3 class="h5 mt-4">{% trans "8.7 Right to Withdraw Consent" %}</h3>
+        <p>{% trans "Where processing is based on consent, you have the right to withdraw your consent at any time. This will not affect the lawfulness of processing carried out before the withdrawal." %}</p>
+
+        <p class="mt-3">{% trans "To exercise any of these rights, please contact us at" %} <a href="mailto:privacidad@localipet.com">privacidad@localipet.com</a>. {% trans "We will respond to your request within 20 business days (Mexico) or 30 calendar days (EU), as required by applicable law." %}</p>
+    </section>
+
+    <!-- Section 9: Mexican Regulations -->
+    <section id="mexican-regulations" class="mb-5">
+        <h2>{% trans "9. Mexican Regulatory Authority (INAI)" %}</h2>
+        <p>{% trans "In Mexico, the Instituto Nacional de Transparencia, Acceso a la Informacion y Proteccion de Datos Personales (INAI) is the authority responsible for overseeing compliance with the LFPDPPP." %}</p>
+        <p>{% trans "If you believe that your rights regarding personal data protection have been violated, you have the right to file a complaint with INAI:" %}</p>
+        <address class="ps-3 border-start border-3 border-warning">
+            <strong>INAI</strong><br>
+            {% trans "Website:" %} <a href="https://home.inai.org.mx/" target="_blank" rel="noopener noreferrer">https://home.inai.org.mx/</a><br>
+            {% trans "Phone:" %} 800 835 4324
+        </address>
+        <p>{% trans "Before filing a complaint with INAI, we encourage you to contact us directly so that we may resolve your concern." %}</p>
+    </section>
+
+    <!-- Section 10: EU Regulations -->
+    <section id="eu-regulations" class="mb-5">
+        <h2>{% trans "10. EU Regulatory Authorities" %}</h2>
+        <p>{% trans "If you are located in the European Union, you have the right to lodge a complaint with your local Data Protection Authority (DPA). A list of EU DPAs is available at:" %}</p>
+        <p><a href="https://edpb.europa.eu/about-edpb/about-edpb/members_en" target="_blank" rel="noopener noreferrer">https://edpb.europa.eu/about-edpb/about-edpb/members_en</a></p>
+        <p>{% trans "We encourage you to contact us first at" %} <a href="mailto:privacidad@localipet.com">privacidad@localipet.com</a> {% trans "so that we may address your concern directly." %}</p>
+    </section>
+
+    <!-- Section 11: Cookies -->
+    <section id="cookies" class="mb-5">
+        <h2>{% trans "11. Cookie Policy" %}</h2>
+        <p>{% trans "We use cookies and similar technologies to operate our platform. For detailed information about the cookies we use and how to manage them, please refer to our" %} <a href="{% url 'compliance:cookie-policy' %}">{% trans "Cookie Policy" %}</a>.</p>
+    </section>
+
+    <!-- Section 12: Contact -->
+    <section id="contact" class="mb-5">
+        <h2>{% trans "12. Contact Information" %}</h2>
+        <p>{% trans "If you have any questions, concerns, or requests regarding this Privacy Policy or the processing of your personal data, please contact us:" %}</p>
+        <address class="ps-3 border-start border-3 border-primary">
+            <strong>Localipet - {% trans "Data Protection" %}</strong><br>
+            {% trans "Email:" %} <a href="mailto:privacidad@localipet.com">privacidad@localipet.com</a><br>
+            {% trans "Website:" %} <a href="https://www.localipet.com">www.localipet.com</a>
+        </address>
+    </section>
+
+    <!-- Back to home -->
+    <hr>
+    <div class="text-center py-3">
+        <a href="/" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left me-1"></i> {% trans "Back to Home" %}
+        </a>
+    </div>
+
+</div>
+{% endblock %}

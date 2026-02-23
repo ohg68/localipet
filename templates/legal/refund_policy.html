@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Refund Policy" %}{% endblock %}
+{% block meta_description %}{% trans "Localipet Refund Policy. Learn about our return and refund terms for subscriptions and physical products." %}{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 900px;">
+    <h1 class="mb-4"><i class="bi bi-arrow-return-left"></i> {% trans "Refund Policy" %}</h1>
+
+    {% if active_doc %}
+    <p class="text-muted small">{% trans "Version" %}: {{ active_doc.version }} | {% trans "Effective" %}: {{ active_doc.effective_date }}</p>
+    {% endif %}
+    <p class="text-muted small">{% trans "Last updated" %}: {% now "Y-m-d" %}</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6>{% trans "Table of Contents" %}</h6>
+            <ol class="small mb-0">
+                <li><a href="#subscriptions">{% trans "Digital Subscriptions" %}</a></li>
+                <li><a href="#products">{% trans "Physical Products" %}</a></li>
+                <li><a href="#eu-withdrawal">{% trans "EU Right of Withdrawal" %}</a></li>
+                <li><a href="#how-to-refund">{% trans "How to Request a Refund" %}</a></li>
+                <li><a href="#processing">{% trans "Refund Processing" %}</a></li>
+                <li><a href="#exceptions">{% trans "Exceptions" %}</a></li>
+                <li><a href="#profeco">{% trans "PROFECO Complaint Process" %}</a></li>
+            </ol>
+        </div>
+    </div>
+
+    <section id="subscriptions" class="mb-4">
+        <h2>1. {% trans "Digital Subscriptions" %}</h2>
+        <ul>
+            <li>{% trans "You may cancel your subscription at any time from your account settings" %}</li>
+            <li>{% trans "Cancellation takes effect at the end of the current billing period" %}</li>
+            <li>{% trans "No partial refunds are provided for unused portions of the billing period" %}</li>
+            <li>{% trans "If you cancel within the first 7 days, you may request a full refund" %}</li>
+        </ul>
+    </section>
+
+    <section id="products" class="mb-4">
+        <h2>2. {% trans "Physical Products" %}</h2>
+        <ul>
+            <li>{% trans "You may return physical products within 30 calendar days of delivery" %}</li>
+            <li>{% trans "Products must be in original, unused condition with packaging" %}</li>
+            <li>{% trans "Return shipping costs are the responsibility of the buyer unless the product is defective" %}</li>
+            <li>{% trans "Defective or incorrect products will be replaced or refunded at no cost" %}</li>
+            <li>{% trans "Personalized or custom-engraved products cannot be returned unless defective" %}</li>
+        </ul>
+    </section>
+
+    <section id="eu-withdrawal" class="mb-4">
+        <h2>3. {% trans "EU Right of Withdrawal" %}</h2>
+        <p>{% trans "EU consumers have a 14-day right of withdrawal from the date of:" %}</p>
+        <ul>
+            <li>{% trans "Contract conclusion (for digital services)" %}</li>
+            <li>{% trans "Delivery receipt (for physical products)" %}</li>
+        </ul>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            {% trans "For digital subscriptions, you acknowledge that by starting to use the service, you consent to losing your right of withdrawal once digital content delivery has begun." %}
+        </div>
+    </section>
+
+    <section id="how-to-refund" class="mb-4">
+        <h2>4. {% trans "How to Request a Refund" %}</h2>
+        <ol>
+            <li>{% trans "Send an email to soporte@localipet.com with subject 'Refund Request'" %}</li>
+            <li>{% trans "Include your order number or subscription ID" %}</li>
+            <li>{% trans "Describe the reason for the refund" %}</li>
+            <li>{% trans "For physical products, include photos if the product is defective" %}</li>
+        </ol>
+        <p>{% trans "We will respond within 3 business days." %}</p>
+    </section>
+
+    <section id="processing" class="mb-4">
+        <h2>5. {% trans "Refund Processing" %}</h2>
+        <ul>
+            <li>{% trans "Approved refunds are processed through Stripe to the original payment method" %}</li>
+            <li>{% trans "Processing time: 5-10 business days depending on your bank" %}</li>
+            <li>{% trans "Currency: refunds are issued in the original payment currency (MXN)" %}</li>
+        </ul>
+    </section>
+
+    <section id="exceptions" class="mb-4">
+        <h2>6. {% trans "Exceptions" %}</h2>
+        <p>{% trans "Refunds are NOT available for:" %}</p>
+        <ul>
+            <li>{% trans "Subscriptions used for more than 7 days" %}</li>
+            <li>{% trans "Physical products returned after 30 days" %}</li>
+            <li>{% trans "Products damaged by the user" %}</li>
+            <li>{% trans "Custom or personalized products (unless defective)" %}</li>
+        </ul>
+    </section>
+
+    <section id="profeco" class="mb-4">
+        <h2>7. {% trans "PROFECO Complaint Process (Mexico)" %}</h2>
+        <p>{% trans "If you are not satisfied with our resolution, Mexican consumers may file a complaint with:" %}</p>
+        <div class="card bg-light">
+            <div class="card-body">
+                <strong>{% trans "PROFECO (Federal Consumer Protection Agency)" %}</strong><br>
+                {% trans "Phone" %}: 800-468-8722<br>
+                {% trans "Website" %}: <a href="https://www.gob.mx/profeco" target="_blank" rel="noopener">www.gob.mx/profeco</a><br>
+                {% trans "Online complaints" %}: <a href="https://www.gob.mx/profeco/acciones-y-programas/quejas-y-denuncias" target="_blank" rel="noopener">{% trans "File a complaint" %}</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> {% trans "Back to Home" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

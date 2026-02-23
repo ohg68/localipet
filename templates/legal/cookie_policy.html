@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Cookie Policy" %}{% endblock %}
+{% block meta_description %}{% trans "Localipet Cookie Policy. Learn about the cookies we use and how to manage your preferences." %}{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 900px;">
+    <h1 class="mb-4"><i class="bi bi-cookie"></i> {% trans "Cookie Policy" %}</h1>
+
+    {% if active_doc %}
+    <p class="text-muted small">{% trans "Version" %}: {{ active_doc.version }} | {% trans "Effective" %}: {{ active_doc.effective_date }}</p>
+    {% endif %}
+    <p class="text-muted small">{% trans "Last updated" %}: {% now "Y-m-d" %}</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6>{% trans "Table of Contents" %}</h6>
+            <ol class="small mb-0">
+                <li><a href="#what-are-cookies">{% trans "What Are Cookies" %}</a></li>
+                <li><a href="#cookies-we-use">{% trans "Cookies We Use" %}</a></li>
+                <li><a href="#third-party">{% trans "Third-Party Cookies" %}</a></li>
+                <li><a href="#manage-cookies">{% trans "How to Manage Cookies" %}</a></li>
+                <li><a href="#consent">{% trans "Cookie Consent" %}</a></li>
+                <li><a href="#updates">{% trans "Updates" %}</a></li>
+            </ol>
+        </div>
+    </div>
+
+    <section id="what-are-cookies" class="mb-4">
+        <h2>1. {% trans "What Are Cookies" %}</h2>
+        <p>{% trans "Cookies are small text files placed on your device when you visit a website. They help the site remember your preferences and improve your browsing experience." %}</p>
+    </section>
+
+    <section id="cookies-we-use" class="mb-4">
+        <h2>2. {% trans "Cookies We Use" %}</h2>
+
+        <h5 class="text-success"><i class="bi bi-check-circle"></i> {% trans "Essential Cookies (Required)" %}</h5>
+        <p>{% trans "These cookies are necessary for the platform to function. They cannot be disabled." %}</p>
+        <table class="table table-bordered table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>{% trans "Cookie" %}</th>
+                    <th>{% trans "Purpose" %}</th>
+                    <th>{% trans "Duration" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>sessionid</code></td><td>{% trans "User session management" %}</td><td>{% trans "Browser session" %}</td></tr>
+                <tr><td><code>csrftoken</code></td><td>{% trans "Cross-site request forgery protection" %}</td><td>{% trans "1 year" %}</td></tr>
+                <tr><td><code>django_language</code></td><td>{% trans "Language preference" %}</td><td>{% trans "1 year" %}</td></tr>
+                <tr><td><code>cookie_consent</code></td><td>{% trans "Remembers your cookie preference" %}</td><td>{% trans "1 year" %}</td></tr>
+            </tbody>
+        </table>
+
+        <h5 class="text-info"><i class="bi bi-bar-chart"></i> {% trans "Analytics Cookies (Optional)" %}</h5>
+        <p>{% trans "These cookies help us understand how visitors use the platform. They are only set if you give consent." %}</p>
+        <table class="table table-bordered table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>{% trans "Cookie" %}</th>
+                    <th>{% trans "Purpose" %}</th>
+                    <th>{% trans "Duration" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>_sentry_*</code></td><td>{% trans "Error tracking and performance monitoring (Sentry)" %}</td><td>{% trans "Session" %}</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="third-party" class="mb-4">
+        <h2>3. {% trans "Third-Party Cookies" %}</h2>
+        <table class="table table-bordered table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>{% trans "Service" %}</th>
+                    <th>{% trans "Purpose" %}</th>
+                    <th>{% trans "Privacy Policy" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Stripe</strong></td>
+                    <td>{% trans "Secure payment processing" %}</td>
+                    <td><a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Bootstrap CDN</strong></td>
+                    <td>{% trans "CSS/JS framework delivery" %}</td>
+                    <td><a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" target="_blank" rel="noopener">jsdelivr.com/privacy</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="manage-cookies" class="mb-4">
+        <h2>4. {% trans "How to Manage Cookies" %}</h2>
+        <p>{% trans "You can control cookies through your browser settings:" %}</p>
+        <ul>
+            <li><strong>Chrome:</strong> {% trans "Settings > Privacy and Security > Cookies" %}</li>
+            <li><strong>Firefox:</strong> {% trans "Settings > Privacy & Security > Cookies" %}</li>
+            <li><strong>Safari:</strong> {% trans "Preferences > Privacy > Cookies" %}</li>
+            <li><strong>Edge:</strong> {% trans "Settings > Privacy > Cookies" %}</li>
+        </ul>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            {% trans "Disabling essential cookies may prevent the platform from functioning correctly." %}
+        </div>
+    </section>
+
+    <section id="consent" class="mb-4">
+        <h2>5. {% trans "Cookie Consent" %}</h2>
+        <p>{% trans "When you first visit Localipet, you will see a cookie consent banner allowing you to accept or customize your preferences. You can change your preferences at any time." %}</p>
+    </section>
+
+    <section id="updates" class="mb-4">
+        <h2>6. {% trans "Updates" %}</h2>
+        <p>{% trans "We may update this Cookie Policy from time to time. Changes will be posted on this page with an updated revision date." %}</p>
+    </section>
+
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> {% trans "Back to Home" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

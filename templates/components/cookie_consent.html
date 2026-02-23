@@ -1,0 +1,66 @@
+{% load i18n %}
+<!-- Cookie Consent Banner (GDPR + ePrivacy compliant) -->
+<div id="cookieConsentBanner" class="position-fixed bottom-0 start-0 end-0 bg-dark text-white p-3 shadow-lg" style="z-index: 9999; display: none;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 mb-2 mb-lg-0">
+                <h6 class="mb-1"><i class="bi bi-cookie"></i> {% trans "Cookie Preferences" %}</h6>
+                <p class="small mb-0">
+                    {% trans "We use essential cookies to make the platform work. We'd also like to use analytics cookies to improve your experience." %}
+                    <a href="{% url 'compliance:cookie-policy' %}" class="text-info">{% trans "Learn more" %}</a>
+                </p>
+            </div>
+            <div class="col-lg-5 text-lg-end">
+                <button type="button" class="btn btn-sm btn-outline-light me-1" id="cookieEssentialOnly">
+                    {% trans "Essential Only" %}
+                </button>
+                <button type="button" class="btn btn-sm btn-success" id="cookieAcceptAll">
+                    <i class="bi bi-check-lg me-1"></i>{% trans "Accept All" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var banner = document.getElementById('cookieConsentBanner');
+    if (!banner) return;
+
+    // Check if consent already given (cookie or localStorage fallback)
+    if (document.cookie.indexOf('cookie_consent=') !== -1) return;
+    if (localStorage.getItem('cookie_consent')) return;
+
+    banner.style.display = 'block';
+
+    function sendConsent(analytics) {
+        var csrfEl = document.querySelector('[name=csrfmiddlewaretoken]');
+        var csrfToken = csrfEl ? csrfEl.value : '{{ csrf_token }}';
+
+        fetch('{% url "compliance:cookie-consent" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({analytics: analytics, marketing: false})
+        }).then(function() {
+            banner.style.display = 'none';
+            localStorage.setItem('cookie_consent', analytics ? 'all' : 'essential');
+        }).catch(function() {
+            // Fallback: set cookie directly and hide
+            document.cookie = 'cookie_consent=accepted; path=/; max-age=31536000; SameSite=Lax';
+            localStorage.setItem('cookie_consent', analytics ? 'all' : 'essential');
+            banner.style.display = 'none';
+        });
+    }
+
+    document.getElementById('cookieAcceptAll').addEventListener('click', function() {
+        sendConsent(true);
+    });
+
+    document.getElementById('cookieEssentialOnly').addEventListener('click', function() {
+        sendConsent(false);
+    });
+})();
+</script>

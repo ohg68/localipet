@@ -26,6 +26,22 @@
                         {% endif %}
 
                         {% for field in form %}
+                        {% if field.name == "accept_privacy" %}
+                        <div class="mb-3 form-check">
+                            {{ field }}
+                            <label for="{{ field.id_for_label }}" class="form-check-label small">
+                                {% trans "I accept the" %}
+                                <a href="{% url 'compliance:privacy-policy' %}" target="_blank">{% trans "Privacy Policy" %}</a>
+                                {% trans "and" %}
+                                <a href="{% url 'compliance:terms-of-service' %}" target="_blank">{% trans "Terms of Service" %}</a>
+                            </label>
+                            {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in field.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% else %}
                         <div class="mb-3">
                             <label for="{{ field.id_for_label }}" class="form-label">
                                 {{ field.label }}
@@ -40,6 +56,7 @@
                             <small class="form-text text-muted">{{ field.help_text }}</small>
                             {% endif %}
                         </div>
+                        {% endif %}
                         {% endfor %}
 
                         <button type="submit" class="btn btn-primary w-100">
@@ -54,7 +71,7 @@
                     </p>
                     <p class="text-center mb-0 small text-muted">
                         {% trans "Are you a vet or pet shop?" %}
-                        <a href="{% url 'accounts:register_vet' %}">{% trans "Register here" %}</a>
+                        <a href="{% url 'accounts:register-vet' %}">{% trans "Register here" %}</a>
                     </p>
                 </div>
             </div>

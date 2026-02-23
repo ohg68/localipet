@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Terms of Service" %}{% endblock %}
+{% block meta_description %}{% trans "Localipet Terms of Service. Read our terms for using the pet identification and management platform." %}{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 900px;">
+    <h1 class="mb-4"><i class="bi bi-file-earmark-text"></i> {% trans "Terms of Service" %}</h1>
+
+    {% if active_doc %}
+    <p class="text-muted small">{% trans "Version" %}: {{ active_doc.version }} | {% trans "Effective" %}: {{ active_doc.effective_date }}</p>
+    {% endif %}
+    <p class="text-muted small">{% trans "Last updated" %}: {% now "Y-m-d" %}</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h6>{% trans "Table of Contents" %}</h6>
+            <ol class="small mb-0">
+                <li><a href="#description">{% trans "Service Description" %}</a></li>
+                <li><a href="#registration">{% trans "Account Registration" %}</a></li>
+                <li><a href="#responsibilities">{% trans "User Responsibilities" %}</a></li>
+                <li><a href="#subscriptions">{% trans "Subscriptions and Billing" %}</a></li>
+                <li><a href="#products">{% trans "Product Purchases" %}</a></li>
+                <li><a href="#veterinary">{% trans "Veterinary Disclaimer" %}</a></li>
+                <li><a href="#organizations">{% trans "Organizations (B2B)" %}</a></li>
+                <li><a href="#ip">{% trans "Intellectual Property" %}</a></li>
+                <li><a href="#liability">{% trans "Limitation of Liability" %}</a></li>
+                <li><a href="#termination">{% trans "Termination" %}</a></li>
+                <li><a href="#consumer-rights">{% trans "Consumer Rights" %}</a></li>
+                <li><a href="#governing-law">{% trans "Governing Law" %}</a></li>
+                <li><a href="#disputes">{% trans "Dispute Resolution" %}</a></li>
+                <li><a href="#changes">{% trans "Changes to Terms" %}</a></li>
+                <li><a href="#contact">{% trans "Contact" %}</a></li>
+            </ol>
+        </div>
+    </div>
+
+    <section id="description" class="mb-4">
+        <h2>1. {% trans "Service Description" %}</h2>
+        <p>{% trans "Localipet is a pet identification and management platform that provides:" %}</p>
+        <ul>
+            <li>{% trans "QR code-based pet identification tags and labels" %}</li>
+            <li>{% trans "Real-time scan notifications for pet owners" %}</li>
+            <li>{% trans "Digital medical record management with veterinary integration" %}</li>
+            <li>{% trans "Lost pet alerts with geolocation data" %}</li>
+            <li>{% trans "Marketplace for physical pet identification products" %}</li>
+            <li>{% trans "Organization management tools for vet clinics and pet shops (B2B)" %}</li>
+        </ul>
+    </section>
+
+    <section id="registration" class="mb-4">
+        <h2>2. {% trans "Account Registration" %}</h2>
+        <ul>
+            <li>{% trans "You must provide accurate and complete information during registration" %}</li>
+            <li>{% trans "You are responsible for maintaining the confidentiality of your account credentials" %}</li>
+            <li>{% trans "You must be at least 18 years old (Mexico) or 16 years old (EU) to create an account" %}</li>
+            <li>{% trans "One person may not maintain multiple accounts" %}</li>
+        </ul>
+    </section>
+
+    <section id="responsibilities" class="mb-4">
+        <h2>3. {% trans "User Responsibilities" %}</h2>
+        <ul>
+            <li>{% trans "Keep your pet information accurate and up-to-date" %}</li>
+            <li>{% trans "Do not use the platform for any unlawful purpose" %}</li>
+            <li>{% trans "Do not attempt to access other users' data without authorization" %}</li>
+            <li>{% trans "Report any security vulnerabilities to soporte@localipet.com" %}</li>
+        </ul>
+    </section>
+
+    <section id="subscriptions" class="mb-4">
+        <h2>4. {% trans "Subscriptions and Billing" %}</h2>
+        <ul>
+            <li>{% trans "Free accounts include basic features with limited animal registrations" %}</li>
+            <li>{% trans "Premium subscriptions are billed monthly through Stripe" %}</li>
+            <li>{% trans "Prices are displayed in Mexican Pesos (MXN) and include IVA (16%)" %}</li>
+            <li>{% trans "You may cancel your subscription at any time; it remains active until the end of the billing period" %}</li>
+            <li>{% trans "Refunds for subscriptions follow our Refund Policy" %}</li>
+        </ul>
+    </section>
+
+    <section id="products" class="mb-4">
+        <h2>5. {% trans "Product Purchases" %}</h2>
+        <ul>
+            <li>{% trans "Physical products (tags, medals, labels) are shipped within Mexico" %}</li>
+            <li>{% trans "Shipping times and costs vary by location" %}</li>
+            <li>{% trans "Products are subject to our Refund Policy" %}</li>
+            <li>{% trans "Product images are illustrative; minor variations may occur" %}</li>
+        </ul>
+    </section>
+
+    <section id="veterinary" class="mb-4">
+        <h2>6. {% trans "Veterinary Disclaimer" %}</h2>
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle"></i>
+            {% trans "Localipet is NOT a substitute for professional veterinary care. Medical records stored on the platform are for informational purposes only. Always consult a licensed veterinarian for medical advice regarding your pet." %}
+        </div>
+    </section>
+
+    <section id="organizations" class="mb-4">
+        <h2>7. {% trans "Organizations (B2B)" %}</h2>
+        <ul>
+            <li>{% trans "Veterinary clinics and pet shops can register as organizations" %}</li>
+            <li>{% trans "Organization administrators are responsible for their staff's use of the platform" %}</li>
+            <li>{% trans "Client data within organizations is subject to the same privacy protections" %}</li>
+            <li>{% trans "Organization-level subscriptions are billed separately" %}</li>
+        </ul>
+    </section>
+
+    <section id="ip" class="mb-4">
+        <h2>8. {% trans "Intellectual Property" %}</h2>
+        <p>{% trans "The Localipet name, logo, and platform design are proprietary. Users retain ownership of their content (pet photos, notes) but grant us a license to display it within the platform." %}</p>
+    </section>
+
+    <section id="liability" class="mb-4">
+        <h2>9. {% trans "Limitation of Liability" %}</h2>
+        <p>{% trans "To the maximum extent permitted by law, Localipet shall not be liable for:" %}</p>
+        <ul>
+            <li>{% trans "Loss or injury to pets regardless of QR tag usage" %}</li>
+            <li>{% trans "Inaccurate medical records entered by third parties" %}</li>
+            <li>{% trans "Service interruptions due to maintenance or technical issues" %}</li>
+            <li>{% trans "Actions taken by veterinarians or organizations on the platform" %}</li>
+        </ul>
+    </section>
+
+    <section id="termination" class="mb-4">
+        <h2>10. {% trans "Termination" %}</h2>
+        <ul>
+            <li>{% trans "You may delete your account at any time through your Privacy Dashboard" %}</li>
+            <li>{% trans "We may suspend accounts that violate these terms" %}</li>
+            <li>{% trans "Upon termination, your data will be deleted according to our retention policy" %}</li>
+        </ul>
+    </section>
+
+    <section id="consumer-rights" class="mb-4">
+        <h2>11. {% trans "Consumer Rights" %}</h2>
+        <h5>{% trans "Mexican Consumers (PROFECO)" %}</h5>
+        <ul>
+            <li>{% trans "You have the right to clear and truthful information about our services and prices" %}</li>
+            <li>{% trans "Physical products may be returned within 30 days per PROFECO regulations" %}</li>
+            <li>{% trans "For complaints, contact PROFECO at 800-468-8722 or www.gob.mx/profeco" %}</li>
+        </ul>
+        <h5>{% trans "EU Consumers" %}</h5>
+        <ul>
+            <li>{% trans "You have a 14-day right of withdrawal for digital services and remote purchases" %}</li>
+            <li>{% trans "Withdrawal does not apply once digital content delivery has begun with your consent" %}</li>
+            <li>{% trans "You may contact your national consumer protection authority for disputes" %}</li>
+        </ul>
+    </section>
+
+    <section id="governing-law" class="mb-4">
+        <h2>12. {% trans "Governing Law" %}</h2>
+        <p>{% trans "These terms are governed by the laws of Mexico (Estados Unidos Mexicanos). For EU users, mandatory consumer protection laws of your country of residence also apply." %}</p>
+    </section>
+
+    <section id="disputes" class="mb-4">
+        <h2>13. {% trans "Dispute Resolution" %}</h2>
+        <p>{% trans "We encourage resolving disputes through our support team first. If unresolved, disputes may be submitted to PROFECO (Mexico) or the appropriate consumer authority (EU). For EU consumers, the European Online Dispute Resolution platform is available at" %} <a href="https://ec.europa.eu/odr" target="_blank" rel="noopener">ec.europa.eu/odr</a>.</p>
+    </section>
+
+    <section id="changes" class="mb-4">
+        <h2>14. {% trans "Changes to Terms" %}</h2>
+        <p>{% trans "We may modify these terms with 30 days' notice. Continued use after the effective date constitutes acceptance. Material changes will be communicated via email." %}</p>
+    </section>
+
+    <section id="contact" class="mb-4">
+        <h2>15. {% trans "Contact" %}</h2>
+        <p>{% trans "Questions about these terms:" %} <strong>soporte@localipet.com</strong></p>
+    </section>
+
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> {% trans "Back to Home" %}
+        </a>
+    </div>
+</div>
+{% endblock %}
