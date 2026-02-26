@@ -44,12 +44,10 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{% url 'animals:detail' animal.pk %}"
-                           class="btn btn-sm btn-outline-primary">
+                        <a href="{% url 'animals:detail' animal.pk %}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-eye"></i>
                         </a>
-                        <a href="{% url 'animals:update' animal.pk %}"
-                           class="btn btn-sm btn-outline-secondary">
+                        <a href="{% url 'animals:update' animal.pk %}" class="btn btn-sm btn-outline-secondary">
                             <i class="bi bi-pencil"></i>
                         </a>
                     </td>
@@ -63,7 +61,7 @@
     <div class="text-center py-5">
         <p class="text-muted">{% trans "No pets registered yet." %}</p>
         <a href="{% url 'animals:create' %}" class="btn btn-primary">
-            {% trans "Add your first pet" %}
+            <i class="bi bi-plus-lg me-1"></i>{% trans "Add your first pet" %}
         </a>
     </div>
     {% endif %}

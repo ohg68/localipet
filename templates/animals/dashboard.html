@@ -15,32 +15,36 @@
     <!-- Stats Row -->
     <div class="row mb-4">
         <div class="col-md-3 mb-3">
-            <div class="card bg-primary text-white">
+            <div class="card bg-primary text-white h-100">
                 <div class="card-body text-center">
+                    <i class="bi bi-paw fs-1 mb-2"></i>
                     <h3>{{ animals_count }}</h3>
                     <p class="mb-0">{% trans "Pets" %}</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card bg-info text-white">
+            <div class="card bg-info text-white h-100">
                 <div class="card-body text-center">
+                    <i class="bi bi-qr-code-scan fs-1 mb-2"></i>
                     <h3>{{ recent_scans_count }}</h3>
                     <p class="mb-0">{% trans "Scans (7d)" %}</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card bg-warning text-dark">
+            <div class="card bg-warning text-dark h-100">
                 <div class="card-body text-center">
+                    <i class="bi bi-chat-dots fs-1 mb-2"></i>
                     <h3>{{ unread_messages }}</h3>
                     <p class="mb-0">{% trans "Messages" %}</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card bg-success text-white">
+            <div class="card bg-success text-white h-100">
                 <div class="card-body text-center">
+                    <i class="bi bi-shield-check fs-1 mb-2"></i>
                     <h3>{{ active_consents }}</h3>
                     <p class="mb-0">{% trans "Active Consents" %}</p>
                 </div>

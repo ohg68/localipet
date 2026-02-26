@@ -1,0 +1,579 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                   String                   @id @default(cuid())
+  email                String                   @unique
+  username             String?                  @unique
+  password             String?
+  firstName            String?
+  lastName             String?
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  animals              Animal[]
+  invitationsSent      AnimalCoOwner[]          @relation("invitedBy")
+  sharedAnimals        AnimalCoOwner[]          @relation("sharedWith")
+  vetAppointments      Appointment[]            @relation("vetAppointments")
+  appointments         Appointment[]            @relation("ownerAppointments")
+  auditLogs            AuditLog[]
+  cookieConsents       CookieConsent[]
+  invoices             Invoice[]
+  legalConsents        LegalConsent[]
+  notifications        Notification[]
+  orders               Order[]
+  clientsRegistered    OrganizationClient[]     @relation("clientsRegistered")
+  orgClientMemberships OrganizationClient[]
+  orgInvitationsBy     OrganizationInvitation[] @relation("invitedBy")
+  membersInvitedBy     OrganizationMember[]     @relation("orgInvitationsSent")
+  orgMemberships       OrganizationMember[]
+  orgSalesMade         OrganizationSale[]
+  profile              Profile?
+  subscriptions        Subscription[]
+}
+
+model Profile {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  role                  Role     @default(OWNER)
+  phone                 String?
+  address               String?
+  city                  String?
+  country               String   @default("MX")
+  avatar                String?
+  language              String   @default("es")
+  stripeCustomerId      String?
+  emailOnScan           Boolean  @default(true)
+  emailOnMessage        Boolean  @default(true)
+  emailOnConsentRequest Boolean  @default(true)
+  businessName          String?
+  licenseNumber         String?
+  isVerified            Boolean  @default(false)
+  odooPartnerId         Int?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Animal {
+  id            String          @id @default(cuid())
+  ownerId       String
+  name          String
+  species       Species
+  breed         String?
+  color         String?
+  dateOfBirth   DateTime?
+  weightKg      Decimal?
+  sex           String          @default("unknown")
+  isNeutered    Boolean         @default(false)
+  microchipId   String?
+  photo         String?
+  description   String?
+  medicalNotes  String?
+  isLost        Boolean         @default(false)
+  lostSince     DateTime?
+  isActive      Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  owner         User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  coOwners      AnimalCoOwner[]
+  photos        AnimalPhoto[]
+  appointments  Appointment[]
+  nfcTags       NFCTag[]
+  orders        Order[]
+  qrCode        QRCode?
+  vaccinations  Vaccination[]
+  weightRecords WeightRecord[]
+}
+
+model AnimalPhoto {
+  id        String   @id @default(cuid())
+  animalId  String
+  image     String
+  caption   String?
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  animal    Animal   @relation(fields: [animalId], references: [id], onDelete: Cascade)
+}
+
+model Vaccination {
+  id               String    @id @default(cuid())
+  animalId         String
+  name             String
+  dateAdministered DateTime
+  nextDueDate      DateTime?
+  batchNumber      String?
+  administeredBy   String?
+  notes            String?
+  reminderSent     Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  animal           Animal    @relation(fields: [animalId], references: [id], onDelete: Cascade)
+}
+
+model WeightRecord {
+  id           String   @id @default(cuid())
+  animalId     String
+  weightKg     Decimal
+  dateRecorded DateTime
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  animal       Animal   @relation(fields: [animalId], references: [id], onDelete: Cascade)
+}
+
+model AnimalCoOwner {
+  id          String   @id @default(cuid())
+  animalId    String
+  userId      String
+  permission  String   @default("view")
+  invitedById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  invitedBy   User     @relation("invitedBy", fields: [invitedById], references: [id], onDelete: Cascade)
+  user        User     @relation("sharedWith", fields: [userId], references: [id], onDelete: Cascade)
+  animal      Animal   @relation(fields: [animalId], references: [id], onDelete: Cascade)
+
+  @@unique([animalId, userId])
+}
+
+model Appointment {
+  id           String   @id @default(cuid())
+  animalId     String
+  ownerId      String
+  vetId        String?
+  title        String
+  description  String?
+  date         DateTime
+  time         String
+  status       String   @default("scheduled")
+  reminderSent Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  vet          User?    @relation("vetAppointments", fields: [vetId], references: [id])
+  owner        User     @relation("ownerAppointments", fields: [ownerId], references: [id], onDelete: Cascade)
+  animal       Animal   @relation(fields: [animalId], references: [id], onDelete: Cascade)
+}
+
+model QRCode {
+  id             String          @id @default(cuid())
+  animalId       String?         @unique
+  token          String          @unique
+  shortCode      String          @unique
+  isActive       Boolean         @default(true)
+  qrImage        String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  finderMessages FinderMessage[]
+  chatSessions   ChatSession[]
+  animal         Animal?         @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  scans          ScanLog[]
+}
+
+model ScanLog {
+  id           String          @id @default(cuid())
+  qrCodeId     String
+  ipAddress    String?
+  userAgent    String?
+  latitude     Decimal?
+  longitude    Decimal?
+  cityGuess    String?
+  countryGuess String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  messages     FinderMessage[]
+  chatSessions ChatSession[]
+  qrCode       QRCode          @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
+}
+
+model FinderMessage {
+  id          String   @id @default(cuid())
+  scanLogId   String?
+  qrCodeId    String
+  senderName  String
+  senderPhone String?
+  senderEmail String?
+  message     String
+  latitude    Decimal?
+  longitude   Decimal?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  qrCode      QRCode   @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
+  scanLog     ScanLog? @relation(fields: [scanLogId], references: [id])
+}
+
+model ChatSession {
+  id          String   @id @default(cuid())
+  qrCodeId    String
+  qrCode      QRCode   @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
+  scanLogId   String?
+  scanLog     ScanLog? @relation(fields: [scanLogId], references: [id], onDelete: SetNull)
+  finderName  String?
+  finderPhone String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  messages ChatMessage[]
+}
+
+model ChatMessage {
+  id         String      @id @default(cuid())
+  sessionId  String
+  session    ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  senderType String // "FINDER" or "OWNER"
+  content    String
+  isRead     Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+}
+
+model NFCTag {
+  id        String   @id @default(cuid())
+  animalId  String
+  tagUid    String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  animal    Animal   @relation(fields: [animalId], references: [id], onDelete: Cascade)
+}
+
+model Organization {
+  id               String                     @id @default(cuid())
+  name             String
+  slug             String                     @unique
+  type             String
+  logo             String?
+  description      String?
+  phone            String?
+  email            String?
+  website          String?
+  address          String?
+  city             String?
+  state            String?
+  zipCode          String?
+  country          String                     @default("MX")
+  rfc              String?
+  razonSocial      String?
+  regimenFiscal    String?
+  stripeCustomerId String?
+  odooPartnerId    Int?
+  isActive         Boolean                    @default(true)
+  isVerified       Boolean                    @default(false)
+  createdAt        DateTime                   @default(now())
+  updatedAt        DateTime                   @updatedAt
+  invoices         Invoice[]
+  orders           Order[]
+  clients          OrganizationClient[]
+  invitations      OrganizationInvitation[]
+  members          OrganizationMember[]
+  sales            OrganizationSale[]
+  subscriptions    OrganizationSubscription[]
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  organizationId String
+  userId         String
+  role           String
+  isActive       Boolean      @default(true)
+  invitedById    String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  invitedBy      User?        @relation("orgInvitationsSent", fields: [invitedById], references: [id])
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+}
+
+model OrganizationClient {
+  id             String             @id @default(cuid())
+  organizationId String
+  userId         String
+  registeredById String?
+  notes          String?
+  isActive       Boolean            @default(true)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  registeredBy   User?              @relation("clientsRegistered", fields: [registeredById], references: [id])
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sales          OrganizationSale[]
+
+  @@unique([organizationId, userId])
+}
+
+model OrganizationInvitation {
+  id             String       @id @default(cuid())
+  organizationId String
+  email          String
+  inviteType     String
+  role           String?
+  token          String       @unique
+  invitedById    String
+  acceptedAt     DateTime?
+  expiresAt      DateTime
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  invitedBy      User         @relation("invitedBy", fields: [invitedById], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model OrganizationPlan {
+  id                  String                     @id @default(cuid())
+  name                String
+  slug                String                     @unique
+  stripeProductId     String?
+  stripePriceId       String?
+  priceMonthly        Decimal
+  currency            String                     @default("MXN")
+  maxStaff            Int                        @default(3)
+  maxClients          Int                        @default(50)
+  hasBulkOperations   Boolean                    @default(false)
+  hasRevenueDashboard Boolean                    @default(false)
+  hasCsvImport        Boolean                    @default(false)
+  commissionRate      Decimal                    @default(0)
+  isActive            Boolean                    @default(true)
+  displayOrder        Int                        @default(0)
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+  subscriptions       OrganizationSubscription[]
+}
+
+model OrganizationSubscription {
+  id                   String           @id @default(cuid())
+  organizationId       String
+  planId               String
+  stripeSubscriptionId String           @unique
+  status               String           @default("active")
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean          @default(false)
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  plan                 OrganizationPlan @relation(fields: [planId], references: [id])
+  organization         Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model OrganizationSale {
+  id               String              @id @default(cuid())
+  organizationId   String
+  orderId          String              @unique
+  clientId         String?
+  soldById         String?
+  commissionAmount Decimal             @default(0)
+  notes            String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  soldBy           User?               @relation(fields: [soldById], references: [id])
+  client           OrganizationClient? @relation(fields: [clientId], references: [id])
+  order            Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  organization     Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model SubscriptionPlan {
+  id                 String         @id @default(cuid())
+  name               String
+  slug               String         @unique
+  stripeProductId    String?
+  stripePriceId      String?
+  priceMonthly       Decimal
+  currency           String         @default("MXN")
+  maxAnimals         Int            @default(2)
+  scanHistoryDays    Int            @default(30)
+  hasAdvancedAlerts  Boolean        @default(false)
+  hasReminders       Boolean        @default(false)
+  hasPrioritySupport Boolean        @default(false)
+  isActive           Boolean        @default(true)
+  displayOrder       Int            @default(0)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  subscriptions      Subscription[]
+}
+
+model Subscription {
+  id                   String           @id @default(cuid())
+  userId               String
+  organizationId       String?
+  planId               String
+  stripeSubscriptionId String           @unique
+  status               String           @default("active")
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean          @default(false)
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  plan                 SubscriptionPlan @relation(fields: [planId], references: [id])
+  user                 User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id              String      @id @default(cuid())
+  name            String
+  slug            String      @unique
+  productType     String
+  description     String
+  price           Decimal
+  currency        String      @default("MXN")
+  stripeProductId String?
+  stripePriceId   String?
+  image           String?
+  isActive        Boolean     @default(true)
+  stock           Int         @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  items           OrderItem[]
+}
+
+model Order {
+  id                      String            @id @default(cuid())
+  userId                  String
+  organizationId          String?
+  stripeCheckoutSessionId String?
+  stripePaymentIntentId   String?
+  status                  String            @default("pending")
+  total                   Decimal           @default(0)
+  currency                String            @default("MXN")
+  shippingName            String
+  shippingAddress         String
+  shippingCity            String
+  shippingState           String?
+  shippingZip             String
+  shippingCountry         String            @default("MX")
+  trackingNumber          String?
+  animalId                String?
+  odooOrderId             Int?
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+  invoice                 Invoice?
+  animal                  Animal?           @relation(fields: [animalId], references: [id])
+  organization            Organization?     @relation(fields: [organizationId], references: [id])
+  user                    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items                   OrderItem[]
+  orgSale                 OrganizationSale?
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int      @default(1)
+  unitPrice Decimal
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id])
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  orderId        String?       @unique
+  userId         String
+  organizationId String?
+  orgRfc         String?
+  orgRazonSocial String?
+  invoiceNumber  String        @unique
+  subtotal       Decimal
+  tax            Decimal       @default(0)
+  total          Decimal
+  currency       String        @default("MXN")
+  status         String        @default("draft")
+  pdf            String?
+  odooInvoiceId  Int?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order          Order?        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model LegalDocument {
+  id            String         @id @default(cuid())
+  docType       String
+  version       String
+  effectiveDate DateTime
+  contentHash   String?
+  isActive      Boolean        @default(true)
+  changelog     String?        @default("")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  consents      LegalConsent[]
+
+  @@unique([docType, version])
+}
+
+model LegalConsent {
+  id           String        @id @default(cuid())
+  userId       String
+  documentId   String
+  ipAddress    String?
+  userAgent    String?
+  consentGiven Boolean       @default(true)
+  withdrawnAt  DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  document     LegalDocument @relation(fields: [documentId], references: [id])
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CookieConsent {
+  id         String   @id @default(cuid())
+  sessionKey String?
+  userId     String?
+  essential  Boolean  @default(true)
+  analytics  Boolean  @default(false)
+  marketing  Boolean  @default(false)
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User?    @relation(fields: [userId], references: [id])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  action      String
+  description String?  @default("")
+  ipAddress   String?
+  userAgent   String?
+  metadata    String?  @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User?    @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  level     String   @default("info")
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  OWNER
+  VET
+  SHOP
+  ADMIN
+}
+
+enum Species {
+  DOG
+  CAT
+  BIRD
+  RABBIT
+  REPTILE
+  OTHER
+}

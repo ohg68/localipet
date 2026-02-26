@@ -91,29 +91,29 @@
                 </div>
                 <div class="card-body">
                     {% if org_subscription %}
-                        <p class="mb-1">
-                            <strong>{% trans "Plan" %}:</strong> {{ org_subscription.plan.name }}
-                        </p>
-                        <p class="mb-1">
-                            <strong>{% trans "Status" %}:</strong>
-                            {% if org_subscription.status == "active" %}
-                                <span class="badge bg-success">{% trans "Active" %}</span>
-                            {% elif org_subscription.status == "trialing" %}
-                                <span class="badge bg-info">{% trans "Trial" %}</span>
-                            {% elif org_subscription.status == "past_due" %}
-                                <span class="badge bg-warning text-dark">{% trans "Past Due" %}</span>
-                            {% else %}
-                                <span class="badge bg-danger">{{ org_subscription.get_status_display }}</span>
-                            {% endif %}
-                        </p>
-                        <a href="{% url 'organizations:org-subscription' %}" class="btn btn-sm btn-outline-primary mt-2">
-                            <i class="bi bi-eye me-1"></i>{% trans "View Subscription" %}
-                        </a>
+                    <p class="mb-1">
+                        <strong>{% trans "Plan" %}:</strong> {{ org_subscription.plan.name }}
+                    </p>
+                    <p class="mb-1">
+                        <strong>{% trans "Status" %}:</strong>
+                        {% if org_subscription.status == "active" %}
+                        <span class="badge bg-success">{% trans "Active" %}</span>
+                        {% elif org_subscription.status == "trialing" %}
+                        <span class="badge bg-info">{% trans "Trial" %}</span>
+                        {% elif org_subscription.status == "past_due" %}
+                        <span class="badge bg-warning text-dark">{% trans "Past Due" %}</span>
+                        {% else %}
+                        <span class="badge bg-danger">{{ org_subscription.get_status_display }}</span>
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'organizations:org-subscription' %}" class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="bi bi-eye me-1"></i>{% trans "View Subscription" %}
+                    </a>
                     {% else %}
-                        <p class="text-muted">{% trans "No active subscription." %}</p>
-                        <a href="{% url 'organizations:org-pricing' %}" class="btn btn-primary">
-                            <i class="bi bi-cart-plus me-1"></i>{% trans "Subscribe Now" %}
-                        </a>
+                    <p class="text-muted">{% trans "No active subscription." %}</p>
+                    <a href="{% url 'organizations:org-pricing' %}" class="btn btn-primary">
+                        <i class="bi bi-cart-plus me-1"></i>{% trans "Subscribe Now" %}
+                    </a>
                     {% endif %}
                 </div>
             </div>
@@ -148,7 +148,7 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>{% trans "Recent Sales" %}</h5>
             <a href="{% url 'organizations:sales-list' %}" class="btn btn-sm btn-outline-primary">
-                {% trans "View All" %}
+                <i class="bi bi-list-ul me-1"></i>{% trans "View All" %}
             </a>
         </div>
         <div class="card-body p-0">

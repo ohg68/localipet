@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit Profile" %} — Localipet{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">{% trans "Dashboard" %}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'accounts:profile' %}">{% trans "Profile" %}</a></li>
+                    <li class="breadcrumb-item active">{% trans "Edit" %}</li>
+                </ol>
+            </nav>
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="mb-4">{% trans "Edit Profile" %}</h2>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">{% trans "Phone"
+                                    %}</label>
+                                {{ form.phone }}
+                                {{ form.phone.errors }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.avatar.id_for_label }}" class="form-label">{% trans "Profile
+                                    Picture" %}</label>
+                                {{ form.avatar }}
+                                {{ form.avatar.errors }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">{% trans "Address"
+                                %}</label>
+                            {{ form.address }}
+                            {{ form.address.errors }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.city.id_for_label }}" class="form-label">{% trans "City" %}</label>
+                                {{ form.city }}
+                                {{ form.city.errors }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.country.id_for_label }}" class="form-label">{% trans "Country"
+                                    %}</label>
+                                {{ form.country }}
+                                {{ form.country.errors }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.language_preference.id_for_label }}" class="form-label">{% trans
+                                "Language Preference" %}</label>
+                            {{ form.language_preference }}
+                            {{ form.language_preference.errors }}
+                        </div>
+
+                        <hr>
+                        <h5>{% trans "Notification Settings" %}</h5>
+
+                        <div class="form-check mb-2">
+                            {{ form.email_on_scan }}
+                            <label class="form-check-label" for="{{ form.email_on_scan.id_for_label }}">
+                                {% trans "Email me when my pet is scanned" %}
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            {{ form.email_on_message }}
+                            <label class="form-check-label" for="{{ form.email_on_message.id_for_label }}">
+                                {% trans "Email me when I receive a message" %}
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            {{ form.email_on_consent_request }}
+                            <label class="form-check-label" for="{{ form.email_on_consent_request.id_for_label }}">
+                                {% trans "Email me when a vet requests medical record access" %}
+                            </label>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+                                {% trans "Cancel" %}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                {% trans "Save Changes" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4 border-warning shadow-sm">
+                <div class="card-body">
+                    <h5>{% trans "Security" %}</h5>
+                    <p class="text-muted">{% trans "Need to update your password?" %}</p>
+                    <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-warning">
+                        {% trans "Change Password" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control,
+    .form-select {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+    }
+</style>
+{% endblock %}
