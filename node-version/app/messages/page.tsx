@@ -63,7 +63,7 @@ export default async function GlobalMessagesPage() {
                             <div className="bg-gray-50/50 px-6 py-3 border-b border-gray-100 flex justify-between items-center">
                                 <div className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                     <PawPrint className="w-4 h-4" />
-                                    Mascota: <span className="text-gray-900">{msg.qrCode.animal.name}</span>
+                                    Mascota: <span className="text-gray-900">{msg.qrCode.animal?.name || 'Mascota Desconocida'}</span>
                                 </div>
                                 <div className="text-[10px] font-black bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full uppercase tracking-widest">
                                     {msg.isRead ? 'Leído' : 'Nuevo'}
@@ -115,7 +115,7 @@ export default async function GlobalMessagesPage() {
                                         Conversar
                                     </Link>
                                     <Link
-                                        href={`/animals/${msg.qrCode.animal.id}`}
+                                        href={`/animals/${msg.qrCode.animal?.id || ''}`}
                                         className="inline-flex items-center gap-2 text-xs font-bold text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-xl transition-colors border border-gray-200 ml-auto"
                                     >
                                         Ir a Mascota

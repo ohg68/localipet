@@ -5,22 +5,22 @@ declare module "next-auth" {
     interface Session {
         user: {
             id: string;
-            role: string;
-            profileId: string;
+            role?: string;
+            profileId?: string;
         } & DefaultSession["user"];
     }
 
     interface User {
-        id: string;
-        role: string;
-        profileId: string;
+        id?: string;
+        role?: string;
+        profileId?: string;
     }
 }
 
 declare module "next-auth/adapters" {
     interface AdapterUser {
-        role: string;
-        profileId: string;
+        role?: string;
+        profileId?: string;
     }
 }
 

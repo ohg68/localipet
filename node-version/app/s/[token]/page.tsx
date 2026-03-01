@@ -31,7 +31,10 @@ export default async function PublicScanPage({ params }: { params: Promise<{ tok
         redirect(`/register-tag/${token}`);
     }
 
-    const { animal } = qrCode;
+    const animal = qrCode.animal;
+    if (!animal) {
+        notFound();
+    }
     const { owner } = animal;
 
     // Log scan (Server-side)
