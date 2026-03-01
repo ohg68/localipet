@@ -30,6 +30,12 @@ export async function generateQRBatch(quantity: number) {
     const batchData = [];
     const usedShortCodes = new Set();
 
+    // Get existing shortcodes from DB to avoid collisions
+    const existingQRs = await prisma.qRCode.findMany({
+        select: { shortCode: true }
+    });
+    existingQRs.forEach(qr => usedShortCodes.add(qr.shortCode));
+
     while (batchData.length < quantity) {
         const token = nanoid(10);
         const shortCode = generateShortCode();
@@ -47,7 +53,6 @@ export async function generateQRBatch(quantity: number) {
                 shortCode: item.shortCode,
                 isActive: true,
             })),
-            skipDuplicates: true,
         });
 
         revalidatePath("/admin/qr-generator");

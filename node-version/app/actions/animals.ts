@@ -66,8 +66,19 @@ export async function createAnimal(formData: FormData) {
     } else {
         const characters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
         let shortCode = "";
-        for (let i = 0; i < 6; i++) {
-            shortCode += characters.charAt(Math.floor(Math.random() * characters.length));
+        let isUnique = false;
+
+        while (!isUnique) {
+            shortCode = "";
+            for (let i = 0; i < 6; i++) {
+                shortCode += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+
+            const existing = await prisma.qRCode.findUnique({
+                where: { shortCode }
+            });
+
+            if (!existing) isUnique = true;
         }
 
         qrCodeData = {

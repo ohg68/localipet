@@ -3,11 +3,14 @@
 import { useState } from "react";
 import { createAnimal } from "@/app/actions/animals";
 import Link from "next/link";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { ArrowLeft, Loader2, QrCode } from "lucide-react";
 
 export default function CreateAnimalPage() {
+    const searchParams = useSearchParams();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const initialToken = searchParams.get("qrToken") || "";
 
     async function handleSubmit(formData: FormData) {
         setLoading(true);
@@ -91,6 +94,7 @@ export default function CreateAnimalPage() {
                             <input
                                 name="qrToken"
                                 type="text"
+                                defaultValue={initialToken}
                                 className="w-full border-2 border-primary/20 rounded-md px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all font-mono font-bold"
                                 placeholder="Ej: ABC123XYZ0"
                             />
