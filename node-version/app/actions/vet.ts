@@ -100,8 +100,52 @@ export async function getVetDashboard(orgId: string) {
 
 export async function registerPetOrder(animalId: string, orgId: string, foodBrand: string, packageSizeKg: number, gramsPerDay: number) {
     const session = await auth();
-    if (!session) throw new Error("Unauthorized");
+    if (!session || (session.user.role !== "VET" && session.user.role !== "ADMIN")) {
+        throw new Error("Unauthorized");
+    }
 
+    const animal = await prisma.animal.findUnique({
+        where: { id: animalId },
+        include: { owner: true }
+    });
+
+    if (!animal) throw new Error("Animal not found");
+
+    // 1. Obtain Client ID for this Org
+    const orgClient = await prisma.organizationClient.findUnique({
+        where: { organizationId_userId: { organizationId: orgId, userId: animal.ownerId } }
+    });
+
+    // 2. Estimate total price (just for the sake of the ERP record)
+    const estimatedPrice = packageSizeKg * 250; // Roughly 250 per kg
+
+    // 3. Create Order
+    const order = await prisma.order.create({
+        data: {
+            userId: animal.ownerId,
+            organizationId: orgId,
+            total: estimatedPrice,
+            status: "completed",
+            shippingName: animal.owner.firstName + ' ' + (animal.owner.lastName || ''),
+            shippingAddress: "Venta en Clínica",
+            shippingCity: "Localipet Vet ERP",
+            shippingZip: "00000",
+            animalId: animal.id
+        }
+    });
+
+    // 4. Create OrganizationSale record
+    await prisma.organizationSale.create({
+        data: {
+            organizationId: orgId,
+            orderId: order.id,
+            clientId: orgClient?.id,
+            soldById: session.user.id,
+            notes: `Registro manual de alimento: ${foodBrand}`
+        }
+    });
+
+    // 5. Update Animal consumption habits
     await (prisma.animal as any).update({
         where: { id: animalId },
         data: {
@@ -113,6 +157,9 @@ export async function registerPetOrder(animalId: string, orgId: string, foodBran
     });
 
     revalidatePath("/vet/dashboard");
+    revalidatePath("/vet/inventory");
+    revalidatePath("/vet/animals");
+
     return { success: true };
 }
 
