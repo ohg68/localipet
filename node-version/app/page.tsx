@@ -2,133 +2,117 @@ import Link from "next/link";
 import { ArrowRight, ShieldCheck, QrCode, MessageSquare, Heart, MapPin, Smartphone, Zap } from "lucide-react";
 import { auth } from "@/auth";
 import ShortCodeSearch from "@/components/ShortCodeSearch";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default async function Home() {
   const session = await auth();
+  const locale = await getLocale();
+  const t = translations[locale];
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-white pt-16 pb-24 lg:pt-32 lg:pb-40">
+      <section className="relative overflow-hidden bg-white pt-24 pb-24 lg:pt-32 lg:pb-40">
         <div className="container relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="flex-1 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold mb-6 animate-in slide-in-from-top-4 duration-500">
+          <div className="flex flex-col lg:flex-row items-center gap-16 text-center lg:text-left">
+            <div className="flex-1 w-full">
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-5 py-2.5 rounded-full text-sm font-black mb-8 animate-in slide-in-from-top-4 duration-500 uppercase tracking-widest">
                 <Zap className="w-4 h-4" />
-                <span>La seguridad de tu mascota, reinventada</span>
+                <span>{t.hero.badge}</span>
               </div>
-              <h1 className="text-5xl lg:text-7xl font-black text-gray-900 tracking-tight leading-[1.1] mb-6 animate-in slide-in-from-left-4 duration-700">
-                Tu mejor amigo, <br />
-                <span className="text-primary italic">siempre protegido.</span>
+              <h1 className="text-5xl lg:text-[5.5rem] font-black text-gray-900 tracking-tighter leading-[0.9] mb-8 animate-in slide-in-from-left-4 duration-700">
+                {t.hero.title} <br />
+                <span className="text-primary italic">{t.hero.titleAccent}</span>
               </h1>
-              <p className="text-xl text-gray-500 mb-10 max-w-xl leading-relaxed mx-auto lg:mx-0 animate-in slide-in-from-left-8 duration-700">
-                Localipet utiliza tecnología de códigos QR inteligentes para asegurar que tu mascota siempre tenga una forma de volver a casa. Registro médico, avisos de extravío y más.
+              <p className="text-xl text-gray-500 mb-12 max-w-xl leading-relaxed mx-auto lg:mx-0 animate-in slide-in-from-left-8 duration-700 font-medium italic">
+                {t.hero.description}
               </p>
-              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start animate-in slide-in-from-bottom-4 duration-700">
+              <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start animate-in slide-in-from-bottom-4 duration-700">
                 {session ? (
-                  <Link href="/dashboard" className="btn-primary py-4 px-8 text-lg shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all">
-                    Ir a mi Dashboard
-                    <ArrowRight className="w-5 h-5" />
+                  <Link href="/dashboard" className="btn-primary py-5 px-10 text-xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto">
+                    {t.hero.ctaDashboard}
+                    <ArrowRight className="w-6 h-6" />
                   </Link>
                 ) : (
                   <>
-                    <Link href="/register" className="btn-primary py-4 px-8 text-lg shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all">
-                      Comenzar Gratis
-                      <ArrowRight className="w-5 h-5" />
+                    <Link href="/register" className="btn-primary py-5 px-10 text-xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto">
+                      {t.hero.ctaRegister}
+                      <ArrowRight className="w-6 h-6" />
                     </Link>
-                    <Link href="/login" className="px-8 py-4 text-lg font-bold text-gray-600 hover:text-primary transition-colors">
-                      Iniciar Sesión
+                    <Link href="/login" className="text-xl font-black text-gray-400 hover:text-primary transition-colors text-center w-full sm:w-auto uppercase tracking-widest">
+                      {t.hero.ctaLogin}
                     </Link>
                   </>
                 )}
               </div>
             </div>
-            <div className="flex-1 relative animate-in zoom-in duration-1000">
-              <div className="absolute -inset-4 bg-primary/20 rounded-[3rem] blur-3xl -z-10 rotate-3"></div>
-              <div className="card p-2 rounded-[2.5rem] shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500">
+            <div className="flex-1 relative animate-in zoom-in duration-1000 w-full max-w-2xl">
+              <div className="absolute -inset-10 bg-primary/10 rounded-[4rem] blur-[100px] -z-10 rotate-12"></div>
+              <div className="card p-3 rounded-[3rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] rotate-3 hover:rotate-0 transition-all duration-700 hover:scale-[1.02]">
                 <img
                   src="/hero_pet.png"
                   alt="Pet with QR tag"
-                  className="rounded-[2.2rem] w-full shadow-inner"
+                  className="rounded-[2.5rem] w-full shadow-inner aspect-[4/5] object-cover"
                 />
               </div>
               {/* Floating Element 1 */}
-              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce duration-[3000ms]">
-                <div className="bg-green-500 p-2 rounded-full text-white">
-                  <ShieldCheck className="w-6 h-6" />
+              <div className="absolute -bottom-10 -left-10 bg-white/90 backdrop-blur p-6 rounded-[2rem] shadow-2xl flex items-center gap-4 animate-bounce duration-[4000ms] border border-white">
+                <div className="bg-green-500 p-3 rounded-2xl text-white shadow-lg shadow-green-500/20">
+                  <ShieldCheck className="w-8 h-8" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase text-gray-400">Estado</p>
-                  <p className="text-sm font-bold text-gray-900">Protegido</p>
+                  <p className="text-xs font-black uppercase text-gray-400 tracking-widest mb-1">Status</p>
+                  <p className="text-xl font-black text-gray-900 italic">PROTEGIDO</p>
                 </div>
               </div>
               {/* Floating Element 2 */}
-              <div className="absolute top-10 -right-6 bg-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-pulse">
-                <div className="bg-rose-500 p-2 rounded-full text-white">
-                  <MapPin className="w-6 h-6" />
+              <div className="absolute -top-10 -right-10 bg-white/90 backdrop-blur p-6 rounded-[2rem] shadow-2xl flex items-center gap-4 animate-pulse border border-white">
+                <div className="bg-rose-500 p-3 rounded-2xl text-white shadow-lg shadow-rose-500/20">
+                  <MapPin className="w-8 h-8" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase text-gray-400">Alerta</p>
-                  <p className="text-sm font-bold text-gray-900">Escaneo Reciente</p>
+                  <p className="text-xs font-black uppercase text-gray-400 tracking-widest mb-1">Alert</p>
+                  <p className="text-xl font-black text-gray-900 italic">{locale === 'es' ? 'ESCANEADO' : 'LIDO'}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-      ...
+
       {/* Search Section */}
-      <section className="relative z-20 -mt-12 mb-12">
-        <div className="container max-w-3xl">
-          <ShortCodeSearch />
+      <section className="relative z-20 -mt-16 mb-20 px-4">
+        <div className="container max-w-4xl">
+          <div className="bg-slate-900 p-2 rounded-[2.5rem] shadow-2xl shadow-slate-900/40">
+            <ShortCodeSearch />
+          </div>
         </div>
       </section>
-      ...
+
       {/* Features Section */}
-      <section className="bg-gray-50 py-24">
-        <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Todo lo que necesitas para su cuidado</h2>
-            <p className="text-gray-500 font-medium max-w-2xl mx-auto italic">Más que un simple código QR, una plataforma completa para la vida de tu mascota.</p>
+      <section className="bg-slate-50 py-32 relative overflow-hidden">
+        <div className="container relative z-10">
+          <div className="text-center mb-24">
+            <h2 className="text-5xl lg:text-6xl font-black text-slate-900 mb-6 tracking-tight">{t.features.title}</h2>
+            <div className="h-1.5 w-24 bg-primary mx-auto mb-8 rounded-full"></div>
+            <p className="text-2xl text-slate-500 font-bold max-w-3xl mx-auto italic leading-relaxed">{t.features.subtitle}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             {[
-              {
-                icon: QrCode,
-                title: "ID Digital Inteligente",
-                desc: "Genera un código QR único para cada mascota. Cualquier persona con un smartphone puede ayudarte a encontrarla.",
-                color: "text-blue-500",
-                bg: "bg-blue-50"
-              },
-              {
-                icon: MessageSquare,
-                title: "Mensajería Directa",
-                desc: "Recibe avisos inmediatos cuando alguien encuentre a tu mascota, con ubicación GPS opcional.",
-                color: "text-rose-500",
-                bg: "bg-rose-50"
-              },
-              {
-                icon: Heart,
-                title: "Historial de Salud",
-                desc: "Lleva el control de vacunas, peso y citas veterinarias en un solo lugar accesible desde cualquier parte.",
-                color: "text-emerald-500",
-                bg: "bg-emerald-50"
-              },
-              {
-                icon: Smartphone,
-                title: "Sin Aplicaciones",
-                desc: "Funciona directamente en el navegador de cualquier teléfono. Sin descargas pesadas ni registros complicados.",
-                color: "text-indigo-500",
-                bg: "bg-indigo-50"
-              }
-            ].map((feature, i) => (
-              <div key={i} className="card p-8 hover:shadow-xl transition-all group hover:bg-white border-transparent hover:border-gray-100">
-                <div className={`${feature.bg} ${feature.color} w-12 h-12 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className="w-6 h-6" />
+              { icon: QrCode, color: "text-blue-500", bg: "bg-blue-50" },
+              { icon: MessageSquare, color: "text-rose-500", bg: "bg-rose-50" },
+              { icon: Heart, color: "text-emerald-500", bg: "bg-emerald-50" },
+              { icon: Smartphone, color: "text-indigo-500", bg: "bg-indigo-50" }
+            ].map((style, i) => (
+              <div key={i} className="bg-white p-10 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all group hover:-translate-y-2 border border-slate-100 flex flex-col items-center text-center">
+                <div className={`${style.bg} ${style.color} w-20 h-20 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-sm`}>
+                  <style.icon className="w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed font-medium">{feature.desc}</p>
+                <h3 className="text-2xl font-black text-slate-900 mb-4 italic leading-tight">{t.features.items[i].title}</h3>
+                <p className="text-slate-400 font-bold leading-relaxed">{t.features.items[i].desc}</p>
               </div>
             ))}
           </div>
@@ -136,41 +120,41 @@ export default async function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-primary relative overflow-hidden">
-        <div className="absolute top-0 right-0 opacity-10">
-          <QrCode className="w-96 h-96 -mr-20 -mt-20" />
+      <section className="py-32 bg-primary relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <QrCode className="w-[800px] h-[800px] absolute -right-40 -top-40 rotate-12" />
         </div>
         <div className="container relative z-10 text-center text-white">
-          <h2 className="text-4xl lg:text-5xl font-black mb-6 tracking-tight">Únete a la familia Localipet</h2>
-          <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto font-medium">
-            Cientos de mascotas ya están protegidas. No esperes a una emergencia para comenzar a cuidarlos de verdad.
+          <h2 className="text-5xl lg:text-[5rem] font-black mb-8 tracking-tighter leading-none">{t.cta.title}</h2>
+          <p className="text-2xl text-white/80 mb-16 max-w-3xl mx-auto font-bold italic leading-relaxed">
+            {t.cta.description}
           </p>
-          <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
-            <Link href="/register" className="bg-white text-primary px-10 py-4 rounded-xl font-black text-lg shadow-xl hover:bg-gray-100 transition-colors">
-              Registrarme ahora
+          <div className="flex flex-col sm:flex-row items-center gap-6 justify-center">
+            <Link href="/register" className="bg-white text-primary px-12 py-6 rounded-2xl font-black text-2xl shadow-2xl hover:bg-slate-50 transition-all hover:scale-105 active:scale-95 uppercase tracking-widest leading-none">
+              {t.cta.register}
             </Link>
-            <Link href="/about" className="px-8 py-4 font-bold text-white hover:text-white/80 transition-colors border border-white/20 rounded-xl">
-              ¿Cómo funciona?
+            <Link href="/about" className="px-10 py-6 font-black text-white hover:text-white/80 transition-colors border-2 border-white/20 rounded-2xl text-xl uppercase tracking-widest leading-none">
+              {t.cta.howItWorks}
             </Link>
           </div>
         </div>
       </section>
 
       {/* Simple Footer */}
-      <footer className="py-12 border-t border-gray-100 bg-white">
-        <div className="container flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary p-1.5 rounded-lg">
-              <Heart className="w-5 h-5 text-white" />
+      <footer className="py-20 border-t border-slate-100 bg-white">
+        <div className="container flex flex-col md:flex-row justify-between items-center gap-12">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary p-2 rounded-xl shadow-lg shadow-primary/20">
+              <Heart className="w-8 h-8 text-white" />
             </div>
-            <span className="text-xl font-black text-gray-900 italic tracking-tighter">Localipet</span>
+            <span className="text-3xl font-black text-slate-900 italic tracking-tighter">Localipet</span>
           </div>
-          <div className="flex gap-8 text-sm font-bold text-gray-400">
-            <Link href="#" className="hover:text-primary transition-colors">Privacidad</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Términos</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Contacto</Link>
+          <div className="flex flex-wrap justify-center gap-12 text-sm font-black text-slate-400 uppercase tracking-widest">
+            <Link href="#" className="hover:text-primary transition-colors">{t.footer.privacy}</Link>
+            <Link href="#" className="hover:text-primary transition-colors">{t.footer.terms}</Link>
+            <Link href="#" className="hover:text-primary transition-colors">{t.footer.contact}</Link>
           </div>
-          <p className="text-xs font-bold text-gray-400">© 2026 Localipet. Hecho con amor para tus mascotas.</p>
+          <p className="text-xs font-black text-slate-300 uppercase tracking-[0.2em]">{t.footer.copyright}</p>
         </div>
       </footer>
     </div>

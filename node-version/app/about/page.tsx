@@ -8,29 +8,39 @@ import {
     Heart,
     ArrowRight,
     UserPlus,
-    CheckCircle2
+    CheckCircle2,
+    HeartPulse
 } from "lucide-react";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
-export default function AboutPage() {
+export default async function AboutPage() {
+    const locale = await getLocale();
+    const t = translations[locale];
+
     return (
         <div className="flex flex-col min-h-screen bg-white">
             {/* Hero Section */}
-            <section className="relative py-20 overflow-hidden bg-gray-50">
+            <section className="relative py-24 overflow-hidden bg-slate-50">
                 <div className="absolute top-0 right-0 w-1/3 h-full opacity-5 pointer-events-none">
                     <QrCode className="w-full h-full -mr-20" />
                 </div>
                 <div className="container relative z-10">
                     <div className="max-w-3xl mx-auto text-center">
-                        <h1 className="text-5xl lg:text-6xl font-black text-gray-900 tracking-tight leading-tight mb-6">
-                            ¿Cómo funciona <span className="text-primary italic">Localipet?</span>
+                        <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-8 border border-primary/20">
+                            <HeartPulse className="w-4 h-4" />
+                            <span>Explora Localipet</span>
+                        </div>
+                        <h1 className="text-5xl lg:text-7xl font-black text-slate-900 tracking-tighter leading-none mb-8 italic uppercase">
+                            {t.about.title.split('Localipet')[0]}<span className="text-primary underline decoration-8 underline-offset-8">Localipet</span>?
                         </h1>
-                        <p className="text-xl text-gray-500 font-medium leading-relaxed mb-10">
-                            Hemos reinventado la forma de proteger a tus mascotas. Unimos tecnología, rapidez y cuidado en una sola plataforma diseñada para tu tranquilidad.
+                        <p className="text-xl text-slate-400 font-bold leading-relaxed mb-12 italic">
+                            {t.about.subtitle}
                         </p>
-                        <div className="flex justify-center gap-4">
-                            <Link href="/register" className="btn-primary py-4 px-8 text-lg font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
-                                Proteger a mi mascota
-                                <ArrowRight className="w-5 h-5" />
+                        <div className="flex justify-center gap-6">
+                            <Link href="/register" className="bg-slate-900 text-white py-5 px-10 rounded-[1.5rem] text-lg font-black uppercase tracking-widest shadow-2xl shadow-slate-900/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 border-b-8 border-slate-950">
+                                {t.about.cta}
+                                <ArrowRight className="w-6 h-6 text-primary" />
                             </Link>
                         </div>
                     </div>
@@ -38,43 +48,46 @@ export default function AboutPage() {
             </section>
 
             {/* Main Illustration Section */}
-            <section className="py-16">
+            <section className="py-24">
                 <div className="container">
-                    <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col lg:flex-row items-center">
-                        <div className="lg:w-1/2 p-8 lg:p-16">
-                            <img
-                                src="/how-it-works-es.png"
-                                alt="Ilustración Cómo funciona Localipet"
-                                className="w-full h-auto rounded-2xl shadow-inner"
-                            />
+                    <div className="bg-white rounded-[4rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] overflow-hidden border border-slate-50 flex flex-col lg:flex-row items-center">
+                        <div className="lg:w-1/2 p-12 lg:p-24 bg-slate-50/30">
+                            <div className="relative group">
+                                <div className="absolute -inset-4 bg-primary/20 rounded-[2rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                <img
+                                    src={locale === 'es' ? "/how-it-works-es.png" : "/how-it-works-es.png"} // Assuming same for now or handle pt version
+                                    alt="Identificación Localipet"
+                                    className="relative w-full h-auto rounded-[2rem] shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]"
+                                />
+                            </div>
                         </div>
-                        <div className="lg:w-1/2 p-8 lg:p-16 bg-gray-50/50 self-stretch flex flex-col justify-center">
-                            <h2 className="text-3xl font-black text-gray-900 mb-8 tracking-tight">El poder de un simple escaneo</h2>
-                            <div className="space-y-6">
+                        <div className="lg:w-1/2 p-12 lg:p-24 self-stretch flex flex-col justify-center">
+                            <h2 className="text-4xl font-black text-slate-900 mb-12 tracking-tight italic uppercase">{t.about.powerTitle}</h2>
+                            <div className="space-y-10">
                                 {[
                                     {
                                         icon: Smartphone,
-                                        title: "Escaneo universal",
-                                        desc: "Cualquier persona con un teléfono inteligente puede escanear el tag QR. No se requiere descargar ninguna aplicación extra."
+                                        title: t.about.steps[0].title,
+                                        desc: t.about.steps[0].desc
                                     },
                                     {
                                         icon: MapPin,
-                                        title: "Geolocalización instantánea",
-                                        desc: "Cuando alguien escanea el tag, el sistema solicita permiso para compartir su ubicación GPS en tiempo real."
+                                        title: t.about.steps[1].title,
+                                        desc: t.about.steps[1].desc
                                     },
                                     {
                                         icon: Bell,
-                                        title: "Alertas inmediatas",
-                                        desc: "Recibes una notificación instantánea vía WhatsApp/Email con la ubicación exacta donde se encontró tu mascota."
+                                        title: t.about.steps[2].title,
+                                        desc: t.about.steps[2].desc
                                     }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex gap-4">
-                                        <div className="bg-white p-3 rounded-xl shadow-sm text-primary flex-shrink-0 h-fit">
-                                            <item.icon className="w-6 h-6" />
+                                    <div key={i} className="flex gap-6 group">
+                                        <div className="bg-slate-50 p-4 rounded-2xl shadow-sm text-primary flex-shrink-0 h-fit group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                            <item.icon className="w-8 h-8" />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
-                                            <p className="text-gray-500 text-sm font-medium leading-relaxed">{item.desc}</p>
+                                            <h3 className="text-xl font-black text-slate-900 mb-2 uppercase italic leading-none">{item.title}</h3>
+                                            <p className="text-slate-400 font-bold leading-relaxed italic">{item.desc}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -85,50 +98,47 @@ export default function AboutPage() {
             </section>
 
             {/* Step by Step Section */}
-            <section className="py-24">
+            <section className="py-32 bg-slate-50/50">
                 <div className="container">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-black text-gray-900 mb-4">Tu ruta hacia la tranquilidad</h2>
-                        <p className="text-gray-500 font-medium max-w-2xl mx-auto">En solo 4 pasos, tu mascota estará protegida por la red más avanzada de identificación.</p>
+                    <div className="text-center mb-24">
+                        <h2 className="text-5xl font-black text-slate-900 mb-6 italic uppercase tracking-tighter">{t.about.routeTitle}</h2>
+                        <p className="text-xl text-slate-400 font-bold max-w-2xl mx-auto italic">{t.about.routeSubtitle}</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative">
-                        {/* Connecting line for desktop */}
-                        <div className="hidden lg:block absolute top-12 left-0 w-full h-0.5 bg-gray-100 -z-10"></div>
-
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 relative">
                         {[
                             {
                                 step: "01",
                                 icon: UserPlus,
-                                title: "Registra el perfil",
-                                desc: "Crea una cuenta gratuita y añade a todas tus mascotas con sus datos y fotos."
+                                title: t.about.routeItems[0].title,
+                                desc: t.about.routeItems[0].desc
                             },
                             {
                                 step: "02",
                                 icon: QrCode,
-                                title: "Activa el Tag",
-                                desc: "Escanea la placa QR física o genera una digital para vincularla al perfil de tu mascota."
+                                title: t.about.routeItems[1].title,
+                                desc: t.about.routeItems[1].desc
                             },
                             {
                                 step: "03",
                                 icon: MapPin,
-                                title: "Masilla Inteligente",
-                                desc: "Si tu mascota se extravía, activa el 'Modo Perdido' para recibir alertas prioritarias."
+                                title: t.about.routeItems[2].title,
+                                desc: t.about.routeItems[2].desc
                             },
                             {
                                 step: "04",
                                 icon: Heart,
-                                title: "Reencuentro Feliz",
-                                desc: "Usa nuestra mensajería segura para coordinar la entrega con quien encontró a tu mascota."
+                                title: t.about.routeItems[3].title,
+                                desc: t.about.routeItems[3].desc
                             }
                         ].map((step, i) => (
                             <div key={i} className="flex flex-col items-center text-center group">
-                                <div className="bg-white border-4 border-gray-50 w-24 h-24 rounded-full flex items-center justify-center mb-6 shadow-xl group-hover:border-primary/20 group-hover:scale-110 transition-all duration-300 relative">
-                                    <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-black px-2 py-1 rounded-full">{step.step}</span>
-                                    <step.icon className="w-10 h-10 text-primary" />
+                                <div className="bg-white border-8 border-slate-100 w-32 h-32 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl group-hover:border-primary/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative">
+                                    <span className="absolute -top-4 -right-4 bg-slate-900 text-white text-[10px] font-black px-3 py-1.5 rounded-full">{step.step}</span>
+                                    <step.icon className="w-12 h-12 text-primary" />
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                                <p className="text-sm text-gray-500 font-medium leading-relaxed">{step.desc}</p>
+                                <h3 className="text-xl font-black text-slate-900 mb-4 uppercase italic leading-none">{step.title}</h3>
+                                <p className="text-slate-400 font-bold leading-relaxed italic">{step.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -136,52 +146,56 @@ export default function AboutPage() {
             </section>
 
             {/* Features Grid */}
-            <section className="py-24 bg-gray-900 text-white rounded-[4rem] mx-4 mb-12 overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[100px] rounded-full -mr-48 -mt-48"></div>
+            <section className="py-32 bg-slate-900 text-white rounded-[5rem] mx-6 mb-12 overflow-hidden relative shadow-2xl">
+                <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-primary/20 blur-[150px] rounded-full -mr-80 -mt-80 opacity-50"></div>
                 <div className="container relative z-10">
-                    <div className="flex flex-col lg:flex-row items-end justify-between mb-16 gap-8">
-                        <div className="max-w-2xl">
-                            <h2 className="text-4xl lg:text-5xl font-black mb-6 tracking-tight">Diseñado para la vida real</h2>
-                            <p className="text-gray-400 text-lg font-medium leading-relaxed italic">
-                                No solo se trata de un código, se trata de la seguridad de quienes más amas.
+                    <div className="flex flex-col lg:flex-row items-end justify-between mb-24 gap-12">
+                        <div className="max-w-2xl text-left">
+                            <h2 className="text-5xl lg:text-7xl font-black mb-8 tracking-tighter italic uppercase">{t.about.designTitle}</h2>
+                            <p className="text-slate-400 text-xl font-bold leading-relaxed italic">
+                                {t.about.designSubtitle}
                             </p>
                         </div>
-                        <div className="hidden lg:flex gap-4">
-                            <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-md border border-white/10 flex items-center gap-3">
-                                <CheckCircle2 className="text-primary w-6 h-6" />
-                                <span className="font-bold">100% Privado</span>
+                        <div className="hidden lg:flex gap-6">
+                            <div className="bg-white/5 px-8 py-5 rounded-[2rem] backdrop-blur-xl border border-white/10 flex items-center gap-4 hover:bg-white/10 transition-colors cursor-default">
+                                <div className="bg-primary/20 p-2 rounded-lg">
+                                    <ShieldCheck className="text-primary w-6 h-6" />
+                                </div>
+                                <span className="font-black uppercase tracking-widest text-[10px]">100% PRIVADO</span>
                             </div>
-                            <div className="bg-white/10 p-4 rounded-2xl backdrop-blur-md border border-white/10 flex items-center gap-3">
-                                <CheckCircle2 className="text-primary w-6 h-6" />
-                                <span className="font-bold">24/7 Disponible</span>
+                            <div className="bg-white/5 px-8 py-5 rounded-[2rem] backdrop-blur-xl border border-white/10 flex items-center gap-4 hover:bg-white/10 transition-colors cursor-default">
+                                <div className="bg-primary/20 p-2 rounded-lg">
+                                    <Bell className="text-primary w-6 h-6" />
+                                </div>
+                                <span className="font-black uppercase tracking-widest text-[10px]">24/7 SOPORTE</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                         {[
                             {
-                                title: "Privacidad Controlada",
-                                desc: "Tú decides qué datos mostrar públicamente. Tu información de contacto solo se revela bajo tus términos.",
+                                title: t.about.designCards[0].title,
+                                desc: t.about.designCards[0].desc,
                                 icon: ShieldCheck
                             },
                             {
-                                title: "Historial Médico",
-                                desc: "Guarda vacunas, alergias y notas médicas importantes que un veterinario o buscador pueda ver en emergencia.",
+                                title: t.about.designCards[1].title,
+                                desc: t.about.designCards[1].desc,
                                 icon: Heart
                             },
                             {
-                                title: "Tecnología Web",
-                                desc: "Sin instalaciones lentas. Localipet corre perfectamente en el navegador de cualquier teléfono Android o iPhone.",
+                                title: t.about.designCards[2].title,
+                                desc: t.about.designCards[2].desc,
                                 icon: Smartphone
                             }
                         ].map((card, i) => (
-                            <div key={i} className="bg-white/5 p-10 rounded-[2.5rem] border border-white/10 hover:bg-white/10 transition-colors">
-                                <div className="bg-primary/20 p-4 rounded-2xl w-fit mb-8">
-                                    <card.icon className="w-8 h-8 text-primary" />
+                            <div key={i} className="group bg-white/5 p-12 rounded-[3.5rem] border border-white/10 hover:bg-white/10 transition-all duration-500 hover:translate-y-[-8px]">
+                                <div className="bg-primary/10 p-5 rounded-[1.5rem] w-fit mb-10 group-hover:bg-primary/20 transition-colors">
+                                    <card.icon className="w-10 h-10 text-primary" />
                                 </div>
-                                <h3 className="text-2xl font-bold mb-4">{card.title}</h3>
-                                <p className="text-gray-400 font-medium leading-relaxed">{card.desc}</p>
+                                <h3 className="text-2xl font-black mb-4 italic uppercase tracking-tight">{card.title}</h3>
+                                <p className="text-slate-400 font-bold leading-relaxed italic">{card.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -189,23 +203,23 @@ export default function AboutPage() {
             </section>
 
             {/* Final CTA */}
-            <section className="py-24 text-center">
+            <section className="py-32 text-center">
                 <div className="container">
-                    <div className="max-w-3xl mx-auto">
-                        <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-black mb-8">
-                            <Heart className="w-4 h-4" />
-                            <span>Protege su felicidad hoy mismo</span>
+                    <div className="max-w-4xl mx-auto">
+                        <div className="inline-flex items-center gap-3 bg-emerald-50 text-emerald-600 px-8 py-3 rounded-full text-xs font-black mb-10 border border-emerald-100 uppercase tracking-widest shadow-lg shadow-emerald-50">
+                            <Heart className="w-5 h-5" />
+                            <span>{t.about.finalBtn}</span>
                         </div>
-                        <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-8 tracking-tight">¿Listo para unirte a la familia?</h2>
-                        <p className="text-xl text-gray-500 font-medium mb-12">
-                            No esperes a un imprevisto. El mejor cuidado es la prevención constante.
+                        <h2 className="text-5xl lg:text-7xl font-black text-slate-900 mb-8 tracking-tighter italic uppercase">{t.about.finalTitle}</h2>
+                        <p className="text-2xl text-slate-400 font-bold mb-16 italic">
+                            {t.about.finalSubtitle}
                         </p>
-                        <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <Link href="/register" className="btn-primary py-5 px-10 text-xl font-black shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all">
-                                Registrar mi mascota ahora
+                        <div className="flex flex-col sm:flex-row justify-center items-center gap-8">
+                            <Link href="/register" className="bg-primary text-white py-6 px-12 rounded-[2rem] text-xl font-black uppercase tracking-widest shadow-[0_20px_50px_-10px_rgba(23,163,74,0.4)] hover:scale-105 active:scale-95 transition-all border-b-8 border-green-700">
+                                {t.about.finalBtn}
                             </Link>
-                            <Link href="/login" className="px-10 py-5 text-xl font-bold text-gray-600 hover:text-primary transition-colors">
-                                Tengo una cuenta
+                            <Link href="/login" className="text-lg font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-[0.2em] italic">
+                                {t.about.haveAccount}
                             </Link>
                         </div>
                     </div>

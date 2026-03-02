@@ -4,9 +4,7 @@ import {
     ChevronRight,
     ChevronLeft,
     Target,
-    ShieldCheck,
     Zap,
-    BarChart3,
     Globe,
     Smartphone,
     Hospital,
@@ -17,131 +15,211 @@ import {
     CheckCircle2,
     TrendingUp,
     Cpu,
-    Layers
+    Layers,
+    Languages
 } from "lucide-react";
 
-const slides = [
-    {
-        type: "hero",
-        title: "LOCALIPET",
-        subtitle: "El Ecosistema de Protección Animal Inteligente",
-        description: "Digitalizando la industria del Pet-Care con Hardware QR y Predicción Clínica.",
-        image: "/hero_new.png"
-    },
-    {
-        type: "problem",
-        title: "El Desafío Actual",
-        subtitle: "Mercados reactivos vs Necesidad proactiva",
-        points: [
+const translations: any = {
+    es: {
+        pitch: "PITCH",
+        valueProp: "Propuesta de Valor 2026",
+        nav: { prev: "Anterior", next: "Siguiente" },
+        slides: [
             {
-                title: "Pérdida Crítica",
-                desc: "El miedo a perder a una mascota y no poder recuperarla rápidamente.",
-                icon: ShieldAlert,
-                color: "text-rose-500",
-                bg: "bg-rose-50"
+                type: "hero",
+                title: "LOCALIPET",
+                subtitle: "El Ecosistema de Protección Animal Inteligente",
+                description: "Digitalizando la industria del Pet-Care con Hardware QR y Predicción Clínica.",
+                image: "/hero_new.png"
             },
             {
-                title: "Baja Fidelización",
-                desc: "Clínicas veterinarias operando de forma reactiva, perdiendo el 60% de las ventas de reposición.",
-                icon: TrendingUp,
-                color: "text-blue-500",
-                bg: "bg-blue-50"
+                type: "problem",
+                title: "El Desafío Actual",
+                subtitle: "Mercados reactivos vs Necesidad proactiva",
+                points: [
+                    { title: "Pérdida Crítica", desc: "El miedo a perder a una mascota y no poder recuperarla rápidamente.", icon: ShieldAlert, color: "text-rose-500", bg: "bg-rose-50" },
+                    { title: "Baja Fidelización", desc: "Clínicas veterinarias operando de forma reactiva, perdiendo el 60% de las ventas de reposición.", icon: TrendingUp, color: "text-blue-500", bg: "bg-blue-50" },
+                    { title: "Data Fragmentada", desc: "Información médica en papel o silos digitales inconexos.", icon: Database, color: "text-amber-500", bg: "bg-amber-50" }
+                ]
             },
             {
-                title: "Data Fragmentada",
-                desc: "Información médica en papel o silos digitales inconexos.",
-                icon: Database,
-                color: "text-amber-500",
-                bg: "bg-amber-50"
+                type: "solution",
+                title: "Nuestra Solución Integradora",
+                subtitle: "Una sola plataforma, tres mundos conectados.",
+                items: [
+                    { title: "Smart Tags", desc: "Hardware físico con geolocalización pasiva.", icon: Smartphone },
+                    { title: "Vet ERP", desc: "Software clínico multi-sede profesional.", icon: Hospital },
+                    { title: "Smart Alarms", desc: "Algoritmos predictivos de consumo.", icon: Zap }
+                ]
+            },
+            {
+                type: "feature",
+                title: "Protección B2C: Smart QR",
+                image: "/how-it-works.png",
+                description: "Sin suscripciones, sin apps. Cualquier smartphone lee el código y envía la ubicación GPS exacta al dueño de inmediato.",
+                benefits: ["GPS Pasivo Universal", "Perfil Médico de Emergencia", "Notificación WhatsApp Instantánea"]
+            },
+            {
+                type: "erp",
+                title: "Vet Connect: El ERP Corporativo",
+                points: [
+                    "Gestión multi-clínica descentralizada para grandes cadenas.",
+                    "CRM detallado con historial de consumo real por mascota.",
+                    "Control de stock automático basado en la demanda futura."
+                ],
+                image: "/erp_new.png"
+            },
+            {
+                type: "predictive",
+                title: "Inteligencia Predictiva",
+                subtitle: "Vender antes de que se agote.",
+                points: [
+                    { label: "Análisis", val: "Tasa de consumo diario" },
+                    { label: "Predicción", val: "Cálculo de agote" },
+                    { label: "Acción", val: "Alerta automática al dueño" }
+                ],
+                summary: "Convertimos una necesidad reactiva en una venta recurrente garantizada.",
+                impact: "+40% en Retención"
+            },
+            {
+                type: "business",
+                title: "Modelo de Negocio",
+                models: [
+                    { name: "Hardware", type: "Venta directa de Tags & Accesorios", pct: "30%", icon: Cpu },
+                    { name: "SaaS", type: "Suscripción mensual por clínica (ERP)", pct: "40%", icon: Hospital },
+                    { name: "Marketplace", type: "Comisión por reposición dirigida", pct: "30%", icon: ArrowRight }
+                ]
+            },
+            {
+                type: "stack",
+                title: "Sólidez Tecnológica",
+                stack: [
+                    { name: "Next.js", icon: Globe },
+                    { name: "PostgreSQL", icon: Database },
+                    { name: "Prisma", icon: Layers },
+                    { name: "Auth.js", icon: Target },
+                    { name: "Vercel", icon: Zap }
+                ],
+                description: "Infraestructura Cloud-Native diseñada para la escala global y alta disponibilidad de datos críticos."
+            },
+            {
+                type: "vision",
+                title: "Hacia el Data-Driven Pet Care",
+                future: ["Big Data de salud preventiva global", "Red de emergencias interconectada", "Sinergia con seguros de salud animal"]
+            },
+            {
+                type: "last",
+                title: "Localipet",
+                subtitle: "Donde la tecnología encuentra el amor por las mascotas.",
+                contact: "osvaldo.guevara@localipet.com",
+                cta: "Prueba el sistema en vivo"
             }
         ]
     },
-    {
-        type: "solution",
-        title: "Nuestra Solución Integradora",
-        subtitle: "Una sola plataforma, tres mundos conectados.",
-        items: [
-            { title: "Smart Tags", desc: "Hardware físico con geolocalización pasiva.", icon: Smartphone },
-            { title: "Vet ERP", desc: "Software clínico multi-sede profesional.", icon: Hospital },
-            { title: "Smart Alarms", desc: "Algoritmos predictivos de consumo.", icon: Zap }
-        ],
-        image: "/hero_new.png"
-    },
-    {
-        type: "feature",
-        title: "Protección B2C: Smart QR",
-        image: "/how-it-works.png",
-        description: "Sin suscripciones, sin apps. Cualquier smartphone lee el código y envía la ubicación GPS exacta al dueño de inmediato.",
-        benefits: [
-            "GPS Pasivo Universal",
-            "Perfil Médico de Emergencia",
-            "Notificación WhatsApp Instantánea"
+    pt: {
+        pitch: "APRESENTAÇÃO",
+        valueProp: "Proposta de Valor 2026",
+        nav: { prev: "Anterior", next: "Próximo" },
+        slides: [
+            {
+                type: "hero",
+                title: "LOCALIPET",
+                subtitle: "O Ecossistema de Proteção Animal Inteligente",
+                description: "Digitalizando a indústria de Pet-Care com Hardware QR e Predição Clínica.",
+                image: "/hero_new.png"
+            },
+            {
+                type: "problem",
+                title: "O Desafio Atual",
+                subtitle: "Mercados reativos vs Necessidade proativa",
+                points: [
+                    { title: "Perda Crítica", desc: "O receio de perder um animal de estimação e não conseguir recuperá-lo rapidamente.", icon: ShieldAlert, color: "text-rose-500", bg: "bg-rose-50" },
+                    { title: "Baixa Fidelização", desc: "Clínicas veterinárias operando de forma reativa, perdendo 60% das vendas de reposição.", icon: TrendingUp, color: "text-blue-500", bg: "bg-blue-50" },
+                    { title: "Dados Fragmentados", desc: "Informações médicas em papel ou silos digitais desconexos.", icon: Database, color: "text-amber-500", bg: "bg-amber-50" }
+                ]
+            },
+            {
+                type: "solution",
+                title: "Nossa Solução Integradora",
+                subtitle: "Uma única plataforma, três mundos conectados.",
+                items: [
+                    { title: "Smart Tags", desc: "Hardware físico com geolocalização passiva.", icon: Smartphone },
+                    { title: "Vet ERP", desc: "Software clínico multisede profissional.", icon: Hospital },
+                    { title: "Smart Alarms", desc: "Algoritmos preditivos de consumo.", icon: Zap }
+                ]
+            },
+            {
+                type: "feature",
+                title: "Proteção B2C: Smart QR",
+                image: "/how-it-works.png",
+                description: "Sem assinaturas, sem aplicações. Qualquer smartphone lê o código e envia a localização GPS exata ao tutor imediatamente.",
+                benefits: ["GPS Passivo Universal", "Perfil Médico de Emergência", "Notificação WhatsApp Instantânea"]
+            },
+            {
+                type: "erp",
+                title: "Vet Connect: O ERP Corporativo",
+                points: [
+                    "Gestão multiclínica descentralizada para grandes cadeias.",
+                    "CRM detalhado com histórico de consumo real por animal.",
+                    "Controle de stock automático baseado na procura futura."
+                ],
+                image: "/erp_new.png"
+            },
+            {
+                type: "predictive",
+                title: "Inteligência Preditiva",
+                subtitle: "Vender antes que se esgote.",
+                points: [
+                    { label: "Análise", val: "Taxa de consumo diário" },
+                    { label: "Predição", val: "Cálculo de rutura" },
+                    { label: "Ação", val: "Alerta automático ao tutor" }
+                ],
+                summary: "Convertemos uma necessidade reativa numa venda recorrente garantida.",
+                impact: "+40% em Retenção"
+            },
+            {
+                type: "business",
+                title: "Modelo de Negócio",
+                models: [
+                    { name: "Hardware", type: "Venda direta de Tags e Acessórios", pct: "30%", icon: Cpu },
+                    { name: "SaaS", type: "Assinatura mensal por clínica (ERP)", pct: "40%", icon: Hospital },
+                    { name: "Marketplace", type: "Comissão por reposição direcionada", pct: "30%", icon: ArrowRight }
+                ]
+            },
+            {
+                type: "stack",
+                title: "Solidez Tecnológica",
+                stack: [
+                    { name: "Next.js", icon: Globe },
+                    { name: "PostgreSQL", icon: Database },
+                    { name: "Prisma", icon: Layers },
+                    { name: "Auth.js", icon: Target },
+                    { name: "Vercel", icon: Zap }
+                ],
+                description: "Infraestrutura Cloud-Native desenhada para escala global e alta disponibilidade de dados críticos."
+            },
+            {
+                type: "vision",
+                title: "Rumo ao Data-Driven Pet Care",
+                future: ["Big Data de saúde preventiva global", "Rede de emergências interconectada", "Sinergia com seguros de saúde animal"]
+            },
+            {
+                type: "last",
+                title: "Localipet",
+                subtitle: "Onde a tecnologia encontra o amor pelos animais.",
+                contact: "osvaldo.guevara@localipet.com",
+                cta: "Teste o sistema em tempo real"
+            }
         ]
-    },
-    {
-        type: "erp",
-        title: "Vet Connect: El ERP Corporativo",
-        points: [
-            "Gestión multi-clínica descentralizada para grandes cadenas.",
-            "CRM detallado con historial de consumo real por mascota.",
-            "Control de stock automático basado en la demanda futura."
-        ],
-        image: "/erp_new.png"
-    },
-    {
-        type: "predictive",
-        title: "Inteligencia Predictiva",
-        subtitle: "Vender antes de que se agote.",
-        points: [
-            { label: "Análisis", val: "Tasa de consumo diario" },
-            { label: "Predicción", val: "Cálculo de agote" },
-            { label: "Acción", val: "Alerta automática al dueño" }
-        ],
-        summary: "Convertimos una necesidad reactiva en una venta recurrente garantizada.",
-        impact: "+40% en Retención"
-    },
-    {
-        type: "business",
-        title: "Modelo de Negocio",
-        models: [
-            { name: "Hardware", type: "Venta directa de Tags & Accesorios", pct: "30%", icon: Cpu },
-            { name: "SaaS", type: "Suscripción mensual por clínica (ERP)", pct: "40%", icon: Hospital },
-            { name: "Marketplace", type: "Comisión por reposición dirigida", pct: "30%", icon: ArrowRight }
-        ]
-    },
-    {
-        type: "stack",
-        title: "Sólidez Tecnológica",
-        stack: [
-            { name: "Next.js", icon: Globe },
-            { name: "PostgreSQL", icon: Database },
-            { name: "Prisma", icon: Layers },
-            { name: "Auth.js", icon: Target },
-            { name: "Vercel", icon: Zap }
-        ],
-        description: "Infraestructura Cloud-Native diseñada para la escala global y alta disponibilidad de datos críticos."
-    },
-    {
-        type: "vision",
-        title: "Hacia el Data-Driven Pet Care",
-        future: [
-            "Big Data de salud preventiva global",
-            "Red de emergencias interconectada",
-            "Sinergia con seguros de salud animal"
-        ],
-        icon: Globe
-    },
-    {
-        type: "last",
-        title: "Localipet",
-        subtitle: "Donde la tecnología encuentra el amor por las mascotas.",
-        contact: "osvaldo.guevara@localipet.com",
-        cta: "Prueba el sistema en vivo"
     }
-];
+};
 
 function App() {
+    const [lang, setLang] = useState("es");
     const [current, setCurrent] = useState(0);
+
+    const t = translations[lang];
+    const slides = t.slides;
 
     const next = () => setCurrent((prev) => (prev + 1) % slides.length);
     const prev = () => setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
@@ -170,8 +248,24 @@ function App() {
                     <Target className="w-6 h-6" />
                 </div>
                 <span className="font-black italic text-2xl tracking-tighter text-slate-900">
-                    LOCALIPET <span className="text-emerald-500">PITCH</span>
+                    LOCALIPET <span className="text-emerald-500 uppercase">{t.pitch}</span>
                 </span>
+            </div>
+
+            {/* Language Switcher */}
+            <div className="absolute top-10 right-32 flex bg-white/50 backdrop-blur rounded-2xl p-1 border border-white shadow-sm z-50">
+                <button
+                    onClick={() => setLang("es")}
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${lang === "es" ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20" : "text-slate-400 hover:text-slate-600"}`}
+                >
+                    ES
+                </button>
+                <button
+                    onClick={() => setLang("pt")}
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${lang === "pt" ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20" : "text-slate-400 hover:text-slate-600"}`}
+                >
+                    PT
+                </button>
             </div>
 
             <div className="absolute top-10 right-12 text-slate-400 font-black text-sm tracking-widest z-50">
@@ -180,7 +274,7 @@ function App() {
 
             <AnimatePresence mode="wait">
                 <motion.div
-                    key={current}
+                    key={`${lang}-${current}`}
                     initial={{ opacity: 0, scale: 0.98, y: 10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 1.02, y: -10 }}
@@ -192,7 +286,7 @@ function App() {
                             <div className="flex-1 p-12 lg:p-24 flex flex-col justify-center relative z-10">
                                 <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
                                     <div className="bg-emerald-500/10 text-emerald-600 px-4 py-2 rounded-full w-fit font-black text-xs uppercase tracking-widest mb-10">
-                                        Propuesta de Valor 2026
+                                        {t.valueProp}
                                     </div>
                                     <h1 className="text-8xl lg:text-[10rem] font-black text-slate-900 italic mb-4 leading-[0.85] tracking-tighter">
                                         {slide.title}
@@ -268,7 +362,6 @@ function App() {
                                     </motion.div>
                                 ))}
                             </div>
-                            {/* Decorative background element */}
                             <div className="absolute inset-x-0 top-1/2 h-1 bg-slate-100 -z-0"></div>
                         </div>
                     )}
@@ -351,7 +444,7 @@ function App() {
                                     <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center animate-pulse">
                                         <Zap className="w-10 h-10 text-white" />
                                     </div>
-                                    <p className="text-white text-4xl font-black italic">Impacto en negocio:</p>
+                                    <p className="text-white text-4xl font-black italic">{lang === 'es' ? 'Impacto en negocio:' : 'Impacto no negócio:'}</p>
                                 </div>
                                 <p className="text-emerald-500 font-black text-7xl italic leading-none">{slide.impact}</p>
                             </div>
@@ -387,7 +480,7 @@ function App() {
                     {slide.type === "stack" && (
                         <div className="p-16 lg:p-24 w-full flex flex-col justify-center text-center items-center">
                             <h2 className="text-7xl font-black text-slate-900 italic mb-4 leading-none">{slide.title}</h2>
-                            <p className="text-2xl text-emerald-500 font-bold mb-20 italic">Infraestructura Corporativa Robusta</p>
+                            <p className="text-2xl text-emerald-500 font-bold mb-20 italic">{lang === 'es' ? 'Infraestructura Corporativa Robusta' : 'Infraestrutura Corporativa Robusta'}</p>
                             <div className="flex flex-wrap justify-center gap-10 mb-20">
                                 {slide.stack?.map((s: any, i: number) => (
                                     <motion.div
@@ -434,7 +527,7 @@ function App() {
                                 <h2 className="text-[10rem] font-black text-slate-900 italic mb-4 leading-none tracking-tighter">{slide.title}</h2>
                                 <p className="text-4xl text-emerald-500 font-black italic mb-16">{slide.subtitle}</p>
                                 <div className="p-12 bg-slate-50/50 rounded-[3.5rem] border border-slate-100 mb-16 group hover:border-emerald-200 transition-colors">
-                                    <p className="text-sm font-black uppercase text-slate-400 mb-4 tracking-[0.2em]">Contacto Ejecutivo:</p>
+                                    <p className="text-sm font-black uppercase text-slate-400 mb-4 tracking-[0.2em]">{lang === 'es' ? 'Contacto Ejecutivo:' : 'Contacto Executivo:'}</p>
                                     <p className="text-4xl font-black italic text-slate-800">{slide.contact}</p>
                                 </div>
                                 <motion.button
@@ -472,7 +565,7 @@ function App() {
             </div>
 
             <div className="absolute bottom-12 left-12 text-slate-400 font-black italic text-sm uppercase tracking-[0.3em]">
-                Localipet v1.0 • Exclusive Private View • Strategic Vision 2026
+                Localipet v1.0 • {lang === 'es' ? 'Exclusive Private View' : 'Visualização Privada Exclusiva'} • Strategic Vision 2026
             </div>
         </main>
     );

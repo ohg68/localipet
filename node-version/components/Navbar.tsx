@@ -1,18 +1,22 @@
 import Link from "next/link";
-import { HeartPulse, Home, List, Hospital, LogIn, UserPlus, MessageSquare, AlertCircle, QrCode, ShieldCheck } from "lucide-react";
+import { HeartPulse, Home, List, Hospital, LogIn, UserPlus, MessageSquare, AlertCircle, ShieldCheck, Heart } from "lucide-react";
 import { auth } from "@/auth";
 import UserMenu from "@/components/UserMenu";
 import { prisma } from "@/lib/prisma";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default async function Navbar() {
     const session = await auth();
+    const locale = await getLocale();
+    const t = translations[locale];
 
     let unreadCount = 0;
     let currentUserRole = session?.user?.role;
     let hasOrgMembership = false;
 
     if (session?.user?.id) {
-        // 1. Unread messages
         unreadCount = await prisma.finderMessage.count({
             where: {
                 qrCode: { animal: { ownerId: session.user.id } },
@@ -20,7 +24,6 @@ export default async function Navbar() {
             }
         });
 
-        // 2. Fresh Role and Org Membership status to avoid session lag
         const [profile, orgMember] = await Promise.all([
             prisma.profile.findUnique({ where: { userId: session.user.id } }),
             prisma.organizationMember.findFirst({ where: { userId: session.user.id } })
@@ -31,79 +34,73 @@ export default async function Navbar() {
     }
 
     return (
-        <nav className="bg-primary text-white shadow-lg sticky top-0 z-50">
-            <div className="container py-3 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2 text-xl font-black italic tracking-tighter">
-                    <HeartPulse className="w-6 h-6" />
-                    <span>Localipet</span>
+        <nav className="bg-slate-900 text-white shadow-2xl sticky top-0 z-50 border-b border-white/5">
+            <div className="container py-4 flex items-center justify-between">
+                <Link href="/" className="flex items-center gap-2 group transition-all">
+                    <div className="bg-primary p-1.5 rounded-lg group-hover:scale-110 transition-transform">
+                        <Heart className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="text-2xl font-black italic tracking-tighter hidden sm:block">Localipet</span>
                 </Link>
 
-                <div className="hidden md:flex items-center gap-8">
-                    <Link href="/lost-pets" className="flex items-center gap-1.5 hover:text-white/80 transition-colors text-xs font-bold uppercase tracking-wider text-rose-200">
-                        <AlertCircle className="w-4 h-4" />
-                        <span>Mascotas Perdidas</span>
+                <div className="hidden lg:flex items-center gap-8">
+                    <Link href="/lost-pets" className="flex items-center gap-2 hover:text-rose-400 transition-colors text-[10px] font-black uppercase tracking-widest text-rose-300 italic group">
+                        <AlertCircle className="w-4 h-4 group-hover:animate-pulse" />
+                        <span>{t.nav.lostPets}</span>
                     </Link>
-                    <Link href="/about" className="flex items-center gap-1.5 hover:text-white/80 transition-colors text-xs font-bold uppercase tracking-wider">
-                        <HeartPulse className="w-4 h-4" />
-                        <span>¿Cómo funciona?</span>
+                    <Link href="/about" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest group">
+                        <HeartPulse className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                        <span>{t.nav.howItWorks}</span>
                     </Link>
                     {session ? (
                         <>
-                            <Link href="/dashboard" className="flex items-center gap-1.5 hover:text-white/80 transition-colors text-xs font-bold uppercase tracking-wider">
+                            <div className="h-4 w-px bg-white/10 mx-2"></div>
+                            <Link href="/dashboard" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest group">
                                 <Home className="w-4 h-4" />
-                                <span>Inicio</span>
+                                <span>{t.nav.home}</span>
                             </Link>
-                            <Link href="/animals" className="flex items-center gap-1.5 hover:text-white/80 transition-colors text-xs font-bold uppercase tracking-wider">
+                            <Link href="/animals" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest group">
                                 <List className="w-4 h-4" />
-                                <span>Mascotas</span>
+                                <span>{t.nav.pets}</span>
                             </Link>
-                            <Link href="/messages" className="flex items-center gap-1.5 hover:text-white/80 transition-colors text-xs font-bold uppercase tracking-wider relative">
+                            <Link href="/messages" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest relative group">
                                 <MessageSquare className="w-4 h-4" />
-                                <span>Avisos</span>
+                                <span>{t.nav.notifications}</span>
                                 {unreadCount > 0 && (
-                                    <span className="absolute -top-1 -right-2 bg-rose-500 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-primary animate-pulse">
+                                    <span className="absolute -top-2 -right-3 bg-rose-500 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-slate-900 animate-bounce">
                                         {unreadCount}
                                     </span>
                                 )}
                             </Link>
-                            <Link href="/vet" className="flex items-center gap-1.5 hover:text-white/80 transition-colors text-xs font-bold uppercase tracking-wider">
+                            <Link href="/vet" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest group">
                                 <Hospital className="w-4 h-4" />
-                                <span>Clínicas</span>
+                                <span>{t.nav.clinics}</span>
                             </Link>
-                            {(currentUserRole === "VET" || currentUserRole === "ADMIN" || hasOrgMembership) && (
-                                <Link href="/vet" className="flex items-center gap-1.5 text-blue-200 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider">
-                                    <Hospital className="w-4 h-4" />
-                                    <span>Vet ERP</span>
-                                </Link>
-                            )}
                             {currentUserRole === "ADMIN" && (
-                                <Link href="/admin" className="flex items-center gap-1.5 text-rose-300 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider">
+                                <Link href="/admin" className="flex items-center gap-2 text-rose-400 hover:text-rose-300 transition-colors text-[10px] font-black uppercase tracking-widest group">
                                     <ShieldCheck className="w-4 h-4" />
-                                    <span>Admin</span>
+                                    <span>{t.nav.admin}</span>
                                 </Link>
                             )}
                         </>
-                    ) : (
-                        <>
-                            <Link href="/login" className="flex items-center gap-1 hover:text-white/80 transition-colors text-sm font-medium">
-                                <LogIn className="w-4 h-4" />
-                                <span>Entrar</span>
-                            </Link>
-                            <Link href="/register" className="flex items-center gap-1 hover:text-white/80 transition-colors text-sm font-medium">
-                                <UserPlus className="w-4 h-4" />
-                                <span>Registrarse</span>
-                            </Link>
-                        </>
-                    )}
+                    ) : null}
                 </div>
 
-                <div className="flex items-center gap-4 text-white">
+                <div className="flex items-center gap-6">
+                    <LanguageSwitcher currentLocale={locale} />
                     {session ? (
                         <UserMenu user={session.user} />
                     ) : (
-                        <Link href="/login" className="md:hidden">
-                            <LogIn className="w-5 h-5 transition-colors hover:text-white/80" />
-                        </Link>
+                        <div className="flex items-center gap-4">
+                            <Link href="/login" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest">
+                                <LogIn className="w-4 h-4" />
+                                <span className="hidden sm:inline">{t.nav.login}</span>
+                            </Link>
+                            <Link href="/register" className="hidden sm:flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full hover:scale-105 active:scale-95 transition-all text-[10px] font-black uppercase tracking-widest border-b-2 border-green-700">
+                                <UserPlus className="w-4 h-4" />
+                                <span>{t.nav.register}</span>
+                            </Link>
+                        </div>
                     )}
                 </div>
             </div>
