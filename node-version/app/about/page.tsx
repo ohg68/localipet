@@ -43,7 +43,7 @@ export default function AboutPage() {
                     <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col lg:flex-row items-center">
                         <div className="lg:w-1/2 p-8 lg:p-16">
                             <img
-                                src="/how-it-works.png"
+                                src="/how-it-works-es.png"
                                 alt="Ilustración Cómo funciona Localipet"
                                 className="w-full h-auto rounded-2xl shadow-inner"
                             />
