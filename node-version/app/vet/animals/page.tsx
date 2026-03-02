@@ -14,17 +14,19 @@ import {
 import Link from "next/link";
 import OrderRegistrationModal from "@/components/OrderRegistrationModal";
 
-export default async function VetAnimalsPage() {
+export default async function VetAnimalsPage({ searchParams }: { searchParams: { orgId?: string } }) {
     const session = await auth();
-    const orgMembership = await prisma.organizationMember.findFirst({
-        where: { userId: session?.user.id }
+    const userMemberships = await prisma.organizationMember.findMany({
+        where: { userId: session?.user.id },
+        include: { organization: true }
     });
 
-    if (!orgMembership) return <div>No autorizado</div>;
+    const activeOrgId = searchParams.orgId || userMemberships[0]?.organizationId;
+    if (!activeOrgId) return <div>No autorizado</div>;
 
     // Fetch all animals belonging to clients of this organization
     const clients = await prisma.organizationClient.findMany({
-        where: { organizationId: orgMembership.organizationId, isActive: true },
+        where: { organizationId: activeOrgId, isActive: true },
         include: {
             user: {
                 include: {
@@ -137,7 +139,7 @@ export default async function VetAnimalsPage() {
 
                         <div className="grid grid-cols-2 gap-3 pt-6 border-t border-gray-50">
                             <Link
-                                href={`/vet/animals/${animal.id}`}
+                                href={`/vet/animals/${animal.id}?orgId=${activeOrgId}`}
                                 className="flex items-center justify-center gap-2 py-3 bg-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-500 hover:bg-gray-200 transition-all"
                             >
                                 Perfil Clínico <ChevronRight className="w-3 h-3" />
@@ -146,7 +148,7 @@ export default async function VetAnimalsPage() {
                                 animalId={animal.id}
                                 animalName={animal.name}
                                 currentFood={(animal as any).foodBrand}
-                                orgId={orgMembership.organizationId}
+                                orgId={activeOrgId}
                             />
                         </div>
                     </div>

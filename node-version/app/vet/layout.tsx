@@ -13,61 +13,58 @@ import {
     ShoppingBag
 } from "lucide-react";
 
+import VetNavigation from "@/components/VetNavigation";
+
 export default async function VetLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     const session = await auth();
-
     if (!session) redirect("/");
 
-    // 1. Double check actual role/membership in DB to avoid session lag
-    const orgMembership = await prisma.organizationMember.findFirst({
-        where: { userId: session.user.id }
+    // 1. Get all organizations where the user is a member
+    const userMemberships = await prisma.organizationMember.findMany({
+        where: { userId: session.user.id },
+        include: { organization: true }
     });
 
-    const isAuthorized = session.user.role === "VET" || session.user.role === "ADMIN" || !!orgMembership;
+    // 2. If user is ADMIN but has no specific memberships, and it's looking for something... 
+    // In our model, we primarily use memberships.
 
-    if (!isAuthorized) {
+    if (userMemberships.length === 0 && session.user.role !== "ADMIN") {
         redirect("/");
     }
 
-    const tabs = [
-        { name: "Resumen", href: "/vet", icon: LayoutDashboard },
-        { name: "Clientes CRM", href: "/vet/clients", icon: Users },
-        { name: "Mascotas", href: "/vet/animals", icon: PawPrint },
-        { name: "Alertas & Campañas", href: "/vet/communications", icon: BellRing },
-        { name: "Ventas/Pedidos", href: "/vet/inventory", icon: ShoppingBag },
-    ];
+    // Default to first membership if none specified in a way we can track (for layouts, pages handle it better)
+    // Actually, we'll suggest the workspace selection
+    const activeOrg = userMemberships[0]?.organization;
 
     return (
         <div className="bg-gray-50 min-h-screen">
             {/* Vet Header */}
             <div className="bg-white border-b border-gray-100 py-6 sticky top-0 z-30 shadow-sm">
                 <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-primary/10 p-2 rounded-2xl">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 p-2.5 rounded-2xl">
                             <Hospital className="w-8 h-8 text-primary" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-black text-gray-900 italic tracking-tight">Vet <span className="text-primary">Connect</span> ERP</h1>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Inteligencia Clínica para Localipet</p>
+                            <div className="flex items-center gap-2">
+                                <h1 className="text-xl font-black text-gray-900 italic tracking-tight">
+                                    Localipet <span className="text-primary truncate max-w-[150px] inline-block align-bottom">{activeOrg?.name || "Vet ERP"}</span>
+                                </h1>
+                                {userMemberships.length > 1 && (
+                                    <span className="bg-gray-100 text-gray-400 p-1.5 rounded-lg">
+                                        <Settings className="w-4 h-4 cursor-pointer hover:text-primary transition-colors" />
+                                    </span>
+                                )}
+                            </div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Inteligencia Clínica para Consultorios</p>
                         </div>
                     </div>
 
-                    <nav className="flex items-center gap-1 bg-gray-100 p-1 rounded-2xl">
-                        {tabs.map((tab) => (
-                            <Link
-                                key={tab.href}
-                                href={tab.href}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-xs transition-all text-gray-400 hover:text-gray-900 hover:bg-white active:scale-95"
-                            >
-                                <tab.icon className="w-4 h-4" />
-                                <span className="hidden lg:inline">{tab.name}</span>
-                            </Link>
-                        ))}
-                    </nav>
+                    <VetNavigation />
                 </div>
             </div>
 

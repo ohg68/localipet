@@ -3,22 +3,23 @@ import { auth } from "@/auth";
 import { Users, Mail, Phone, Calendar, ArrowRight, PawPrint, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
-export default async function VetClientsPage() {
+export default async function VetClientsPage({ searchParams }: { searchParams: { orgId?: string } }) {
     const session = await auth();
-    const orgMembership = await prisma.organizationMember.findFirst({
-        where: { userId: session?.user.id }
+    const userMemberships = await prisma.organizationMember.findMany({
+        where: { userId: session?.user.id },
+        include: { organization: true }
     });
 
-    if (!orgMembership) return <div>No autorizado</div>;
+    const activeOrgId = searchParams.orgId || userMemberships[0]?.organizationId;
+    if (!activeOrgId) return <div>No autorizado</div>;
 
+    // Fetch clients for this organization
     const clients = await prisma.organizationClient.findMany({
-        where: { organizationId: orgMembership.organizationId },
+        where: { organizationId: activeOrgId, isActive: true },
         include: {
             user: {
                 include: {
-                    animals: {
-                        include: { qrCode: true }
-                    }
+                    animals: { include: { qrCode: true } }
                 }
             }
         },
@@ -75,7 +76,7 @@ export default async function VetClientsPage() {
                                     </td>
                                     <td className="px-8 py-6">
                                         <div className="flex items-center gap-2">
-                                            {client.user.animals.map((a, i) => (
+                                            {client.user.animals.map((a) => (
                                                 <div key={a.id} className="group relative">
                                                     <div className="bg-primary/10 p-2 rounded-xl text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all cursor-help shadow-sm">
                                                         <PawPrint className="w-4 h-4" />
@@ -98,7 +99,7 @@ export default async function VetClientsPage() {
                                     </td>
                                     <td className="px-8 py-6">
                                         <Link
-                                            href={`/vet/clients/${client.id}`}
+                                            href={`/vet/clients/${client.id}?orgId=${activeOrgId}`}
                                             className="inline-flex items-center gap-2 p-3 bg-gray-100 rounded-2xl text-gray-500 hover:bg-primary hover:text-white transition-all active:scale-95 border border-gray-200"
                                         >
                                             <ArrowRight className="w-5 h-5" />

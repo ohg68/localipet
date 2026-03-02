@@ -12,18 +12,24 @@ import {
     HeartPulse,
     Package
 } from "lucide-react";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 
 import VetDashboardAlerts from "@/components/VetDashboardAlerts";
 
-export default async function VetDashboardPage() {
+export default async function VetDashboardPage({ searchParams }: { searchParams: { orgId?: string } }) {
     const session = await auth();
-    const orgMembership = await prisma.organizationMember.findFirst({
-        where: { userId: session?.user.id }
+    const userMemberships = await prisma.organizationMember.findMany({
+        where: { userId: session?.user.id },
+        include: { organization: true }
     });
 
-    if (!orgMembership) {
+    // Determine the active organization
+    const activeOrgId = searchParams.orgId || userMemberships[0]?.organizationId;
+    const activeOrg = userMemberships.find(m => m.organizationId === activeOrgId)?.organization || userMemberships[0]?.organization;
+
+    if (!activeOrg && session?.user.role !== "ADMIN") {
         return (
             <div className="card p-12 text-center border-0 shadow-2xl bg-white rounded-[3rem]">
                 <div className="bg-primary/10 p-8 rounded-full w-fit mx-auto mb-6">
@@ -31,18 +37,44 @@ export default async function VetDashboardPage() {
                 </div>
                 <h2 className="text-3xl font-black text-gray-900 mb-2 italic">Sin Organización Vinculada</h2>
                 <p className="text-gray-500 font-medium max-w-md mx-auto italic mb-8">Debes estar vinculado a una clínica veterinaria para acceder al ERP.</p>
-                <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 max-w-sm mx-auto">
-                    <p className="text-xs font-black uppercase text-gray-400 mb-2">Paso 1:</p>
-                    <p className="text-sm font-bold text-gray-900 leading-relaxed">Pide que te inviten desde el Panel de Admin o registra tu propia clínica.</p>
-                </div>
             </div>
         );
     }
 
-    const data = await getVetDashboard(orgMembership.organizationId);
+    // Show workspace selector if user has more than one
+    const showSelector = userMemberships.length > 1;
+
+    const data = await getVetDashboard(activeOrg?.id || "");
 
     return (
         <div className="space-y-12 animate-in fade-in duration-700">
+            {/* Quick Workspace Switcher (if needed) */}
+            {showSelector && (
+                <div className="flex items-center gap-4 bg-white w-fit p-1.5 rounded-2xl border border-gray-100 shadow-sm overflow-x-auto max-w-full">
+                    <p className="px-4 text-[10px] font-black uppercase text-gray-400">Mis Clínicas:</p>
+                    {userMemberships.map((m) => (
+                        <Link
+                            key={m.organizationId}
+                            href={`/vet?orgId=${m.organizationId}`}
+                            className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeOrg?.id === m.organizationId
+                                ? "bg-primary text-white shadow-lg shadow-primary/20"
+                                : "text-gray-400 hover:text-primary hover:bg-primary/5"
+                                }`}
+                        >
+                            {m.organization.name}
+                        </Link>
+                    ))}
+                </div>
+            )}
+
+            {/* Dashboard Header */}
+            <div>
+                <h2 className="text-4xl font-black text-gray-900 italic tracking-tight uppercase">
+                    Dashboard <span className="text-primary">{activeOrg?.name}</span>
+                </h2>
+                <p className="text-gray-400 font-bold italic mt-1">Gestión administrativa y alertas inteligentes para este consultorio.</p>
+            </div>
+
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {[
@@ -64,7 +96,7 @@ export default async function VetDashboardPage() {
             </div>
 
             {/* Human-Supervised Alerts Engine */}
-            <VetDashboardAlerts alerts={data.alerts as any} orgId={orgMembership.organizationId} />
+            <VetDashboardAlerts alerts={data.alerts as any} orgId={activeOrg?.id || ""} />
 
             {/* Special Campaigns Manager Banner */}
             <div className="bg-gray-900 text-white p-12 rounded-[4rem] relative overflow-hidden text-center lg:text-left shadow-2xl shadow-gray-900/40">

@@ -14,16 +14,18 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-export default async function VetInventoryPage() {
+export default async function VetInventoryPage({ searchParams }: { searchParams: { orgId?: string } }) {
     const session = await auth();
-    const orgMembership = await prisma.organizationMember.findFirst({
+    const userMemberships = await prisma.organizationMember.findMany({
         where: { userId: session?.user.id },
         include: { organization: true }
     });
 
-    if (!orgMembership) return <div>No autorizado</div>;
+    const activeOrg = userMemberships.find(m => m.organizationId === searchParams.orgId) || userMemberships[0];
 
-    const orgId = orgMembership.organizationId;
+    if (!activeOrg) return <div>No autorizado</div>;
+
+    const orgId = activeOrg.organizationId;
 
     // Fetch recent sales (OrganizationSale)
     const recentSales = await prisma.organizationSale.findMany({
@@ -56,7 +58,7 @@ export default async function VetInventoryPage() {
                         <ShoppingBag className="w-10 h-10 text-primary" />
                         Ventas & Inventario
                     </h2>
-                    <p className="text-gray-400 font-medium italic mt-2">Control de ingresos y trazabilidad de productos para {orgMembership.organization.name}.</p>
+                    <p className="text-gray-400 font-medium italic mt-2">Control de ingresos y trazabilidad de productos para {activeOrg.organization.name}.</p>
                 </div>
             </div>
 
