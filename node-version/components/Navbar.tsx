@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HeartPulse, Home, List, Hospital, LogIn, UserPlus, MessageSquare, AlertCircle, QrCode } from "lucide-react";
+import { HeartPulse, Home, List, Hospital, LogIn, UserPlus, MessageSquare, AlertCircle, QrCode, ShieldCheck } from "lucide-react";
 import { auth } from "@/auth";
 import UserMenu from "@/components/UserMenu";
 import { prisma } from "@/lib/prisma";
@@ -8,13 +8,26 @@ export default async function Navbar() {
     const session = await auth();
 
     let unreadCount = 0;
+    let currentUserRole = session?.user?.role;
+    let hasOrgMembership = false;
+
     if (session?.user?.id) {
+        // 1. Unread messages
         unreadCount = await prisma.finderMessage.count({
             where: {
                 qrCode: { animal: { ownerId: session.user.id } },
                 isRead: false
             }
         });
+
+        // 2. Fresh Role and Org Membership status to avoid session lag
+        const [profile, orgMember] = await Promise.all([
+            prisma.profile.findUnique({ where: { userId: session.user.id } }),
+            prisma.organizationMember.findFirst({ where: { userId: session.user.id } })
+        ]);
+
+        if (profile) currentUserRole = profile.role;
+        hasOrgMembership = !!orgMember;
     }
 
     return (
@@ -29,6 +42,10 @@ export default async function Navbar() {
                     <Link href="/lost-pets" className="flex items-center gap-1.5 hover:text-white/80 transition-colors text-xs font-bold uppercase tracking-wider text-rose-200">
                         <AlertCircle className="w-4 h-4" />
                         <span>Mascotas Perdidas</span>
+                    </Link>
+                    <Link href="/about" className="flex items-center gap-1.5 hover:text-white/80 transition-colors text-xs font-bold uppercase tracking-wider">
+                        <HeartPulse className="w-4 h-4" />
+                        <span>¿Cómo funciona?</span>
                     </Link>
                     {session ? (
                         <>
@@ -53,10 +70,16 @@ export default async function Navbar() {
                                 <Hospital className="w-4 h-4" />
                                 <span>Clínicas</span>
                             </Link>
-                            {session.user.role === "ADMIN" && (
-                                <Link href="/admin/qr-generator" className="flex items-center gap-1.5 text-rose-300 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider">
-                                    <QrCode className="w-4 h-4" />
-                                    <span>Constructor</span>
+                            {(currentUserRole === "VET" || currentUserRole === "ADMIN" || hasOrgMembership) && (
+                                <Link href="/vet" className="flex items-center gap-1.5 text-blue-200 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider">
+                                    <Hospital className="w-4 h-4" />
+                                    <span>Vet ERP</span>
+                                </Link>
+                            )}
+                            {currentUserRole === "ADMIN" && (
+                                <Link href="/admin" className="flex items-center gap-1.5 text-rose-300 hover:text-white transition-colors text-xs font-bold uppercase tracking-wider">
+                                    <ShieldCheck className="w-4 h-4" />
+                                    <span>Admin</span>
                                 </Link>
                             )}
                         </>

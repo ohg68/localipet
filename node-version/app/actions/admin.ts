@@ -88,8 +88,8 @@ export async function getUnassignedQRCodes() {
 export async function lookupShortCode(code: string) {
     const cleanCode = code.replace("#", "").toUpperCase().trim();
 
-    if (cleanCode.length !== 6) {
-        throw new Error("El código debe tener 6 caracteres.");
+    if (cleanCode.length < 5 || cleanCode.length > 10) {
+        throw new Error("El código debe tener entre 5 y 10 caracteres.");
     }
 
     const qrCode = await prisma.qRCode.findUnique({
@@ -101,4 +101,102 @@ export async function lookupShortCode(code: string) {
     }
 
     return qrCode.token;
+}
+
+export async function getUsersList() {
+    const session = await auth();
+    if (!session || session.user.role !== "ADMIN") {
+        throw new Error("Unauthorized");
+    }
+
+    return await prisma.user.findMany({
+        include: {
+            profile: true,
+            _count: {
+                select: { animals: true }
+            }
+        },
+        orderBy: { createdAt: "desc" }
+    });
+}
+
+export async function getAnimalsList() {
+    const session = await auth();
+    if (!session || session.user.role !== "ADMIN") {
+        throw new Error("Unauthorized");
+    }
+
+    return await prisma.animal.findMany({
+        include: {
+            owner: {
+                select: { email: true, firstName: true, lastName: true }
+            },
+            qrCode: {
+                select: { shortCode: true }
+            }
+        },
+        orderBy: { createdAt: "desc" }
+    });
+}
+
+export async function getVetsList() {
+    const session = await auth();
+    if (!session || session.user.role !== "ADMIN") {
+        throw new Error("Unauthorized");
+    }
+
+    return await prisma.organization.findMany({
+        orderBy: { createdAt: "desc" }
+    });
+}
+
+export async function toggleAnimalLost(animalId: string, isLost: boolean) {
+    const session = await auth();
+    if (!session || session.user.role !== "ADMIN") throw new Error("Unauthorized");
+
+    await prisma.animal.update({
+        where: { id: animalId },
+        data: { isLost, lostSince: isLost ? new Date() : null }
+    });
+    revalidatePath("/admin/animals");
+    return { success: true };
+}
+
+export async function toggleAnimalActive(animalId: string, isActive: boolean) {
+    const session = await auth();
+    if (!session || session.user.role !== "ADMIN") throw new Error("Unauthorized");
+
+    await prisma.animal.update({
+        where: { id: animalId },
+        data: { isActive }
+    });
+    revalidatePath("/admin/animals");
+    return { success: true };
+}
+
+export async function toggleUserRole(userId: string, currentRole: string) {
+    const session = await auth();
+    if (!session || session.user.role !== "ADMIN") throw new Error("Unauthorized");
+
+    const newRole = currentRole === "ADMIN" ? "OWNER" : "ADMIN";
+
+    await prisma.profile.update({
+        where: { userId },
+        data: { role: newRole as any }
+    });
+
+    revalidatePath("/admin/users");
+    return { success: true };
+}
+
+export async function unlinkTag(animalId: string) {
+    const session = await auth();
+    if (!session || session.user.role !== "ADMIN") throw new Error("Unauthorized");
+
+    await prisma.qRCode.update({
+        where: { animalId },
+        data: { animalId: null }
+    });
+    revalidatePath("/admin/animals");
+    return { success: true };
 }
