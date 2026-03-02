@@ -206,7 +206,7 @@ export default async function AboutPage() {
             <section className="py-32 text-center">
                 <div className="container">
                     <div className="max-w-4xl mx-auto">
-                        <div className="inline-flex items-center gap-3 bg-emerald-50 text-emerald-600 px-8 py-3 rounded-full text-xs font-black mb-10 border border-emerald-100 uppercase tracking-widest shadow-lg shadow-emerald-50">
+                        <div className="inline-flex items-center gap-3 bg-secondary/10 text-secondary px-8 py-3 rounded-full text-xs font-black mb-10 border border-secondary/10 uppercase tracking-widest shadow-lg shadow-secondary/5">
                             <Heart className="w-5 h-5" />
                             <span>{t.about.finalBtn}</span>
                         </div>
@@ -215,7 +215,7 @@ export default async function AboutPage() {
                             {t.about.finalSubtitle}
                         </p>
                         <div className="flex flex-col sm:flex-row justify-center items-center gap-8">
-                            <Link href="/register" className="bg-primary text-white py-6 px-12 rounded-[2rem] text-xl font-black uppercase tracking-widest shadow-[0_20px_50px_-10px_rgba(23,163,74,0.4)] hover:scale-105 active:scale-95 transition-all border-b-8 border-green-700">
+                            <Link href="/register" className="bg-primary text-white py-6 px-12 rounded-[2rem] text-xl font-black uppercase tracking-widest shadow-[0_20px_50px_-10px_rgba(54,193,189,0.4)] hover:bg-primary-hover active:scale-95 transition-all border-b-8 border-primary-hover/50">
                                 {t.about.finalBtn}
                             </Link>
                             <Link href="/login" className="text-lg font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-[0.2em] italic">

@@ -11,7 +11,7 @@ body {
 
 @layer components {
     .btn-primary {
-        @apply bg-emerald-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition-all active:scale-95;
-        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
+        @apply bg-[#36C1BD] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition-all active:scale-95;
+        box-shadow: 0 10px 15px -3px rgba(54, 193, 189, 0.2);
     }
 }

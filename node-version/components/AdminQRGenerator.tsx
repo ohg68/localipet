@@ -72,7 +72,7 @@ export default function AdminQRGenerator({ initialCodes }: AdminQRGeneratorProps
                             {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <><QrCode className="w-6 h-6" /> Generar Lote</>}
                         </button>
                         {success && (
-                            <div className="flex items-center gap-2 text-green-600 font-bold justify-center animate-in fade-in slide-in-from-top-2">
+                            <div className="flex items-center gap-2 text-secondary font-bold justify-center animate-in fade-in slide-in-from-top-2">
                                 <CheckCircle className="w-5 h-5" /> ¡Lote generado con éxito!
                             </div>
                         )}

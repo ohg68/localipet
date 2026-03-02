@@ -56,7 +56,7 @@ export default async function ChatSessionPage({ params }: { params: Promise<{ se
                         <div className="flex items-center gap-2">
                             <h1 className="font-black text-gray-900 tracking-tight">Chat con {participantName}</h1>
                             {chatSession.isActive ? (
-                                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
                             ) : (
                                 <span className="text-[10px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded font-bold uppercase">Cerrado</span>
                             )}
@@ -69,7 +69,7 @@ export default async function ChatSessionPage({ params }: { params: Promise<{ se
 
                     {!isOwner && chatSession.qrCode.animal.isLost && (
                         <div className="hidden sm:block">
-                            <span className="text-[10px] font-black bg-rose-100 text-rose-600 px-3 py-1 rounded-full uppercase tracking-widest">
+                            <span className="text-[10px] font-black bg-secondary/10 text-secondary px-3 py-1 rounded-full uppercase tracking-widest">
                                 Extraviada
                             </span>
                         </div>

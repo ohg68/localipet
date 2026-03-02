@@ -30,8 +30,8 @@ export default async function Dashboard() {
     const stats = [
         { title: t.dashboard.stats.pets, value: animalsCount, icon: PawPrint, color: "from-blue-500 to-blue-600", shadow: "shadow-blue-200" },
         { title: t.dashboard.stats.scans, value: recentScansCount, icon: QrCode, color: "from-indigo-500 to-indigo-600", shadow: "shadow-indigo-200" },
-        { title: t.dashboard.stats.messages, value: unreadMessages, icon: MessageSquare, color: "from-rose-500 to-rose-600", shadow: "shadow-rose-200" },
-        { title: t.dashboard.stats.shared, value: activeConsents, icon: ShieldCheck, color: "from-emerald-500 to-emerald-600", shadow: "shadow-emerald-200" },
+        { title: t.dashboard.stats.messages, value: unreadMessages, icon: MessageSquare, color: "from-secondary to-secondary-hover", shadow: "shadow-secondary/20" },
+        { title: t.dashboard.stats.shared, value: activeConsents, icon: ShieldCheck, color: "from-primary to-primary-hover", shadow: "shadow-primary/20" },
     ];
 
     return (
@@ -137,13 +137,13 @@ export default async function Dashboard() {
                 {/* Sidebar: Activity/Tips */}
                 <div className="space-y-10 pt-16">
                     {unreadMessages > 0 && (
-                        <div className="bg-rose-50 border-2 border-rose-100 p-8 rounded-[3rem] shadow-xl shadow-rose-100/50">
-                            <h3 className="font-black text-rose-800 flex items-center gap-3 mb-4 uppercase text-sm tracking-widest italic">
+                        <div className="bg-secondary/5 border-2 border-secondary/10 p-8 rounded-[3rem] shadow-xl shadow-secondary/5">
+                            <h3 className="font-black text-secondary flex items-center gap-3 mb-4 uppercase text-sm tracking-widest italic">
                                 <AlertTriangle className="w-6 h-6" />
                                 {t.dashboard.newMessages}
                             </h3>
-                            <p className="text-rose-700 font-bold mb-8 leading-relaxed italic">{t.dashboard.newMessagesDesc.replace("{count}", unreadMessages.toString())}</p>
-                            <Link href="/messages" className="block text-center bg-rose-600 text-white py-4 rounded-[1.5rem] font-black uppercase tracking-widest text-xs shadow-lg shadow-rose-300 hover:bg-rose-700 transition-all active:scale-95">
+                            <p className="text-secondary/80 font-bold mb-8 leading-relaxed italic">{t.dashboard.newMessagesDesc.replace("{count}", unreadMessages.toString())}</p>
+                            <Link href="/messages" className="block text-center bg-secondary text-white py-4 rounded-[1.5rem] font-black uppercase tracking-widest text-xs shadow-lg shadow-secondary/20 hover:bg-secondary-hover transition-all active:scale-95">
                                 {t.dashboard.checkInbox}
                             </Link>
                         </div>
@@ -151,13 +151,13 @@ export default async function Dashboard() {
 
                     <div className="bg-white p-10 rounded-[3rem] shadow-xl border border-slate-50">
                         <h3 className="font-black text-slate-900 mb-8 flex items-center gap-4 uppercase text-sm tracking-widest italic leading-none">
-                            <ShieldCheck className="w-7 h-7 text-emerald-500" />
+                            <ShieldCheck className="w-7 h-7 text-primary" />
                             {t.dashboard.securityTips}
                         </h3>
                         <div className="space-y-8">
                             {t.dashboard.tips.map((tip, i) => (
                                 <div key={i} className="flex gap-6 group">
-                                    <div className="bg-emerald-50 text-emerald-600 w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 text-xs font-black group-hover:bg-emerald-500 group-hover:text-white transition-all">0{i + 1}</div>
+                                    <div className="bg-primary/5 text-primary w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 text-xs font-black group-hover:bg-primary group-hover:text-white transition-all">0{i + 1}</div>
                                     <p className="text-sm text-slate-500 font-bold leading-relaxed italic">{tip}</p>
                                 </div>
                             ))}

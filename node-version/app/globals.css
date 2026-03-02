@@ -1,16 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8f9fa;
-  --foreground: #212529;
-  --primary: #4CAF50;
-  --primary-hover: #45a049;
+  --background: #ffffff;
+  --foreground: #1D2D35;
+  --primary: #36C1BD;
+  --primary-hover: #2DA8A4;
+  --secondary: #EB1B6B;
+  --secondary-hover: #D1185F;
+  --accent: #FFD43B;
+  /* From the yellow collar */
+  --muted: #f8f9fa;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
 }
 
 body {

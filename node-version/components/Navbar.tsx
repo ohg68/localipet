@@ -34,50 +34,51 @@ export default async function Navbar() {
     }
 
     return (
-        <nav className="bg-slate-900 text-white shadow-2xl sticky top-0 z-50 border-b border-white/5">
-            <div className="container py-4 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2 group transition-all">
-                    <div className="bg-primary p-1.5 rounded-lg group-hover:scale-110 transition-transform">
-                        <Heart className="w-6 h-6 text-white" />
+        <nav className="bg-white text-slate-900 shadow-sm sticky top-0 z-50 border-b border-slate-100">
+            <div className="container py-3 flex items-center justify-between">
+                <Link href="/" className="flex items-center gap-1 group transition-all">
+                    <span className="text-2xl font-black tracking-tight text-primary">Locali</span>
+                    <div className="bg-secondary w-7 h-8 rounded-t-full rounded-bl-full flex items-center justify-center -rotate-12 group-hover:rotate-0 transition-transform">
+                        <div className="bg-white w-2 h-2 rounded-full mb-1"></div>
                     </div>
-                    <span className="text-2xl font-black italic tracking-tighter hidden sm:block">Localipet</span>
+                    <span className="text-2xl font-black tracking-tight text-primary ml-0.5">et</span>
                 </Link>
 
                 <div className="hidden lg:flex items-center gap-8">
-                    <Link href="/lost-pets" className="flex items-center gap-2 hover:text-rose-400 transition-colors text-[10px] font-black uppercase tracking-widest text-rose-300 italic group">
+                    <Link href="/lost-pets" className="flex items-center gap-2 hover:text-secondary transition-colors text-xs font-bold uppercase tracking-wider text-rose-500 group">
                         <AlertCircle className="w-4 h-4 group-hover:animate-pulse" />
                         <span>{t.nav.lostPets}</span>
                     </Link>
-                    <Link href="/about" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest group">
+                    <Link href="/about" className="flex items-center gap-2 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider text-slate-600 group">
                         <HeartPulse className="w-4 h-4 group-hover:scale-110 transition-transform" />
                         <span>{t.nav.howItWorks}</span>
                     </Link>
                     {session ? (
                         <>
-                            <div className="h-4 w-px bg-white/10 mx-2"></div>
-                            <Link href="/dashboard" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest group">
+                            <div className="h-4 w-px bg-slate-200 mx-1"></div>
+                            <Link href="/dashboard" className="flex items-center gap-2 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider text-slate-600 group">
                                 <Home className="w-4 h-4" />
                                 <span>{t.nav.home}</span>
                             </Link>
-                            <Link href="/animals" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest group">
+                            <Link href="/animals" className="flex items-center gap-2 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider text-slate-600 group">
                                 <List className="w-4 h-4" />
                                 <span>{t.nav.pets}</span>
                             </Link>
-                            <Link href="/messages" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest relative group">
+                            <Link href="/messages" className="flex items-center gap-2 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider text-slate-600 relative group">
                                 <MessageSquare className="w-4 h-4" />
                                 <span>{t.nav.notifications}</span>
                                 {unreadCount > 0 && (
-                                    <span className="absolute -top-2 -right-3 bg-rose-500 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-slate-900 animate-bounce">
+                                    <span className="absolute -top-2 -right-3 bg-secondary text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-white animate-bounce font-bold">
                                         {unreadCount}
                                     </span>
                                 )}
                             </Link>
-                            <Link href="/vet" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest group">
+                            <Link href="/vet" className="flex items-center gap-2 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider text-slate-600 group">
                                 <Hospital className="w-4 h-4" />
                                 <span>{t.nav.clinics}</span>
                             </Link>
                             {currentUserRole === "ADMIN" && (
-                                <Link href="/admin" className="flex items-center gap-2 text-rose-400 hover:text-rose-300 transition-colors text-[10px] font-black uppercase tracking-widest group">
+                                <Link href="/admin" className="flex items-center gap-2 text-secondary hover:text-secondary-hover transition-colors text-xs font-bold uppercase tracking-wider group">
                                     <ShieldCheck className="w-4 h-4" />
                                     <span>{t.nav.admin}</span>
                                 </Link>
@@ -89,14 +90,16 @@ export default async function Navbar() {
                 <div className="flex items-center gap-6">
                     <LanguageSwitcher currentLocale={locale} />
                     {session ? (
-                        <UserMenu user={session.user} />
+                        <div className="border border-slate-100 rounded-full p-0.5">
+                            <UserMenu user={session.user} />
+                        </div>
                     ) : (
                         <div className="flex items-center gap-4">
-                            <Link href="/login" className="flex items-center gap-2 hover:text-primary transition-colors text-[10px] font-black uppercase tracking-widest">
+                            <Link href="/login" className="flex items-center gap-2 hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider text-slate-600">
                                 <LogIn className="w-4 h-4" />
                                 <span className="hidden sm:inline">{t.nav.login}</span>
                             </Link>
-                            <Link href="/register" className="hidden sm:flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full hover:scale-105 active:scale-95 transition-all text-[10px] font-black uppercase tracking-widest border-b-2 border-green-700">
+                            <Link href="/register" className="hidden sm:flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full hover:bg-primary-hover active:scale-95 transition-all text-xs font-bold uppercase tracking-wider shadow-sm">
                                 <UserPlus className="w-4 h-4" />
                                 <span>{t.nav.register}</span>
                             </Link>

@@ -59,11 +59,12 @@ export default async function PublicScanPage({ params }: { params: Promise<{ tok
             {/* Header / Brand */}
             <div className="w-full bg-white border-b border-slate-100 py-6 mb-4">
                 <div className="container max-w-lg flex justify-between items-center">
-                    <Link href="/" className="flex items-center gap-2">
-                        <div className="bg-primary p-1 rounded-lg">
-                            <Heart className="w-4 h-4 text-white" />
+                    <Link href="/" className="flex items-center gap-1 group transition-all">
+                        <span className="text-xl font-black tracking-tight text-primary">Locali</span>
+                        <div className="bg-secondary w-6 h-7 rounded-t-full rounded-bl-full flex items-center justify-center -rotate-12 group-hover:rotate-0 transition-transform">
+                            <div className="bg-white w-1.5 h-1.5 rounded-full mb-1"></div>
                         </div>
-                        <span className="text-xl font-black text-gray-900 italic tracking-tighter">Localipet</span>
+                        <span className="text-xl font-black tracking-tight text-primary ml-0.5">et</span>
                     </Link>
                     <div className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400">
                         <Globe className="w-3 h-3" />
@@ -74,7 +75,7 @@ export default async function PublicScanPage({ params }: { params: Promise<{ tok
 
             <div className="container max-w-lg pb-12">
                 {animal.isLost && (
-                    <div className="bg-rose-600 text-white p-6 rounded-[2rem] mb-8 flex items-center gap-5 shadow-2xl shadow-rose-600/20 animate-pulse border-4 border-rose-500">
+                    <div className="bg-secondary text-white p-6 rounded-[2rem] mb-8 flex items-center gap-5 shadow-2xl shadow-secondary/20 animate-pulse border-4 border-secondary/50">
                         <AlertTriangle className="w-12 h-12 flex-shrink-0" />
                         <div>
                             <h2 className="font-extrabold text-2xl uppercase italic leading-none mb-1">{t.scan.lost}</h2>
@@ -118,7 +119,7 @@ export default async function PublicScanPage({ params }: { params: Promise<{ tok
                                 <h3 className="font-black text-slate-900 uppercase italic tracking-widest text-sm">{t.scan.ownerContact}</h3>
                             </div>
 
-                            <a href={`tel:${owner.profile?.phone}`} className="flex items-center gap-6 bg-primary text-white p-6 rounded-[2.5rem] shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-all active:scale-95 border-b-8 border-green-700">
+                            <a href={`tel:${owner.profile?.phone}`} className="flex items-center gap-6 bg-primary text-white p-6 rounded-[2.5rem] shadow-2xl shadow-primary/30 hover:bg-primary-hover transition-all active:scale-95 border-b-8 border-primary-hover/50">
                                 <div className="bg-white text-primary p-4 rounded-2xl shadow-inner">
                                     <Phone className="w-8 h-8" />
                                 </div>
@@ -149,11 +150,11 @@ export default async function PublicScanPage({ params }: { params: Promise<{ tok
                 </div>
 
                 <div className="mt-12 text-center pb-8 border-t border-slate-200 pt-10">
-                    <Link href="/" className="inline-flex items-center gap-4 group">
-                        <div className="bg-slate-200 p-2 rounded-xl group-hover:bg-primary transition-colors">
-                            <Heart className="w-5 h-5 text-white" />
+                    <Link href="/" className="inline-flex items-center gap-3 group">
+                        <div className="bg-secondary/10 p-1.5 rounded-lg group-hover:bg-secondary transition-colors">
+                            <Heart className="w-4 h-4 text-secondary group-hover:text-white" />
                         </div>
-                        <span className="text-sm font-black text-slate-400 group-hover:text-slate-900 transition-colors uppercase tracking-[0.2em] italic">{t.scan.poweredBy}</span>
+                        <span className="text-xs font-black text-slate-400 group-hover:text-slate-900 transition-colors uppercase tracking-[0.2em] italic">{t.scan.poweredBy}</span>
                     </Link>
                 </div>
             </div>

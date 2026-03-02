@@ -46,7 +46,7 @@ export default function RegisterPage() {
 
                     <form action={handleSubmit} className="space-y-6">
                         {error && (
-                            <div className="bg-rose-50 text-rose-600 p-4 rounded-2xl text-sm font-bold border border-rose-100 italic">
+                            <div className="bg-secondary/5 text-secondary p-4 rounded-2xl text-sm font-bold border border-secondary/10 italic">
                                 {error}
                             </div>
                         )}
@@ -94,7 +94,7 @@ export default function RegisterPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm shadow-2xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-b-8 border-green-700 mt-4"
+                            className="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm shadow-2xl shadow-primary/30 hover:bg-primary-hover active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-b-8 border-primary-hover/50 mt-4"
                         >
                             {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : t.auth.btnCreate}
                         </button>
@@ -102,7 +102,7 @@ export default function RegisterPage() {
 
                     <div className="mt-10 text-center border-t border-slate-50 pt-8">
                         <p className="text-slate-400 font-bold mb-4 italic">¿Ya tienes cuenta?</p>
-                        <Link href="/login" className="text-primary font-black uppercase tracking-widest text-xs hover:text-green-600 transition-colors">
+                        <Link href="/login" className="text-primary font-black uppercase tracking-widest text-xs hover:text-primary-hover transition-colors">
                             Inicia sesión
                         </Link>
                     </div>

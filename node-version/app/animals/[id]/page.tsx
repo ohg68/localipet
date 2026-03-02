@@ -144,7 +144,7 @@ export default async function AnimalDetailPage({ params }: { params: Promise<{ i
                         </Link>
                         <Link href={`/animals/${animal.id}/id-card`} className="card p-4 hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/20">
                             <h3 className="font-bold flex items-center gap-2 mb-1">
-                                <CreditCard className="w-4 h-4 text-emerald-500" />
+                                <CreditCard className="w-4 h-4 text-primary" />
                                 DNI
                             </h3>
                             <p className="text-[10px] text-gray-500 font-medium tracking-tight">Tarjeta para imprimir</p>

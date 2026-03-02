@@ -39,8 +39,8 @@ export default async function GlobalMessagesPage() {
     return (
         <div className="container max-w-4xl pb-12">
             <div className="flex items-center gap-4 mb-8">
-                <div className="bg-rose-50 p-4 rounded-2xl">
-                    <MessageSquare className="w-8 h-8 text-rose-500" />
+                <div className="bg-secondary/5 p-4 rounded-2xl">
+                    <MessageSquare className="w-8 h-8 text-secondary" />
                 </div>
                 <div>
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight">Bandeja de Entrada</h1>
@@ -59,13 +59,13 @@ export default async function GlobalMessagesPage() {
             ) : (
                 <div className="space-y-6">
                     {messages.map((msg) => (
-                        <div key={msg.id} className="card overflow-hidden border-l-4 border-l-rose-500 shadow-lg hover:shadow-xl transition-shadow">
+                        <div key={msg.id} className="card overflow-hidden border-l-4 border-l-secondary shadow-lg hover:shadow-xl transition-shadow">
                             <div className="bg-gray-50/50 px-6 py-3 border-b border-gray-100 flex justify-between items-center">
                                 <div className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                     <PawPrint className="w-4 h-4" />
                                     Mascota: <span className="text-gray-900">{msg.qrCode.animal?.name || 'Mascota Desconocida'}</span>
                                 </div>
-                                <div className="text-[10px] font-black bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                <div className="text-[10px] font-black bg-secondary/10 text-secondary px-2 py-0.5 rounded-full uppercase tracking-widest">
                                     {msg.isRead ? 'Leído' : 'Nuevo'}
                                 </div>
                             </div>

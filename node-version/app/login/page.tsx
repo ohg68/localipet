@@ -30,7 +30,7 @@ function LoginForm() {
                 </div>
 
                 {registered && (
-                    <div className="mb-8 bg-emerald-50 text-emerald-700 p-6 rounded-[2rem] border-2 border-emerald-100 flex items-center gap-4 shadow-lg shadow-emerald-100/50">
+                    <div className="mb-8 bg-primary/5 text-primary p-6 rounded-[2rem] border-2 border-primary/10 flex items-center gap-4 shadow-lg shadow-primary/5">
                         <CheckCircle className="w-6 h-6 flex-shrink-0" />
                         <p className="text-sm font-black italic">¡Cuenta creada con éxito! Por favor, inicia sesión.</p>
                     </div>
@@ -38,7 +38,7 @@ function LoginForm() {
 
                 <form action={dispatch} className="space-y-6">
                     {errorMessage && (
-                        <div className="bg-rose-50 text-rose-600 p-4 rounded-2xl text-sm font-bold border border-rose-100 italic">
+                        <div className="bg-secondary/5 text-secondary p-4 rounded-2xl text-sm font-bold border border-secondary/10 italic">
                             {errorMessage}
                         </div>
                     )}
@@ -66,7 +66,7 @@ function LoginForm() {
                     <button
                         type="submit"
                         disabled={isPending}
-                        className="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm shadow-2xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-b-8 border-green-700 mt-4"
+                        className="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-sm shadow-2xl shadow-primary/30 hover:bg-primary-hover active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-b-8 border-primary-hover/50 mt-4"
                     >
                         {isPending ? <Loader2 className="w-6 h-6 animate-spin" /> : t.auth.btnLogin}
                     </button>
@@ -74,7 +74,7 @@ function LoginForm() {
 
                 <div className="mt-10 text-center border-t border-slate-50 pt-8">
                     <p className="text-slate-400 font-bold mb-4 italic">{t.auth.noAccount}</p>
-                    <Link href="/register" className="text-primary font-black uppercase tracking-widest text-xs hover:text-green-600 transition-colors">
+                    <Link href="/register" className="text-primary font-black uppercase tracking-widest text-xs hover:text-primary-hover transition-colors">
                         {t.auth.btnRegister}
                     </Link>
                 </div>
