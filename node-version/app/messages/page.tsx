@@ -4,11 +4,17 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { MessageSquare, Calendar, Phone, MapPin, User, ArrowRight, PawPrint } from "lucide-react";
 
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
+
 export default async function GlobalMessagesPage() {
     const session = await auth();
     if (!session?.user?.id) {
         redirect("/login");
     }
+
+    const locale = await getLocale();
+    const t = translations[locale];
 
     const messages = await prisma.finderMessage.findMany({
         where: {
@@ -43,8 +49,8 @@ export default async function GlobalMessagesPage() {
                     <MessageSquare className="w-8 h-8 text-secondary" />
                 </div>
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">Bandeja de Entrada</h1>
-                    <p className="text-gray-500 font-medium">Todos los avisos de personas que han encontrado a tus mascotas.</p>
+                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">{t.messages.title}</h1>
+                    <p className="text-gray-500 font-medium">{t.messages.subtitle}</p>
                 </div>
             </div>
 
@@ -53,8 +59,8 @@ export default async function GlobalMessagesPage() {
                     <div className="bg-gray-50 p-6 rounded-full mb-6">
                         <MessageSquare className="w-16 h-16 text-gray-300 mx-auto" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">No hay mensajes aún</h3>
-                    <p className="text-gray-500 mb-8 max-w-sm mx-auto">Cuando alguien escanee el QR de una mascota extraviada y te envíe un aviso, aparecerá aquí.</p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t.messages.noMessagesTitle}</h3>
+                    <p className="text-gray-500 mb-8 max-w-sm mx-auto">{t.messages.noMessagesDesc}</p>
                 </div>
             ) : (
                 <div className="space-y-6">
@@ -63,10 +69,10 @@ export default async function GlobalMessagesPage() {
                             <div className="bg-gray-50/50 px-6 py-3 border-b border-gray-100 flex justify-between items-center">
                                 <div className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                     <PawPrint className="w-4 h-4" />
-                                    Mascota: <span className="text-gray-900">{msg.qrCode.animal?.name || 'Mascota Desconocida'}</span>
+                                    {t.messages.pet}: <span className="text-gray-900">{msg.qrCode.animal?.name || t.messages.unknownPet}</span>
                                 </div>
                                 <div className="text-[10px] font-black bg-secondary/10 text-secondary px-2 py-0.5 rounded-full uppercase tracking-widest">
-                                    {msg.isRead ? 'Leído' : 'Nuevo'}
+                                    {msg.isRead ? t.messages.read : t.messages.unread}
                                 </div>
                             </div>
 
@@ -80,7 +86,7 @@ export default async function GlobalMessagesPage() {
                                             <p className="font-bold text-gray-900">{msg.senderName}</p>
                                             <p className="text-xs text-gray-500 flex items-center gap-1">
                                                 <Calendar className="w-3 h-3" />
-                                                {new Date(msg.createdAt).toLocaleDateString()} at {new Date(msg.createdAt).toLocaleTimeString()}
+                                                {new Date(msg.createdAt).toLocaleDateString(locale === 'es' ? 'es-ES' : 'pt-PT')} at {new Date(msg.createdAt).toLocaleTimeString(locale === 'es' ? 'es-ES' : 'pt-PT')}
                                             </p>
                                         </div>
                                     </div>
@@ -104,7 +110,7 @@ export default async function GlobalMessagesPage() {
                                             className="inline-flex items-center gap-2 text-xs font-bold text-green-600 hover:bg-green-50 px-4 py-2 rounded-xl transition-colors border border-green-100"
                                         >
                                             <MapPin className="w-4 h-4" />
-                                            Ver Ubicación
+                                            {t.messages.viewLocation}
                                         </a>
                                     )}
                                     <Link
@@ -112,13 +118,13 @@ export default async function GlobalMessagesPage() {
                                         className="inline-flex items-center gap-2 text-xs font-bold text-white bg-primary hover:bg-primary/90 px-4 py-2 rounded-xl transition-colors shadow-sm"
                                     >
                                         <MessageSquare className="w-4 h-4" />
-                                        Conversar
+                                        {t.messages.chat}
                                     </Link>
                                     <Link
                                         href={`/animals/${msg.qrCode.animal?.id || ''}`}
                                         className="inline-flex items-center gap-2 text-xs font-bold text-gray-600 hover:bg-gray-100 px-4 py-2 rounded-xl transition-colors border border-gray-200 ml-auto"
                                     >
-                                        Ir a Mascota
+                                        {t.messages.goToPet}
                                         <ArrowRight className="w-4 h-4" />
                                     </Link>
                                 </div>
@@ -130,3 +136,4 @@ export default async function GlobalMessagesPage() {
         </div>
     );
 }
+

@@ -59,12 +59,10 @@ export default async function PublicScanPage({ params }: { params: Promise<{ tok
             {/* Header / Brand */}
             <div className="w-full bg-white border-b border-slate-100 py-6 mb-4">
                 <div className="container max-w-lg flex justify-between items-center">
-                    <Link href="/" className="flex items-center gap-1 group transition-all">
-                        <span className="text-xl font-black tracking-tight text-primary">Locali</span>
-                        <div className="bg-secondary w-6 h-7 rounded-t-full rounded-bl-full flex items-center justify-center -rotate-12 group-hover:rotate-0 transition-transform">
-                            <div className="bg-white w-1.5 h-1.5 rounded-full mb-1"></div>
-                        </div>
-                        <span className="text-xl font-black tracking-tight text-primary ml-0.5">et</span>
+                    <Link href="/" className="flex items-center gap-0 group transition-all">
+                        <span className="text-xl font-black tracking-tight text-primary uppercase">Locali</span>
+                        <span className="text-xl font-black tracking-tight text-secondary uppercase">p</span>
+                        <span className="text-xl font-black tracking-tight text-primary uppercase">et</span>
                     </Link>
                     <div className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400">
                         <Globe className="w-3 h-3" />
@@ -105,7 +103,7 @@ export default async function PublicScanPage({ params }: { params: Promise<{ tok
                         <div className="flex gap-6 mb-12">
                             <div className="flex-1 bg-slate-50/80 p-6 rounded-[2rem] border border-slate-100 flex flex-col items-center text-center">
                                 <p className="text-[10px] uppercase font-black text-slate-400 mb-2 tracking-widest">{t.scan.species}</p>
-                                <p className="font-black text-xl italic text-slate-800 capitalize leading-none">{locale === 'es' ? animal.species : (animal.species === 'DOG' ? 'CÃO' : (animal.species === 'CAT' ? 'GATO' : animal.species))}</p>
+                                <p className="font-black text-xl italic text-slate-800 capitalize leading-none">{t.animalForm.speciesOptions[animal.species as keyof typeof t.animalForm.speciesOptions] || animal.species}</p>
                             </div>
                             <div className="flex-1 bg-slate-50/80 p-6 rounded-[2rem] border border-slate-100 flex flex-col items-center text-center">
                                 <p className="text-[10px] uppercase font-black text-slate-400 mb-2 tracking-widest">{t.scan.breed}</p>

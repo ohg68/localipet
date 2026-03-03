@@ -36,12 +36,10 @@ export default async function Navbar() {
     return (
         <nav className="bg-white text-slate-900 shadow-sm sticky top-0 z-50 border-b border-slate-100">
             <div className="container py-3 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-1 group transition-all">
-                    <span className="text-2xl font-black tracking-tight text-primary">Locali</span>
-                    <div className="bg-secondary w-7 h-8 rounded-t-full rounded-bl-full flex items-center justify-center -rotate-12 group-hover:rotate-0 transition-transform">
-                        <div className="bg-white w-2 h-2 rounded-full mb-1"></div>
-                    </div>
-                    <span className="text-2xl font-black tracking-tight text-primary ml-0.5">et</span>
+                <Link href="/" className="flex items-center gap-0 group transition-all">
+                    <span className="text-2xl font-black tracking-tight text-primary uppercase">Locali</span>
+                    <span className="text-2xl font-black tracking-tight text-secondary uppercase">p</span>
+                    <span className="text-2xl font-black tracking-tight text-primary uppercase">et</span>
                 </Link>
 
                 <div className="hidden lg:flex items-center gap-8">

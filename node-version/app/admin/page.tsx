@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Users, PawPrint, Hospital, QrCode, TrendingUp, ShieldCheck, MapPin, Calendar, HeartPulse } from "lucide-react";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
 export default async function AdminDashboardPage() {
     // Basic stats via Prisma
@@ -11,6 +13,9 @@ export default async function AdminDashboardPage() {
         prisma.scanLog.count(),
         prisma.finderMessage.count()
     ]);
+
+    const locale = await getLocale();
+    const t = translations[locale];
 
     const [userCount, animalCount, orgCount, activeTags, totalScans, totalMsgs] = stats;
 
@@ -31,10 +36,10 @@ export default async function AdminDashboardPage() {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {[
-                    { title: "Usuarios Totales", val: userCount, icon: Users, color: "text-blue-500", bg: "bg-blue-50" },
-                    { title: "Mascotas", val: animalCount, icon: PawPrint, color: "text-primary", bg: "bg-primary/10" },
-                    { title: "Veterinarias", val: orgCount, icon: Hospital, color: "text-purple-500", bg: "bg-purple-50" },
-                    { title: "Escaneos Totales", val: totalScans, icon: TrendingUp, color: "text-orange-500", bg: "bg-orange-50" },
+                    { title: t.admin.stats.totalUsers, val: userCount, icon: Users, color: "text-blue-500", bg: "bg-blue-50" },
+                    { title: t.admin.stats.totalPets, val: animalCount, icon: PawPrint, color: "text-primary", bg: "bg-primary/10" },
+                    { title: t.admin.stats.totalVets, val: orgCount, icon: Hospital, color: "text-purple-500", bg: "bg-purple-50" },
+                    { title: t.admin.stats.totalScans, val: totalScans, icon: TrendingUp, color: "text-orange-500", bg: "bg-orange-50" },
                 ].map((kpi, i) => (
                     <div key={i} className="card p-8 border-2 border-gray-100 flex items-center justify-between group hover:border-primary/20 transition-all shadow-lg shadow-gray-100/50">
                         <div>
@@ -54,7 +59,7 @@ export default async function AdminDashboardPage() {
                     <div className="p-8 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                         <h3 className="text-xl font-black flex items-center gap-3">
                             <HeartPulse className="w-6 h-6 text-primary" />
-                            Escaneos Recientes
+                            {t.admin.recentScans}
                         </h3>
                     </div>
                     <div className="p-4">
@@ -82,7 +87,7 @@ export default async function AdminDashboardPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-12 text-center text-gray-400 font-bold italic">No se han registrado escaneos recientemente</div>
+                            <div className="p-12 text-center text-gray-400 font-bold italic">{t.admin.noScans}</div>
                         )}
                     </div>
                 </div>
@@ -92,7 +97,7 @@ export default async function AdminDashboardPage() {
                     <div className="p-8 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                         <h3 className="text-xl font-black flex items-center gap-3">
                             <ShieldCheck className="w-6 h-6 text-primary" />
-                            Nuevos Usuarios
+                            {t.admin.newUsers}
                         </h3>
                     </div>
                     <div className="p-4">
@@ -142,3 +147,4 @@ export default async function AdminDashboardPage() {
         </div>
     );
 }
+

@@ -143,12 +143,10 @@ export default async function Home() {
       {/* Simple Footer */}
       <footer className="py-20 border-t border-slate-100 bg-white">
         <div className="container flex flex-col md:flex-row justify-between items-center gap-12">
-          <Link href="/" className="flex items-center gap-1 group transition-all">
-            <span className="text-3xl font-black tracking-tight text-primary">Locali</span>
-            <div className="bg-secondary w-8 h-9 rounded-t-full rounded-bl-full flex items-center justify-center -rotate-12 group-hover:rotate-0 transition-transform">
-              <div className="bg-white w-2.5 h-2.5 rounded-full mb-1"></div>
-            </div>
-            <span className="text-3xl font-black tracking-tight text-primary ml-0.5">et</span>
+          <Link href="/" className="flex items-center gap-0 group transition-all">
+            <span className="text-3xl font-black tracking-tight text-primary uppercase">Locali</span>
+            <span className="text-3xl font-black tracking-tight text-secondary uppercase">p</span>
+            <span className="text-3xl font-black tracking-tight text-primary uppercase">et</span>
           </Link>
           <div className="flex flex-wrap justify-center gap-12 text-sm font-black text-slate-400 uppercase tracking-widest">
             <Link href="#" className="hover:text-primary transition-colors">{t.footer.privacy}</Link>

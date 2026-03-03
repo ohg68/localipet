@@ -167,6 +167,109 @@ export const translations = {
             finalSubtitle: "No esperes a un imprevisto. El mejor cuidado es la prevención constante.",
             finalBtn: "Registrar mi mascota ahora",
             haveAccount: "Tengo una cuenta"
+        },
+        animals: {
+            title: "Mis Mascotas",
+            subtitle: "Gestiona todos tus compañeros registrados.",
+            registerBtn: "Registrar Mascota",
+            linkTagTitle: "Vincular Nuevo Tag",
+            linkTagDesc: "Selecciona a qué mascota quieres asignarle el tag <strong>{token}</strong>.",
+            cancel: "Cancelar",
+            noPetsTitle: "No tienes mascotas registradas",
+            noPetsDesc: "Comienza registrando a tu mascota para generar su código QR único y mantener su historial de salud al día.",
+            registerFirst: "Registrar mi primera mascota",
+            statusLost: "Extraviado",
+            noBreed: "Sin raza",
+            shortCode: "Tag",
+            noTag: "Sin Tag"
+        },
+        messages: {
+            title: "Bandeja de Entrada",
+            subtitle: "Todos los avisos de personas que han encontrado a tus mascotas.",
+            noMessagesTitle: "No hay mensajes aún",
+            noMessagesDesc: "Cuando alguien escanee el QR de una mascota extraviada y te envíe un aviso, aparecerá aquí.",
+            pet: "Mascota",
+            unknownPet: "Mascota Desconocida",
+            read: "Leído",
+            unread: "Nuevo",
+            viewLocation: "Ver Ubicación",
+            chat: "Conversar",
+            goToPet: "Ir a Mascota"
+        },
+        animalForm: {
+            title: "Registrar Nueva Mascota",
+            editTitle: "Editar Mascota",
+            back: "Volver al listado",
+            nameLabel: "Nombre de la Mascota",
+            namePlaceholder: "Ej: Max, Luna...",
+            speciesLabel: "Especie",
+            speciesOptions: {
+                DOG: "Perro",
+                CAT: "Gato",
+                BIRD: "Ave",
+                RABBIT: "Conejo",
+                REPTILE: "Reptil",
+                OTHER: "Otro"
+            },
+            breedLabel: "Raza (Opcional)",
+            breedPlaceholder: "Ej: Golden Retriever",
+            microchipLabel: "ID del Microchip (Opcional)",
+            microchipPlaceholder: "Número de 15 dígitos",
+            tagQuestion: "¿Ya tienes un Tag físico?",
+            tagDesc: "Si compraste un collar o tag de Localipet, ingresa el código de 10 caracteres que viene impreso.",
+            tagPlaceholder: "Ej: ABC123XYZ0",
+            submitSave: "Guardar Mascota",
+            submitUpdate: "Actualizar Mascota",
+            cancel: "Cancelar",
+            loading: "Cargando formulario...",
+            errorMsg: "Ocurrió un error al procesar la mascota"
+        },
+        vet: {
+            dashboard: "DASHBOARD CLÍNICA VETERINARIA",
+            subtitle: "Gestión administrativa y alertas inteligentes para este consultorio.",
+            stats: {
+                clients: "CLIENTES CRM",
+                pets: "MASCOTAS",
+                alerts: "ALERTAS ACTIVAS",
+                conversion: "CONVERSIÓN"
+            },
+            tabs: {
+                summary: "Resumen",
+                clients: "Clientes CRM",
+                pets: "Mascotas",
+                alerts: "Alertas & Campañas",
+                sales: "Ventas/Pedidos"
+            },
+            sections: {
+                vaccines: "Supervisión de Vacunas",
+                consumption: "Supervisión de Consumo"
+            },
+            proActive: {
+                title: "Potencia tus Ventas con Supervisión Humana",
+                desc: "Las alertas automáticas pueden ser ignoradas. Un mensaje personalizado enviado por un profesional de confianza aumenta la conversión de visitas en un 40%.",
+                btn: "Panel de Comunicaciones",
+                dataPoint: "El 85% de los dueños prefieren recibir recordatorios personalizados por WhatsApp."
+            }
+        },
+        admin: {
+            panel: "PANEL ADMINISTRATIVO",
+            control: "Localipet Control",
+            tabs: {
+                summary: "Resumen",
+                users: "Usuarios",
+                pets: "Mascotas",
+                clinics: "Clínicas/Vets",
+                batches: "Lotes QR"
+            },
+            stats: {
+                totalUsers: "USUARIOS TOTALES",
+                totalPets: "MASCOTAS",
+                totalVets: "VETERINARIAS",
+                totalScans: "ESCANEOS TOTALES"
+            },
+            recentScans: "Escaneos Recientes",
+            newUsers: "Nuevos Usuarios",
+            noScans: "No se han registrado escaneos recientemente"
         }
     },
     pt: {
@@ -201,7 +304,7 @@ export const translations = {
                 },
                 {
                     title: "Mensagens Diretas",
-                    desc: "Receba avisos imediatos quando alguém encontrar o seu animal, com localização GPS opcional.",
+                    desc: "Receba avisos imediatos quando alguém encontrar o seu animal, con localização GPS opcional.",
                 },
                 {
                     title: "Histórico de Saúde",
@@ -280,7 +383,7 @@ export const translations = {
             titleRegister: "Proteja o seu animal hoje",
             subtitleRegister: "Crie a sua conta e digitalize a sua segurança em segundos.",
             labelName: "Nome completo",
-            btnCreate: "Criar Identidad Digital"
+            btnCreate: "Criar Identidade Digital"
         },
         lostPets: {
             badge: "Emergência Comunitária",
@@ -293,7 +396,7 @@ export const translations = {
             lookingFor: "Procura-se",
             since: "Desde",
             lastSeen: "Visto pela última vez:",
-            none: "Desconocido",
+            none: "Desconhecido",
             noDescription: "Sem descrição adicional",
             viewProfile: "Ver Ficha"
         },
@@ -335,6 +438,110 @@ export const translations = {
             finalSubtitle: "Não espere por um imprevisto. O melhor cuidado é a prevenção constante.",
             finalBtn: "Registar o meu animal agora",
             haveAccount: "Tenho uma conta"
+        },
+        animals: {
+            title: "Meus Animais",
+            subtitle: "Faça a gestão de todos os seus companheiros registrados.",
+            registerBtn: "Registrar Animal",
+            linkTagTitle: "Vincular Novo Tag",
+            linkTagDesc: "Selecione qual animal deseja atribuir ao tag <strong>{token}</strong>.",
+            cancel: "Cancelar",
+            noPetsTitle: "Você não tem animais registrados",
+            noPetsDesc: "Comece registrando o seu animal para gerar o seu código QR único e manter o seu histórico de saúde em dia.",
+            registerFirst: "Registrar meu primeiro animal",
+            statusLost: "Perdido",
+            noBreed: "Sem raça",
+            shortCode: "Tag",
+            noTag: "Sem Tag"
+        },
+        messages: {
+            title: "Caixa de Entrada",
+            subtitle: "Todos os avisos de pessoas que encontraram os seus animais.",
+            noMessagesTitle: "Ainda não há mensagens",
+            noMessagesDesc: "Quando alguém ler o QR de um animal perdido e lhe enviar um aviso, aparecerá aqui.",
+            pet: "Animal",
+            unknownPet: "Animal Desconhecido",
+            read: "Lido",
+            unread: "Novo",
+            viewLocation: "Ver Localização",
+            chat: "Conversar",
+            goToPet: "Ir para Animal"
+        },
+        animalForm: {
+            title: "Registrar Novo Animal",
+            editTitle: "Editar Animal",
+            back: "Voltar para a listagem",
+            nameLabel: "Nome do Animal",
+            namePlaceholder: "Ex: Max, Luna...",
+            speciesLabel: "Espécie",
+            speciesOptions: {
+                DOG: "Cão",
+                CAT: "Gato",
+                BIRD: "Ave",
+                RABBIT: "Coelho",
+                REPTILE: "Réptil",
+                OTHER: "Outro"
+            },
+            breedLabel: "Raça (Opcional)",
+            breedPlaceholder: "Ex: Golden Retriever",
+            microchipLabel: "ID do Microchip (Opcional)",
+            microchipPlaceholder: "Número de 15 dígitos",
+            tagQuestion: "Já tem um Tag físico?",
+            tagDesc: "Se comprou uma coleira ou tag da Localipet, introduza o código de 10 caracteres que vem impresso.",
+            tagPlaceholder: "Ex: ABC123XYZ0",
+            submitSave: "Salvar Animal",
+            submitUpdate: "Atualizar Animal",
+            cancel: "Cancelar",
+            loading: "A carregar formulário...",
+            errorMsg: "Ocorreu um erro ao processar o animal"
+        },
+        vet: {
+            dashboard: "DASHBOARD CLÍNICA VETERINÁRIA",
+            subtitle: "Gestão administrativa e alertas inteligentes para este consultório.",
+            stats: {
+                clients: "CLIENTES CRM",
+                pets: "ANIMAIS",
+                alerts: "ALERTAS ATIVOS",
+                conversion: "CONVERSÃO"
+            },
+            tabs: {
+                summary: "Resumo",
+                clients: "Clientes CRM",
+                pets: "Animais",
+                alerts: "Alertas & Campanhas",
+                sales: "Vendas/Pedidos"
+            },
+            sections: {
+                vaccines: "Supervisão de Vacinas",
+                consumption: "Supervisão de Consumo"
+            },
+            proActive: {
+                title: "Potencialize as suas Vendas com Supervisão Humana",
+                desc: "Os alertas automáticos podem ser ignorados. Uma mensagem personalizada enviada por um profissional de confiança aumenta a conversão de visitas em 40%.",
+                btn: "Painel de Comunicações",
+                dataPoint: "85% dos tutores preferem receber lembretes personalizados via WhatsApp."
+            }
+        },
+        admin: {
+            panel: "PAINEL ADMINISTRATIVO",
+            control: "Localipet Control",
+            tabs: {
+                summary: "Resumo",
+                users: "Usuários",
+                pets: "Animais",
+                clinics: "Clínicas/Vets",
+                batches: "Lotes QR"
+            },
+            stats: {
+                totalUsers: "USUÁRIOS TOTAIS",
+                totalPets: "ANIMAIS",
+                totalVets: "VETERINÁRIAS",
+                totalScans: "LEITURAS TOTAIS"
+            },
+            recentScans: "Leituras Recentes",
+            newUsers: "Novos Usuários",
+            noScans: "Não foram registradas leituras recentemente"
         }
     }
 };
+
