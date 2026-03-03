@@ -1,36 +1,10 @@
-import { auth } from "./auth";
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-
-export default auth((req) => {
-    const isLoggedIn = !!req.auth;
-    const { nextUrl } = req;
-
-
-    const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");
-    const isPublicRoute = ["/", "/login", "/register"].includes(nextUrl.pathname) || nextUrl.pathname.startsWith("/s/");
-    const isAuthRoute = ["/login", "/register"].includes(nextUrl.pathname);
-
-
-    if (isApiAuthRoute) return;
-
-
-    if (isAuthRoute) {
-        if (isLoggedIn) {
-            return Response.redirect(new URL("/dashboard", nextUrl));
-        }
-        return;
-    }
-
-
-    if (!isLoggedIn && !isPublicRoute) {
-        return Response.redirect(new URL("/login", nextUrl));
-    }
-
-
-    return;
-});
-
+export function middleware(request: NextRequest) {
+  return NextResponse.next()
+}
 
 export const config = {
-    matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
-};
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+}
