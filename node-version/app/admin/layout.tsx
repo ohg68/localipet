@@ -2,6 +2,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import AdminTabs from "@/components/AdminTabs";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
 export default async function AdminLayout({
     children,
@@ -21,13 +23,16 @@ export default async function AdminLayout({
         redirect("/");
     }
 
+    const locale = await getLocale();
+    const t = translations[locale];
+
     return (
         <div className="bg-gray-50 min-h-screen pt-12 pb-24">
             <div className="container">
                 <div className="flex flex-col md:flex-row items-end justify-between mb-8 gap-4">
                     <div>
                         <span className="text-primary font-black uppercase tracking-widest text-xs mb-2 block">
-                            Panel Administrativo
+                            {t.admin.panel}
                         </span>
                         <h1 className="text-4xl lg:text-5xl font-black text-gray-900 tracking-tight italic">
                             Localipet <span className="text-gray-400 font-medium">Control</span>
@@ -35,7 +40,7 @@ export default async function AdminLayout({
                     </div>
                 </div>
 
-                <AdminTabs />
+                <AdminTabs locale={locale} />
 
                 {children}
             </div>

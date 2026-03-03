@@ -40,8 +40,8 @@ export default async function VetDashboardPage({ searchParams }: { searchParams:
                 <div className="bg-primary/10 p-8 rounded-full w-fit mx-auto mb-6">
                     <ShieldAlert className="w-12 h-12 text-primary" />
                 </div>
-                <h2 className="text-3xl font-black text-gray-900 mb-2 italic">Sin Organización Vinculada</h2>
-                <p className="text-gray-500 font-medium max-w-md mx-auto italic mb-8">Debes estar vinculado a una clínica veterinaria para acceder al ERP.</p>
+                <h2 className="text-3xl font-black text-gray-900 mb-2 italic">{t.vet.noOrgTitle}</h2>
+                <p className="text-gray-500 font-medium max-w-md mx-auto italic mb-8">{t.vet.noOrgDesc}</p>
             </div>
         );
     }
@@ -56,7 +56,7 @@ export default async function VetDashboardPage({ searchParams }: { searchParams:
             {/* Quick Workspace Switcher (if needed) */}
             {showSelector && (
                 <div className="flex items-center gap-4 bg-white w-fit p-1.5 rounded-2xl border border-gray-100 shadow-sm overflow-x-auto max-w-full">
-                    <p className="px-4 text-[10px] font-black uppercase text-gray-400">Mis Clínicas:</p>
+                    <p className="px-4 text-[10px] font-black uppercase text-gray-400">{t.vet.myClinics}</p>
                     {userMemberships.map((m) => (
                         <Link
                             key={m.organizationId}
@@ -101,7 +101,7 @@ export default async function VetDashboardPage({ searchParams }: { searchParams:
             </div>
 
             {/* Human-Supervised Alerts Engine */}
-            <VetDashboardAlerts alerts={data.alerts as any} orgId={activeOrg?.id || ""} />
+            <VetDashboardAlerts alerts={data.alerts as any} orgId={activeOrg?.id || ""} locale={locale} />
 
             {/* Special Campaigns Manager Banner */}
             <div className="bg-gray-900 text-white p-12 rounded-[4rem] relative overflow-hidden text-center lg:text-left shadow-2xl shadow-gray-900/40">

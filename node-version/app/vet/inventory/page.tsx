@@ -13,6 +13,8 @@ import {
     LayoutDashboard
 } from "lucide-react";
 import Link from "next/link";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
 export default async function VetInventoryPage({ searchParams }: { searchParams: { orgId?: string } }) {
     const session = await auth();
@@ -21,9 +23,12 @@ export default async function VetInventoryPage({ searchParams }: { searchParams:
         include: { organization: true }
     });
 
+    const locale = await getLocale();
+    const t = translations[locale];
+
     const activeOrg = userMemberships.find(m => m.organizationId === searchParams.orgId) || userMemberships[0];
 
-    if (!activeOrg) return <div>No autorizado</div>;
+    if (!activeOrg) return <div>{t.vet.notAuthorized}</div>;
 
     const orgId = activeOrg.organizationId;
 
@@ -56,18 +61,18 @@ export default async function VetInventoryPage({ searchParams }: { searchParams:
                 <div>
                     <h2 className="text-4xl font-black text-gray-900 italic tracking-tight flex items-center gap-4">
                         <ShoppingBag className="w-10 h-10 text-primary" />
-                        Ventas & Inventario
+                        {t.vet.inventory.title}
                     </h2>
-                    <p className="text-gray-400 font-medium italic mt-2">Control de ingresos y trazabilidad de productos para {activeOrg.organization.name}.</p>
+                    <p className="text-gray-400 font-medium italic mt-2">{t.vet.inventory.description.replace("{name}", activeOrg.organization.name)}</p>
                 </div>
             </div>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
-                    { label: "Ventas Registradas", val: totalSales, icon: ShoppingBag, color: "text-blue-500", bg: "bg-blue-50" },
-                    { label: "Stock Crítico (Alarmas)", val: pendingAlerts, icon: Package, color: "text-orange-500", bg: "bg-orange-50" },
-                    { label: "Conversión de Alarmas", val: "85%", icon: TrendingUp, color: "text-green-500", bg: "bg-green-50" },
+                    { label: t.vet.inventory.statsSales, val: totalSales, icon: ShoppingBag, color: "text-blue-500", bg: "bg-blue-50" },
+                    { label: t.vet.inventory.statsStock, val: pendingAlerts, icon: Package, color: "text-orange-500", bg: "bg-orange-50" },
+                    { label: t.vet.inventory.statsConversion, val: "85%", icon: TrendingUp, color: "text-green-500", bg: "bg-green-50" },
                 ].map((kpi, i) => (
                     <div key={i} className="card p-8 border-0 shadow-xl shadow-primary/5 flex items-center justify-between rounded-[3rem]">
                         <div>
@@ -86,13 +91,13 @@ export default async function VetInventoryPage({ searchParams }: { searchParams:
                 <div className="p-10 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row items-center justify-between gap-6">
                     <h3 className="text-2xl font-black italic flex items-center gap-3">
                         <Clock className="w-6 h-6 text-primary" />
-                        Registro de Ventas
+                        {t.vet.inventory.tableTitle}
                     </h3>
                     <div className="relative group">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Buscar venta..."
+                            placeholder={t.vet.inventory.searchPlaceholder}
                             className="bg-white border-2 border-gray-100 rounded-3xl py-3 pl-12 pr-6 text-xs font-bold outline-none focus:border-primary transition-all w-64 shadow-sm"
                         />
                     </div>
@@ -103,11 +108,11 @@ export default async function VetInventoryPage({ searchParams }: { searchParams:
                         <table className="w-full text-left">
                             <thead className="bg-gray-50/50 border-b border-gray-100">
                                 <tr>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Cliente / Mascota</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">ID Orden</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Monto</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Fecha</th>
-                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Acción</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">{t.vet.inventory.tableClient}</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">{t.vet.inventory.tableOrderId}</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">{t.vet.inventory.tableAmount}</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">{t.vet.inventory.tableDate}</th>
+                                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">{t.vet.inventory.tableAction}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
@@ -158,8 +163,8 @@ export default async function VetInventoryPage({ searchParams }: { searchParams:
                         <div className="bg-gray-50 w-24 h-24 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
                             <ShoppingBag className="w-10 h-10 text-gray-200" />
                         </div>
-                        <p className="text-2xl font-black italic text-gray-300">No hay ventas registradas aún</p>
-                        <p className="text-sm text-gray-400 font-bold mt-2">Usa el botón de "Venta" en las fichas de mascota para empezar.</p>
+                        <p className="text-2xl font-black italic text-gray-300">{t.vet.inventory.noSales}</p>
+                        <p className="text-sm text-gray-400 font-bold mt-2">{t.vet.inventory.noSalesDesc}</p>
                     </div>
                 )}
             </div>
@@ -170,24 +175,24 @@ export default async function VetInventoryPage({ searchParams }: { searchParams:
                 <div className="relative z-10 max-w-2xl">
                     <div className="bg-primary/20 text-primary px-4 py-2 rounded-full w-fit text-[10px] font-black uppercase tracking-widest mb-8 flex items-center gap-2">
                         <CheckCircle2 className="w-3 h-3" />
-                        Inteligencia Predictiva Localipet
+                        {t.vet.inventory.predictiveBadge}
                     </div>
-                    <h3 className="text-4xl font-black mb-6 italic tracking-tight">Sincroniza tus Pedidos con el Consumo</h3>
+                    <h3 className="text-4xl font-black mb-6 italic tracking-tight">{t.vet.inventory.predictiveTitle}</h3>
                     <p className="text-gray-400 text-lg font-bold leading-relaxed italic">
-                        Localipet analiza en tiempo real cuánto alimento le queda a cada uno de tus pacientes. Optimiza tus pedidos a proveedores basándote en la <span className="text-white italic">demanda próxima real</span>, no en suposiciones.
+                        {t.vet.inventory.predictiveDesc}
                     </p>
                 </div>
                 <div className="relative z-10 bg-white/5 backdrop-blur-md p-10 rounded-[3rem] border border-white/10 w-full lg:w-96 text-center shadow-2xl">
-                    <p className="text-xs font-black uppercase tracking-widest text-primary mb-6">Alarmas de Stock</p>
+                    <p className="text-xs font-black uppercase tracking-widest text-primary mb-6">{t.vet.inventory.stockAlarms}</p>
                     <div className="space-y-6">
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-bold italic text-gray-300">Demanda Estimada (30d)</span>
+                            <span className="text-sm font-bold italic text-gray-300">{t.vet.inventory.estimatedDemand}</span>
                             <span className="text-xl font-black italic text-white">+120Kg</span>
                         </div>
                         <div className="w-full bg-white/10 h-4 rounded-full overflow-hidden border border-white/5">
                             <div className="bg-primary h-full w-[85%]" />
                         </div>
-                        <p className="text-[10px] font-bold text-gray-500 italic">Conversión basada en hábitos registrados</p>
+                        <p className="text-[10px] font-bold text-gray-500 italic">{t.vet.inventory.habitsNotice}</p>
                     </div>
                 </div>
             </div>

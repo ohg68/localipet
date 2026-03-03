@@ -1,9 +1,13 @@
 import { getAnimalsList } from "@/app/actions/admin";
 import { PawPrint, User, QrCode, Calendar, Info, ShieldCheck } from "lucide-react";
 import AdminAnimalActions from "@/components/AdminAnimalActions";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
 export default async function AdminAnimalsPage() {
     const animals = await getAnimalsList();
+    const locale = await getLocale();
+    const t = translations[locale];
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
@@ -11,20 +15,20 @@ export default async function AdminAnimalsPage() {
                 <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                     <h2 className="text-xl font-black flex items-center gap-3">
                         <PawPrint className="w-6 h-6 text-primary" />
-                        Listado de Mascotas ({animals.length})
+                        {t.admin.petsList.title} ({animals.length})
                     </h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-white border-b border-gray-100">
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Mascota</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Dueño Responsable</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Especie/Raza</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Vínculo QR</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Estado</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Fecha</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400 text-right">Acciones Manuales</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.petsList.tablePet}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.petsList.tableOwner}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.petsList.tableSpecies}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.petsList.tableQr}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.petsList.tableStatus}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.petsList.tableDate}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400 text-right">{t.admin.petsList.tableActions}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -55,7 +59,7 @@ export default async function AdminAnimalsPage() {
                                                 <User className="w-3 h-3 text-gray-400" />
                                                 {animal.owner.firstName} {animal.owner.lastName}
                                             </span>
-                                            <span className="text-xs text-gray-400 font-medium">{animal.owner.email}</span>
+                                            <span className="text-sm text-gray-400 font-medium">{animal.owner.email}</span>
                                         </div>
                                     </td>
                                     <td className="px-8 py-6">
@@ -73,7 +77,7 @@ export default async function AdminAnimalsPage() {
                                                 <span className="font-black text-xs font-mono">#{animal.qrCode.shortCode}</span>
                                             </div>
                                         ) : (
-                                            <span className="text-xs font-bold text-red-300 italic">Sin vincular</span>
+                                            <span className="text-xs font-bold text-red-300 italic">{t.admin.petsList.notLinked}</span>
                                         )}
                                     </td>
                                     <td className="px-8 py-6">
@@ -82,10 +86,10 @@ export default async function AdminAnimalsPage() {
                                                 ? "bg-rose-100 text-rose-600 border border-rose-200"
                                                 : "bg-green-100 text-green-600 border border-green-200"
                                                 }`}>
-                                                {animal.isLost ? "Perdido" : "Protegido"}
+                                                {animal.isLost ? t.admin.petsList.statusLost : t.admin.petsList.statusProtected}
                                             </span>
                                             {!animal.isActive && (
-                                                <span className="text-[10px] text-gray-400 font-black uppercase text-center w-full">Bloqueada</span>
+                                                <span className="text-[10px] text-gray-400 font-black uppercase text-center w-full">{t.admin.petsList.statusBlocked}</span>
                                             )}
                                         </div>
                                     </td>
@@ -102,6 +106,7 @@ export default async function AdminAnimalsPage() {
                                                 isLost={animal.isLost}
                                                 isActive={animal.isActive}
                                                 hasTag={!!animal.qrCode}
+                                                locale={locale}
                                             />
                                         </div>
                                     </td>

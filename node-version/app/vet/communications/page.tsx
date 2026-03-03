@@ -14,6 +14,8 @@ import {
     Zap,
     Tag
 } from "lucide-react";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
 export default async function VetCommunicationsPage() {
     const session = await auth();
@@ -21,7 +23,10 @@ export default async function VetCommunicationsPage() {
         where: { userId: session?.user.id }
     });
 
-    if (!orgMembership) return <div>No autorizado</div>;
+    const locale = await getLocale();
+    const t = translations[locale];
+
+    if (!orgMembership) return <div>{t.vet.notAuthorized}</div>;
 
     const campaigns = await prisma.vetCampaign.findMany({
         where: { organizationId: orgMembership.organizationId },
@@ -35,27 +40,27 @@ export default async function VetCommunicationsPage() {
                 <div className="flex-1">
                     <h2 className="text-4xl font-black text-gray-900 italic tracking-tight flex items-center gap-4">
                         <BellRing className="w-10 h-10 text-primary" />
-                        Gestor de Comunicaciones
+                        {t.vet.commsManager.title}
                     </h2>
-                    <p className="text-gray-500 font-medium italic mt-2 text-lg">Activa alarmas inteligentes y crea campañas para tus clientes más fieles.</p>
+                    <p className="text-gray-500 font-medium italic mt-2 text-lg">{t.vet.commsManager.description}</p>
                 </div>
                 <button className="btn-primary py-4 px-8 text-sm flex items-center justify-center gap-2 group transition-all">
-                    <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" /> Nueva Campaña
+                    <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" /> {t.vet.commsManager.newCampaign}
                 </button>
             </div>
 
             {/* Smart Alarm Config */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
-                    { label: "Vacunas", status: "Activo (Auto)", icon: Calendar, color: "text-rose-500", bg: "bg-rose-50" },
-                    { label: "Alimento", status: "Activo (IA)", icon: ShoppingBag, color: "text-blue-500", bg: "bg-blue-50" },
-                    { label: "Estética", status: "Manual", icon: Zap, color: "text-purple-500", bg: "bg-purple-50" },
+                    { label: t.vet.commsManager.vaccines, status: t.vet.commsManager.statusActiveAuto, icon: Calendar, color: "text-rose-500", bg: "bg-rose-50" },
+                    { label: t.vet.commsManager.food, status: t.vet.commsManager.statusActiveAI, icon: ShoppingBag, color: "text-blue-500", bg: "bg-blue-50" },
+                    { label: t.vet.commsManager.grooming, status: t.vet.commsManager.statusManual, icon: Zap, color: "text-purple-500", bg: "bg-purple-50" },
                 ].map((alarm, i) => (
                     <div key={i} className="card p-8 border-2 border-gray-100 flex items-center justify-between group hover:border-primary/20 transition-all bg-white relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-2 bg-green-100 text-green-600 rounded-bl-xl text-[10px] font-black uppercase tracking-widest">{alarm.status}</div>
                         <div>
-                            <p className="text-sm font-black text-gray-900 italic mb-2 tracking-tight">Alarma de {alarm.label}</p>
-                            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">Canal: APP + WhatsApp</span>
+                            <p className="text-sm font-black text-gray-900 italic mb-2 tracking-tight">{t.vet.alerts.supervise} {alarm.label}</p>
+                            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">{t.vet.commsManager.channelLabel}</span>
                         </div>
                         <div className={`${alarm.bg} p-4 rounded-3xl ${alarm.color}`}>
                             <alarm.icon className="w-6 h-6" />
@@ -69,7 +74,7 @@ export default async function VetCommunicationsPage() {
                 <div className="lg:col-span-2 space-y-6">
                     <h3 className="text-xl font-black italic flex items-center gap-3">
                         <CheckCircle2 className="w-6 h-6 text-primary" />
-                        Campañas Activas
+                        {t.vet.commsManager.activeCampaigns}
                     </h3>
 
                     <div className="space-y-4">
@@ -81,7 +86,7 @@ export default async function VetCommunicationsPage() {
                                             <h4 className="text-2xl font-black italic text-gray-900 mb-1">{c.title}</h4>
                                             <div className="flex items-center gap-3">
                                                 <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">#{c.discountCode || "PROMO"}</span>
-                                                <span className="text-xs text-gray-400 font-medium">Expira: {new Date(c.endDate).toLocaleDateString()}</span>
+                                                <span className="text-xs text-gray-400 font-medium">{t.vet.commsManager.expires} {new Date(c.endDate).toLocaleDateString()}</span>
                                             </div>
                                         </div>
                                         <div className="bg-green-50 text-green-600 p-2 rounded-xl">
@@ -101,7 +106,7 @@ export default async function VetCommunicationsPage() {
                                             </div>
                                         </div>
                                         <button className="btn-primary py-3 px-6 text-xs flex items-center gap-2">
-                                            Ver Métricas <ArrowRight className="w-4 h-4" />
+                                            {t.vet.commsManager.viewMetrics} <ArrowRight className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </div>
@@ -109,8 +114,8 @@ export default async function VetCommunicationsPage() {
                         ) : (
                             <div className="card p-16 text-center border-dashed border-4 border-gray-100 rounded-[3rem]">
                                 <Tag className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                                <p className="text-gray-400 font-bold italic">No hay campañas activas actualmente</p>
-                                <p className="text-xs text-gray-300 font-medium mt-2">Crea una oferta para clientes con bajo stock de alimento.</p>
+                                <p className="text-gray-400 font-bold italic">{t.vet.commsManager.noCampaigns}</p>
+                                <p className="text-xs text-gray-300 font-medium mt-2">{t.vet.commsManager.noCampaignsDesc}</p>
                             </div>
                         )}
                     </div>
@@ -121,14 +126,14 @@ export default async function VetCommunicationsPage() {
                     <div className="p-10 border-b border-gray-100 bg-gray-50/50">
                         <h3 className="text-xl font-black italic flex items-center gap-3">
                             <Clock className="w-6 h-6 text-primary" />
-                            Actividad Reciente
+                            {t.vet.commsManager.recentActivity}
                         </h3>
                     </div>
                     <div className="p-6 space-y-6">
                         {[
-                            { user: "Carlos C.", msg: "Alarma Vacuna Enviada", time: "10m ago", icon: Mail, bg: "bg-rose-50" },
-                            { user: "Ana R.", msg: "Oferta Alimento Recibida", time: "1h ago", icon: Send, bg: "bg-blue-50" },
-                            { user: "Max (DOG)", msg: "Recordatorio Agendado", time: "2h ago", icon: MessageSquare, bg: "bg-purple-50" },
+                            { user: "Carlos C.", msg: "Alarma Vacuna Enviada", time: `10m ${t.vet.commsManager.ago}`, icon: Mail, bg: "bg-rose-50" },
+                            { user: "Ana R.", msg: "Oferta Alimento Recibida", time: `1h ${t.vet.commsManager.ago}`, icon: Send, bg: "bg-blue-50" },
+                            { user: "Max (DOG)", msg: "Recordatorio Agendado", time: `2h ${t.vet.commsManager.ago}`, icon: MessageSquare, bg: "bg-purple-50" },
                         ].map((log, i) => (
                             <div key={i} className="flex items-center gap-4">
                                 <div className={`${log.bg} p-3 rounded-2xl flex-shrink-0`}>

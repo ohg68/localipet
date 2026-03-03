@@ -1,8 +1,7 @@
-"use client";
-
 import { useState } from "react";
 import { BellRing, Calendar, ShoppingBag, HeartPulse, ShoppingCart } from "lucide-react";
 import VetAlertModal from "./VetAlertModal";
+import { Locale, translations } from "@/lib/i18n";
 
 interface VetAlert {
     id: string;
@@ -15,25 +14,21 @@ interface VetAlert {
     dateLabel?: string;
 }
 
-export default function VetDashboardAlerts({ alerts, orgId }: { alerts: VetAlert[], orgId: string }) {
+export default function VetDashboardAlerts({ alerts, orgId, locale }: { alerts: VetAlert[], orgId: string, locale: Locale }) {
     const [selectedAlert, setSelectedAlert] = useState<VetAlert | null>(null);
-
     const [tone, setTone] = useState<"formal" | "caring">("caring");
+    const t = translations[locale];
 
     const generateDefaultMessage = (alert: VetAlert, selectedTone: "formal" | "caring") => {
-        if (alert.type === "VACCINE") {
-            return selectedTone === "formal"
-                ? `Estimado cliente, le informamos que ${alert.animalName} tiene pendiente su vacuna de ${alert.title} para el día ${alert.dateLabel}. Le sugerimos agendar una cita a la brevedad.`
-                : `¡Hola! 🐾 Queríamos recordarte con mucho cariño que a ${alert.animalName} le toca pronto su vacuna de ${alert.title} (${alert.dateLabel}). ¡Es super importante para que siga así de sano y fuerte! ¿Te reservamos un lugarcito?`;
-        }
-        if (alert.type === "FOOD") {
-            return selectedTone === "formal"
-                ? `Le informamos que según nuestros registros de consumo, el stock de alimento ${alert.title} para ${alert.animalName} está próximo a terminarse. Contamos con disponibilidad para reposición inmediata.`
-                : `¡Ey! Notamos que a ${alert.animalName} le debe quedar poquito de su comida favorita (${alert.title}). 🦴 No queremos que se quede sin cenar, así que te avisamos con tiempo. ¡Si quieres te lo separamos hoy mismo!`;
-        }
-        return selectedTone === "formal"
-            ? `Le presentamos una oferta exclusiva para ${alert.animalName}: ${alert.title}. Válido por tiempo limitado.`
-            : `¡Mira qué buena noticia! 🎉 Tenemos una sorpresa especial para ${alert.animalName}: ${alert.title}. ¡Sabemos que le va a encantar!`;
+        const type = alert.type.toLowerCase() as "vaccine" | "food" | "campaign";
+        const toneKey = selectedTone === "formal" ? "Formal" : "Caring";
+        const key = `${type}${toneKey}` as keyof typeof t.vet.alerts;
+        const template = t.vet.alerts[key] as string;
+
+        return template
+            .replace("{name}", alert.animalName)
+            .replace("{title}", alert.title)
+            .replace("{date}", alert.dateLabel || "");
     };
 
     return (
@@ -44,13 +39,13 @@ export default function VetDashboardAlerts({ alerts, orgId }: { alerts: VetAlert
                     onClick={() => setTone("caring")}
                     className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${tone === "caring" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-gray-400 hover:text-gray-600"}`}
                 >
-                    💖 Modo Cariñoso
+                    {t.vet.alerts.caring}
                 </button>
                 <button
                     onClick={() => setTone("formal")}
                     className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${tone === "formal" ? "bg-gray-800 text-white shadow-lg shadow-gray-800/20" : "text-gray-400 hover:text-gray-600"}`}
                 >
-                    👔 Profesional
+                    {t.vet.alerts.professional}
                 </button>
             </div>
 
@@ -60,7 +55,7 @@ export default function VetDashboardAlerts({ alerts, orgId }: { alerts: VetAlert
                     <div className="p-8 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                         <h3 className="text-xl font-black bg-gradient-to-r from-primary to-rose-500 bg-clip-text text-transparent flex items-center gap-3">
                             <HeartPulse className="w-6 h-6 text-primary" />
-                            Supervisión de Vacunas
+                            {t.vet.alerts.vaccineTitle}
                         </h3>
                     </div>
                     <div className="p-4 flex-1">
@@ -75,7 +70,7 @@ export default function VetDashboardAlerts({ alerts, orgId }: { alerts: VetAlert
                                             <div>
                                                 <p className="font-black text-gray-900 italic">{a.title}</p>
                                                 <p className="text-xs text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
-                                                    Mascota: <span className="text-gray-900 italic">{a.animalName}</span>
+                                                    {t.vet.alerts.pet}: <span className="text-gray-900 italic">{a.animalName}</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -83,13 +78,13 @@ export default function VetDashboardAlerts({ alerts, orgId }: { alerts: VetAlert
                                             onClick={() => setSelectedAlert(a)}
                                             className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2 hover:scale-110 p-4 rounded-2xl hover:bg-white transition-all shadow-sm border border-transparent hover:border-gray-100"
                                         >
-                                            Supervisar <BellRing className="w-4 h-4" />
+                                            {t.vet.alerts.supervise} <BellRing className="w-4 h-4" />
                                         </button>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-16 text-center text-gray-400 font-bold italic">Sin vacunas por supervisar</div>
+                            <div className="p-16 text-center text-gray-400 font-bold italic">{t.vet.alerts.notSupervisor}</div>
                         )}
                     </div>
                 </div>
@@ -99,7 +94,7 @@ export default function VetDashboardAlerts({ alerts, orgId }: { alerts: VetAlert
                     <div className="p-8 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                         <h3 className="text-xl font-black flex items-center gap-3">
                             <ShoppingBag className="w-6 h-6 text-primary" />
-                            Supervisión de Consumo
+                            {t.vet.alerts.consumptionTitle}
                         </h3>
                     </div>
                     <div className="p-4 flex-1">
@@ -112,9 +107,9 @@ export default function VetDashboardAlerts({ alerts, orgId }: { alerts: VetAlert
                                                 <ShoppingCart className="w-5 h-5" />
                                             </div>
                                             <div>
-                                                <p className="font-black text-gray-900 italic">Reponer {a.title}</p>
+                                                <p className="font-black text-gray-900 italic">{t.vet.alerts.repose.replace("{title}", a.title)}</p>
                                                 <p className="text-xs text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
-                                                    Mascota: <span className="text-gray-900 italic">{a.animalName}</span>
+                                                    {t.vet.alerts.pet}: <span className="text-gray-900 italic">{a.animalName}</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -122,13 +117,13 @@ export default function VetDashboardAlerts({ alerts, orgId }: { alerts: VetAlert
                                             onClick={() => setSelectedAlert(a)}
                                             className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2 hover:scale-110 p-4 rounded-2xl hover:bg-white transition-all shadow-sm border border-transparent hover:border-gray-100"
                                         >
-                                            Supervisar <BellRing className="w-4 h-4" />
+                                            {t.vet.alerts.supervise} <BellRing className="w-4 h-4" />
                                         </button>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-16 text-center text-gray-400 font-bold italic">Stock suficiente en todos los clientes</div>
+                            <div className="p-16 text-center text-gray-400 font-bold italic">{t.vet.alerts.enoughStock}</div>
                         )}
                     </div>
                 </div>
@@ -144,6 +139,7 @@ export default function VetDashboardAlerts({ alerts, orgId }: { alerts: VetAlert
                         animalId={selectedAlert.animalId}
                         type={selectedAlert.type}
                         defaultMessage={generateDefaultMessage(selectedAlert, tone)}
+                        locale={locale}
                     />
                 )}
             </div>

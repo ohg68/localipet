@@ -1,11 +1,13 @@
 export interface NotificationPayload {
-    to: string;
+    to: string; // Phone number, Telegram ID, or Expo Push Token
     message: string;
-    type: "whatsapp" | "telegram" | "sms";
+    type: "whatsapp" | "telegram" | "sms" | "expo";
+    title?: string;
+    data?: any;
 }
 
 export async function sendNotification(payload: NotificationPayload) {
-    const { to, message, type } = payload;
+    const { to, message, type, title, data } = payload;
 
     console.log(`Sending ${type} notification to ${to}: ${message}`);
 
@@ -16,9 +18,35 @@ export async function sendNotification(payload: NotificationPayload) {
             await sendWhatsApp(to, message);
         } else if (type === "sms") {
             await sendSMS(to, message);
+        } else if (type === "expo") {
+            await sendExpoPush(to, title || 'Localipet', message, data);
         }
     } catch (error) {
         console.error(`Failed to send ${type} notification:`, error);
+    }
+}
+
+async function sendExpoPush(expoPushToken: string, title: string, body: string, data: any = {}) {
+    const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: title,
+        body: body,
+        data: data,
+    };
+
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Expo Push API Error: ${await response.text()}`);
     }
 }
 

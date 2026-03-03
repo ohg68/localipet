@@ -4,15 +4,16 @@ import { useState } from "react";
 import {
     BellRing,
     MessageSquare,
-    Send,
     X,
     Loader2,
     CheckCircle2,
     Smartphone,
     Mail,
+    Send,
     Smartphone as WhatsApp
 } from "lucide-react";
 import { createCommunicationLog } from "@/app/actions/vet";
+import { Locale, translations } from "@/lib/i18n";
 
 interface VetAlertModalProps {
     isOpen: boolean;
@@ -24,6 +25,7 @@ interface VetAlertModalProps {
     animalId: string;
     type: "VACCINE" | "FOOD" | "CAMPAIGN";
     defaultMessage: string;
+    locale: Locale;
 }
 
 export default function VetAlertModal({
@@ -35,28 +37,23 @@ export default function VetAlertModal({
     orgId,
     animalId,
     type,
-    defaultMessage
+    defaultMessage,
+    locale
 }: VetAlertModalProps) {
     const [tone, setTone] = useState<"formal" | "caring">("caring");
     const [message, setMessage] = useState(defaultMessage);
     const [channel, setChannel] = useState<"APP" | "WHATSAPP" | "EMAIL">("APP");
     const [loading, setLoading] = useState(false);
     const [sent, setSent] = useState(false);
+    const t = translations[locale];
 
     const generateMessage = (selectedTone: "formal" | "caring") => {
-        if (type === "VACCINE") {
-            return selectedTone === "formal"
-                ? `Estimado cliente, le informamos que ${animalName} tiene pendiente su vacuna para el día indicado. Le sugerimos agendar una cita.`
-                : `¡Hola! 🐾 Queríamos recordarte con mucho cariño que a ${animalName} le toca pronto su vacuna. ¡Es super importante para su salud! 💖`;
-        }
-        if (type === "FOOD") {
-            return selectedTone === "formal"
-                ? `Le informamos que el stock de alimento para ${animalName} está próximo a terminarse.`
-                : `¡Ey! Notamos que a ${animalName} le debe quedar poquito de su comida favorita. 🦴🦴 ¡Si quieres te lo separamos hoy mismo!`;
-        }
-        return selectedTone === "formal"
-            ? `Oferta exclusiva para ${animalName} disponible por tiempo limitado.`
-            : `¡Mira qué buena noticia! 🎉 Tenemos una sorpresa para ${animalName}. ¡Le va a encantar!`;
+        const typeKey = type.toLowerCase() as "vaccine" | "food" | "campaign";
+        const toneKey = selectedTone === "formal" ? "Formal" : "Caring";
+        const key = `${typeKey}${toneKey}` as keyof typeof t.vet.alerts;
+        const template = t.vet.alerts[key] as string;
+
+        return template.replace("{name}", animalName);
     };
 
     const handleToneChange = (newTone: "formal" | "caring") => {
@@ -87,7 +84,7 @@ export default function VetAlertModal({
             }, 2000);
         } catch (error) {
             console.error(error);
-            alert("Error al registrar la comunicación");
+            alert(t.vet.alerts.error);
         } finally {
             setLoading(false);
         }
@@ -103,8 +100,8 @@ export default function VetAlertModal({
                             <BellRing className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black italic">Supervisión de Alerta</h3>
-                            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Revisa el mensaje para {animalName}</p>
+                            <h3 className="text-xl font-black italic">{t.vet.alerts.modalTitle}</h3>
+                            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{t.vet.alerts.modalDesc.replace("{name}", animalName)}</p>
                         </div>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
@@ -119,14 +116,18 @@ export default function VetAlertModal({
                             <div className="bg-green-100 p-6 rounded-full text-green-600">
                                 <CheckCircle2 className="w-12 h-12" />
                             </div>
-                            <h4 className="text-2xl font-black text-gray-900 italic">¡Notificación Enviada!</h4>
-                            <p className="text-gray-400 font-medium italic">Se ha registrado el envío de {type.toLowerCase()} vía {channel}.</p>
+                            <h4 className="text-2xl font-black text-gray-900 italic">{t.vet.alerts.sent}</h4>
+                            <p className="text-gray-400 font-medium italic">
+                                {t.vet.alerts.sentDesc
+                                    .replace("{type}", type.toLowerCase())
+                                    .replace("{channel}", channel)}
+                            </p>
                         </div>
                     ) : (
                         <>
                             {/* Channel Selector */}
                             <div className="space-y-4">
-                                <p className="text-xs font-black uppercase tracking-widest text-gray-400">Canal de Envío:</p>
+                                <p className="text-xs font-black uppercase tracking-widest text-gray-400">{t.vet.alerts.channelLabel}</p>
                                 <div className="grid grid-cols-3 gap-4">
                                     {[
                                         { id: "APP", label: "Localipet App", icon: Smartphone },
@@ -152,14 +153,14 @@ export default function VetAlertModal({
                                         className={`py-3 rounded-2xl border-2 transition-all flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest ${tone === "caring" ? "border-rose-400 bg-rose-50 text-rose-600" : "border-gray-100 text-gray-400"
                                             }`}
                                     >
-                                        💖 Cariñoso
+                                        {t.vet.alerts.caring}
                                     </button>
                                     <button
                                         onClick={() => handleToneChange("formal")}
                                         className={`py-3 rounded-2xl border-2 transition-all flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest ${tone === "formal" ? "border-gray-800 bg-gray-50 text-gray-800" : "border-gray-100 text-gray-400"
                                             }`}
                                     >
-                                        👔 Profesional
+                                        {t.vet.alerts.professional}
                                     </button>
                                 </div>
                             </div>
@@ -167,14 +168,14 @@ export default function VetAlertModal({
                             {/* Message Editor */}
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <p className="text-xs font-black uppercase tracking-widest text-gray-400">Mensaje Personalizado:</p>
-                                    <span className="text-[10px] font-bold text-primary italic">Modo {tone === "caring" ? "Cariñoso" : "Profesional"}</span>
+                                    <p className="text-xs font-black uppercase tracking-widest text-gray-400">{t.vet.alerts.customMessage}</p>
+                                    <span className="text-[10px] font-bold text-primary italic">{t.vet.alerts.modeT.replace("{tone}", tone === "caring" ? t.vet.alerts.caring : t.vet.alerts.professional)}</span>
                                 </div>
                                 <textarea
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
                                     className="w-full h-40 p-6 rounded-[2rem] border-2 border-gray-100 focus:border-primary outline-none text-gray-700 font-medium italic leading-relaxed resize-none bg-gray-50/30"
-                                    placeholder="Escribe el mensaje aquí..."
+                                    placeholder={t.vet.alerts.placeholder}
                                 />
                             </div>
                         </>
@@ -188,7 +189,7 @@ export default function VetAlertModal({
                             onClick={onClose}
                             className="flex-1 py-4 px-6 rounded-2xl font-black text-xs uppercase tracking-widest text-gray-400 hover:bg-gray-100 transition-colors"
                         >
-                            Cancelar
+                            {t.vet.alerts.cancel}
                         </button>
                         <button
                             onClick={handleSend}
@@ -196,7 +197,7 @@ export default function VetAlertModal({
                             className="flex-2 py-4 px-10 rounded-2xl font-black text-xs uppercase tracking-widest bg-primary text-white shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                            Enviar y Registrar
+                            {t.vet.alerts.sendBtn}
                         </button>
                     </div>
                 )}

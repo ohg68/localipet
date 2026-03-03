@@ -44,7 +44,7 @@ export default async function LostPetsPage() {
 
             <div className="max-w-3xl mx-auto mb-16">
                 <div className="bg-slate-900 p-2 rounded-[2.5rem] shadow-2xl">
-                    <ShortCodeSearch />
+                    <ShortCodeSearch locale={locale} />
                 </div>
             </div>
 

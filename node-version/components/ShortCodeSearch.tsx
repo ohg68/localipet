@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Search, Loader2, Hash, AlertCircle } from "lucide-react";
 import { lookupShortCode } from "@/app/actions/admin";
 import { useRouter } from "next/navigation";
+import { Locale, translations } from "@/lib/i18n";
 
-export default function ShortCodeSearch() {
+export default function ShortCodeSearch({ locale }: { locale: Locale }) {
     const [code, setCode] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+    const t = translations[locale];
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,7 +24,15 @@ export default function ShortCodeSearch() {
             const token = await lookupShortCode(code);
             router.push(`/s/${token}`);
         } catch (err: any) {
-            setError(err.message || "No se encontró el código");
+            let errorMessage = err.message;
+            if (errorMessage === "Código no encontrado.") {
+                errorMessage = t.scanHelp.error;
+            } else if (errorMessage === "El código debe tener entre 5 y 10 caracteres.") {
+                errorMessage = t.scanHelp.invalidLength;
+            } else {
+                errorMessage = t.scanHelp.error;
+            }
+            setError(errorMessage);
             setLoading(false);
         }
     };
@@ -31,10 +41,10 @@ export default function ShortCodeSearch() {
         <div className="card p-8 bg-white shadow-xl border-2 border-gray-100 mb-8">
             <h2 className="text-xl font-black text-gray-900 mb-2 flex items-center gap-2">
                 <Hash className="w-5 h-5 text-primary" />
-                ¿No puedes escanear el QR?
+                {t.scanHelp.title}
             </h2>
             <p className="text-gray-500 text-sm mb-6 font-medium">
-                Ingresa el código de 6 dígitos que está impreso debajo del código QR de la medalla.
+                {t.scanHelp.description}
             </p>
 
             <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-3">
@@ -44,7 +54,7 @@ export default function ShortCodeSearch() {
                         type="text"
                         value={code}
                         onChange={(e) => setCode(e.target.value.toUpperCase())}
-                        placeholder="ABC123"
+                        placeholder={t.scanHelp.placeholder}
                         maxLength={7}
                         className="w-full pl-10 pr-4 py-4 rounded-xl border-2 border-gray-100 focus:border-primary outline-none transition-all font-mono font-black text-lg tracking-widest"
                     />
@@ -54,7 +64,7 @@ export default function ShortCodeSearch() {
                     disabled={loading || !code}
                     className="btn-primary px-8 py-4 flex items-center justify-center gap-2 text-lg disabled:opacity-50"
                 >
-                    {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Search className="w-6 h-6" /> Buscar</>}
+                    {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Search className="w-6 h-6" /> {t.scanHelp.button}</>}
                 </button>
             </form>
 

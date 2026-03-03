@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import OrderRegistrationModal from "@/components/OrderRegistrationModal";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
 export default async function VetAnimalsPage({ searchParams }: { searchParams: { orgId?: string } }) {
     const session = await auth();
@@ -21,8 +23,11 @@ export default async function VetAnimalsPage({ searchParams }: { searchParams: {
         include: { organization: true }
     });
 
+    const locale = await getLocale();
+    const t = translations[locale];
+
     const activeOrgId = searchParams.orgId || userMemberships[0]?.organizationId;
-    if (!activeOrgId) return <div>No autorizado</div>;
+    if (!activeOrgId) return <div>{t.vet.notAuthorized}</div>;
 
     // Fetch all animals belonging to clients of this organization
     const clients = await prisma.organizationClient.findMany({
@@ -55,16 +60,16 @@ export default async function VetAnimalsPage({ searchParams }: { searchParams: {
                 <div>
                     <h2 className="text-4xl font-black text-gray-900 italic tracking-tight flex items-center gap-4">
                         <PawPrint className="w-10 h-10 text-primary" />
-                        Base de Pacientes
+                        {t.vet.animalsList.title}
                     </h2>
-                    <p className="text-gray-400 font-medium italic mt-2">Gestiona el historial y hábitos de consumo de todas las mascotas registradas.</p>
+                    <p className="text-gray-400 font-medium italic mt-2">{t.vet.animalsList.description}</p>
                 </div>
                 <div className="flex gap-4">
                     <div className="relative group">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-primary transition-colors" />
                         <input
                             type="text"
-                            placeholder="Buscar por nombre o dueño..."
+                            placeholder={t.vet.animalsList.search}
                             className="bg-white border-2 border-gray-100 rounded-2xl py-3 pl-12 pr-6 text-sm outline-none focus:border-primary transition-all w-64 shadow-sm"
                         />
                     </div>
@@ -74,9 +79,9 @@ export default async function VetAnimalsPage({ searchParams }: { searchParams: {
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { label: "Perros", val: animals.filter(a => a.species === "DOG").length, icon: Activity, color: "text-blue-500", bg: "bg-blue-50" },
-                    { label: "Gatos", val: animals.filter(a => a.species === "CAT").length, icon: HeartPulse, color: "text-rose-500", bg: "bg-rose-50" },
-                    { label: "Otras especies", val: animals.filter(a => a.species !== "DOG" && a.species !== "CAT").length, icon: PawPrint, color: "text-orange-500", bg: "bg-orange-50" },
+                    { label: t.vet.animalsList.dogs, val: animals.filter(a => a.species === "DOG").length, icon: Activity, color: "text-blue-500", bg: "bg-blue-50" },
+                    { label: t.vet.animalsList.cats, val: animals.filter(a => a.species === "CAT").length, icon: HeartPulse, color: "text-rose-500", bg: "bg-rose-50" },
+                    { label: t.vet.animalsList.other, val: animals.filter(a => a.species !== "DOG" && a.species !== "CAT").length, icon: PawPrint, color: "text-orange-500", bg: "bg-orange-50" },
                 ].map((stat, i) => (
                     <div key={i} className="card p-6 border-0 shadow-lg shadow-gray-100 flex items-center justify-between">
                         <div>
@@ -99,8 +104,8 @@ export default async function VetAnimalsPage({ searchParams }: { searchParams: {
                                 <div className="bg-primary/10 p-4 rounded-3xl text-primary group-hover:bg-primary group-hover:text-white transition-all">
                                     <PawPrint className="w-8 h-8" />
                                 </div>
-                                <div>
-                                    <h3 className="text-2xl font-black italic text-gray-900 leading-none mb-1">{animal.name}</h3>
+                                <div className="min-w-0">
+                                    <h3 className="text-2xl font-black italic text-gray-900 leading-none mb-1 truncate">{animal.name}</h3>
                                     <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">{animal.breed || animal.species}</span>
                                 </div>
                             </div>
@@ -110,7 +115,7 @@ export default async function VetAnimalsPage({ searchParams }: { searchParams: {
                                 </div>
                             ) : (
                                 <div className="bg-gray-100 text-gray-400 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase">
-                                    Sin QR
+                                    {t.vet.animalsList.noQr}
                                 </div>
                             )}
                         </div>
@@ -118,21 +123,21 @@ export default async function VetAnimalsPage({ searchParams }: { searchParams: {
                         <div className="space-y-4 mb-8">
                             <div className="flex items-center gap-3 text-sm">
                                 <User className="w-4 h-4 text-primary" />
-                                <span className="font-bold text-gray-600 italic">Dueño: <span className="text-gray-900">{animal.ownerName}</span></span>
+                                <span className="font-bold text-gray-600 italic">{t.vet.animalsList.owner}: <span className="text-gray-900 truncate">{animal.ownerName}</span></span>
                             </div>
                             <div className="flex items-center gap-3 text-sm">
                                 <HeartPulse className="w-4 h-4 text-rose-500" />
                                 <span className="font-bold text-gray-600 italic">
-                                    Vacuna:
+                                    {t.vet.animalsList.vaccine}:
                                     <span className="text-gray-900 ml-1">
-                                        {animal.vaccinations[0] ? animal.vaccinations[0].name : "No registrada"}
+                                        {animal.vaccinations[0] ? animal.vaccinations[0].name : t.vet.animalsList.notRegistered}
                                     </span>
                                 </span>
                             </div>
                             {(animal as any).foodBrand && (
                                 <div className="flex items-center gap-3 text-sm">
                                     <ShoppingBag className="w-4 h-4 text-blue-500" />
-                                    <span className="font-bold text-gray-600 italic">Dieta: <span className="text-gray-900">{(animal as any).foodBrand}</span></span>
+                                    <span className="font-bold text-gray-600 italic">{t.vet.animalsList.diet}: <span className="text-gray-900">{(animal as any).foodBrand}</span></span>
                                 </div>
                             )}
                         </div>
@@ -142,13 +147,14 @@ export default async function VetAnimalsPage({ searchParams }: { searchParams: {
                                 href={`/vet/animals/${animal.id}?orgId=${activeOrgId}`}
                                 className="flex items-center justify-center gap-2 py-3 bg-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-500 hover:bg-gray-200 transition-all"
                             >
-                                Perfil Clínico <ChevronRight className="w-3 h-3" />
+                                {t.vet.animalsList.profileBtn} <ChevronRight className="w-3 h-3" />
                             </Link>
                             <OrderRegistrationModal
                                 animalId={animal.id}
                                 animalName={animal.name}
                                 currentFood={(animal as any).foodBrand}
                                 orgId={activeOrgId}
+                                locale={locale}
                             />
                         </div>
                     </div>
@@ -159,8 +165,8 @@ export default async function VetAnimalsPage({ searchParams }: { searchParams: {
                     <div className="bg-gray-50 p-6 rounded-full mb-6 group-hover:bg-primary/10 transition-all">
                         <Plus className="w-10 h-10 text-gray-300 group-hover:text-primary transition-all" />
                     </div>
-                    <p className="text-gray-400 font-black italic text-lg group-hover:text-primary transition-all tracking-tight">Vincular Mascota</p>
-                    <p className="text-xs text-gray-300 font-medium mt-1">Escanea un QR para asociarla a la clínica</p>
+                    <p className="text-gray-400 font-black italic text-lg group-hover:text-primary transition-all tracking-tight">{t.vet.animalsList.linkPet}</p>
+                    <p className="text-xs text-gray-300 font-medium mt-1">{t.vet.animalsList.linkPetDesc}</p>
                 </div>
             </div>
         </div>

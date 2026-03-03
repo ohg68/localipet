@@ -86,7 +86,7 @@ export default async function Home() {
       <section className="relative z-20 -mt-16 mb-20 px-4">
         <div className="container max-w-4xl">
           <div className="bg-slate-900 p-2 rounded-[2.5rem] shadow-2xl shadow-slate-900/40">
-            <ShortCodeSearch />
+            <ShortCodeSearch locale={locale} />
           </div>
         </div>
       </section>

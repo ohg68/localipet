@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 
 import VetNavigation from "@/components/VetNavigation";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
 export default async function VetLayout({
     children,
@@ -29,15 +31,14 @@ export default async function VetLayout({
         include: { organization: true }
     });
 
-    // 2. If user is ADMIN but has no specific memberships, and it's looking for something... 
-    // In our model, we primarily use memberships.
-
     if (userMemberships.length === 0 && session.user.role !== "ADMIN") {
         redirect("/");
     }
 
+    const locale = await getLocale();
+    const t = translations[locale];
+
     // Default to first membership if none specified in a way we can track (for layouts, pages handle it better)
-    // Actually, we'll suggest the workspace selection
     const activeOrg = userMemberships[0]?.organization;
 
     return (
@@ -60,11 +61,11 @@ export default async function VetLayout({
                                     </span>
                                 )}
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Inteligencia Clínica para Consultorios</p>
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">{t.vet.panelSubtitle}</p>
                         </div>
                     </div>
 
-                    <VetNavigation />
+                    <VetNavigation locale={locale} />
                 </div>
             </div>
 

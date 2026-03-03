@@ -73,10 +73,10 @@ export default async function AdminDashboardPage() {
                                             </div>
                                             <div>
                                                 <p className="font-black text-gray-900 italic">
-                                                    #{scan.qrCode.shortCode} - {scan.qrCode.animal?.name || "Sin Nombre"}
+                                                    #{scan.qrCode.shortCode} - {scan.qrCode.animal?.name || t.admin.noName}
                                                 </p>
                                                 <p className="text-xs text-gray-500 font-medium">
-                                                    {scan.cityGuess || "Ubicación desconocida"}, {scan.countryGuess || "MX"}
+                                                    {scan.cityGuess || t.admin.unknownLocation}, {scan.countryGuess || "MX"}
                                                 </p>
                                             </div>
                                         </div>
@@ -128,15 +128,15 @@ export default async function AdminDashboardPage() {
             {/* Platform Health Section */}
             <div className="bg-gray-900 text-white p-12 rounded-[3.5rem] relative overflow-hidden flex flex-col items-center text-center">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[120px] rounded-full"></div>
-                <h3 className="text-3xl font-black mb-6 italic tracking-tight">Estado de la Plataforma</h3>
+                <h3 className="text-3xl font-black mb-6 italic tracking-tight">{t.admin.platformStatus}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12 w-full max-w-4xl relative z-10">
                     <div>
                         <p className="text-primary text-5xl font-black mb-2 italic">{(activeTags / (userCount || 1) * 100).toFixed(0)}%</p>
-                        <p className="text-gray-400 text-sm font-black uppercase tracking-widest leading-relaxed">Tags Vinculados</p>
+                        <p className="text-gray-400 text-sm font-black uppercase tracking-widest leading-relaxed">{t.admin.linkedTags}</p>
                     </div>
                     <div>
                         <p className="text-primary text-5xl font-black mb-2 italic">{totalMsgs}</p>
-                        <p className="text-gray-400 text-sm font-black uppercase tracking-widest leading-relaxed">Mensajes Finder</p>
+                        <p className="text-gray-400 text-sm font-black uppercase tracking-widest leading-relaxed">{t.admin.finderMessages}</p>
                     </div>
                     <div>
                         <p className="text-primary text-5xl font-black mb-2 italic">99.9%</p>

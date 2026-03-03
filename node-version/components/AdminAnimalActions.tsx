@@ -12,25 +12,28 @@ import {
     AlertTriangle
 } from "lucide-react";
 import { toggleAnimalLost, toggleAnimalActive, unlinkTag } from "@/app/actions/admin";
+import { translations, Locale } from "@/lib/i18n";
 
 interface AdminAnimalActionsProps {
     animalId: string;
     isLost: boolean;
     isActive: boolean;
     hasTag: boolean;
+    locale: Locale;
 }
 
-export default function AdminAnimalActions({ animalId, isLost, isActive, hasTag }: AdminAnimalActionsProps) {
+export default function AdminAnimalActions({ animalId, isLost, isActive, hasTag, locale }: AdminAnimalActionsProps) {
+    const t = translations[locale];
     const [loading, setLoading] = useState<string | null>(null);
 
     const handleAction = async (action: string, fn: () => Promise<any>) => {
-        if (!confirm("¿Estás seguro de realizar esta acción manual?")) return;
+        if (!confirm(t.admin.animalActions.confirm)) return;
         setLoading(action);
         try {
             await fn();
         } catch (error) {
             console.error(error);
-            alert("Error al procesar la solicitud");
+            alert(t.admin.animalActions.error);
         } finally {
             setLoading(null);
         }
@@ -44,7 +47,7 @@ export default function AdminAnimalActions({ animalId, isLost, isActive, hasTag 
                     onClick={() => handleAction("lost", () => toggleAnimalLost(animalId, false))}
                     disabled={!!loading}
                     className="p-2 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors border border-green-200"
-                    title="Marcar como Encontrado"
+                    title={t.admin.animalActions.markFound}
                 >
                     {loading === "lost" ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                 </button>
@@ -53,7 +56,7 @@ export default function AdminAnimalActions({ animalId, isLost, isActive, hasTag 
                     onClick={() => handleAction("lost", () => toggleAnimalLost(animalId, true))}
                     disabled={!!loading}
                     className="p-2 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors border border-rose-200"
-                    title="Marcar como Perdido"
+                    title={t.admin.animalActions.markLost}
                 >
                     {loading === "lost" ? <Loader2 className="w-4 h-4 animate-spin" /> : <AlertTriangle className="w-4 h-4" />}
                 </button>
@@ -65,7 +68,7 @@ export default function AdminAnimalActions({ animalId, isLost, isActive, hasTag 
                     onClick={() => handleAction("unlink", () => unlinkTag(animalId))}
                     disabled={!!loading}
                     className="p-2 rounded-lg bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors border border-gray-200"
-                    title="Desvincular Tag QR"
+                    title={t.admin.animalActions.unlink}
                 >
                     {loading === "unlink" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2Off className="w-4 h-4" />}
                 </button>
@@ -76,10 +79,10 @@ export default function AdminAnimalActions({ animalId, isLost, isActive, hasTag 
                 onClick={() => handleAction("active", () => toggleAnimalActive(animalId, !isActive))}
                 disabled={!!loading}
                 className={`p-2 rounded-lg transition-colors border ${isActive
-                        ? "bg-gray-50 text-gray-400 hover:bg-gray-100 border-gray-200"
-                        : "bg-blue-50 text-blue-600 hover:bg-blue-100 border-blue-200"
+                    ? "bg-gray-50 text-gray-400 hover:bg-gray-100 border-gray-200"
+                    : "bg-blue-50 text-blue-600 hover:bg-blue-100 border-blue-200"
                     }`}
-                title={isActive ? "Desactivar Cuenta" : "Activar Cuenta"}
+                title={isActive ? t.admin.animalActions.deactivate : t.admin.animalActions.activate}
             >
                 {loading === "active" ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldAlert className={`w-4 h-4 ${!isActive && "fill-blue-50"}`} />}
             </button>

@@ -7,19 +7,23 @@ import {
     Users,
     PawPrint,
     BellRing,
-    ShoppingBag
+    ShoppingBag,
+    MessageSquare
 } from "lucide-react";
+import { translations, Locale } from "@/lib/i18n";
 
-export default function VetNavigation() {
+export default function VetNavigation({ locale }: { locale: Locale }) {
     const searchParams = useSearchParams();
     const orgId = searchParams.get("orgId");
+    const t = translations[locale];
 
     const tabs = [
-        { name: "Resumen", href: "/vet", icon: LayoutDashboard },
-        { name: "Clientes CRM", href: "/vet/clients", icon: Users },
-        { name: "Mascotas", href: "/vet/animals", icon: PawPrint },
-        { name: "Alertas & Campañas", href: "/vet/communications", icon: BellRing },
-        { name: "Ventas/Pedidos", href: "/vet/inventory", icon: ShoppingBag },
+        { name: t.vet.tabs.summary, href: "/vet", icon: LayoutDashboard },
+        { name: t.vet.tabs.clients, href: "/vet/clients", icon: Users },
+        { name: t.vet.tabs.pets, href: "/vet/animals", icon: PawPrint },
+        { name: t.vet.tabs.alerts, href: "/vet/communications", icon: BellRing },
+        { name: t.vet.tabs.sales, href: "/vet/inventory", icon: ShoppingBag },
+        { name: t.vet.tabs.chat, href: "/vet/chat", icon: MessageSquare },
     ];
 
     return (

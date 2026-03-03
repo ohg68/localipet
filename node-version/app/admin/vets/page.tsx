@@ -1,8 +1,12 @@
 import { getVetsList } from "@/app/actions/admin";
 import { Hospital, MapPin, Phone, Mail, ExternalLink, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
 export default async function AdminVetsPage() {
     const vets = await getVetsList();
+    const locale = await getLocale();
+    const t = translations[locale];
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
@@ -10,19 +14,19 @@ export default async function AdminVetsPage() {
                 <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                     <h2 className="text-xl font-black flex items-center gap-3 text-gray-900">
                         <Hospital className="w-6 h-6 text-primary" />
-                        Organizaciones y Clínicas ({vets.length})
+                        {t.admin.vetsList.title} ({vets.length})
                     </h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-white border-b border-gray-100">
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Organización</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Tipo</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Ubicación</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Contacto</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Estado</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Registro</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.vetsList.tableOrg}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.vetsList.tableType}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.vetsList.tableLocation}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.vetsList.tableContact}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.vetsList.tableStatus}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.admin.vetsList.tableRegistration}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -36,8 +40,8 @@ export default async function AdminVetsPage() {
                                     </td>
                                     <td className="px-8 py-6">
                                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${vet.type === "vet"
-                                                ? "bg-primary/10 text-primary border border-primary/20"
-                                                : "bg-gray-100 text-gray-600 border border-gray-200"
+                                            ? "bg-primary/10 text-primary border border-primary/20"
+                                            : "bg-gray-100 text-gray-600 border border-gray-200"
                                             }`}>
                                             {vet.type}
                                         </span>
@@ -55,11 +59,11 @@ export default async function AdminVetsPage() {
                                         <div className="flex flex-col gap-1">
                                             <div className="flex items-center gap-1.5 text-xs font-black text-gray-900 transition-colors hover:text-primary">
                                                 <Phone className="w-3 h-3 text-primary" />
-                                                {vet.phone || "Sin Teléfono"}
+                                                {vet.phone || t.admin.vetsList.noPhone}
                                             </div>
                                             <div className="flex items-center gap-1.5 text-xs font-medium text-gray-400 transition-colors hover:text-gray-900">
                                                 <Mail className="w-3 h-3" />
-                                                {vet.email || "Sin Email"}
+                                                {vet.email || t.admin.vetsList.noEmail}
                                             </div>
                                         </div>
                                     </td>
@@ -68,12 +72,12 @@ export default async function AdminVetsPage() {
                                             {vet.isVerified ? (
                                                 <div className="flex items-center gap-1.5 bg-green-50 px-3 py-1 rounded-full border border-green-100 w-fit">
                                                     <CheckCircle2 className="w-3 h-3 text-green-600" />
-                                                    <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">Verificada</span>
+                                                    <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">{t.admin.vetsList.verified}</span>
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 w-fit">
                                                     <ShieldCheck className="w-3 h-3 text-gray-400" />
-                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pendiente</span>
+                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t.admin.vetsList.pending}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -98,8 +102,8 @@ export default async function AdminVetsPage() {
                                                 <Hospital className="w-12 h-12 text-gray-300" />
                                             </div>
                                             <div>
-                                                <p className="text-xl font-black text-gray-900 mb-1">No hay organizaciones registradas</p>
-                                                <p className="text-gray-400 font-medium italic">Aún no se han unido clínicas veterinarias a la red.</p>
+                                                <p className="text-xl font-black text-gray-900 mb-1">{t.admin.vetsList.noVets}</p>
+                                                <p className="text-gray-400 font-medium italic">{t.admin.vetsList.noVetsDesc}</p>
                                             </div>
                                         </div>
                                     </td>

@@ -36,6 +36,8 @@ model User {
   profile              Profile?
   subscriptions        Subscription[]
   communicationLogs    CommunicationLog[]
+  clinicChatSessions   ClinicChatSession[]
+  medicalNotes         MedicalNote[]
 }
 
 model Profile {
@@ -56,6 +58,7 @@ model Profile {
   licenseNumber         String?
   isVerified            Boolean  @default(false)
   odooPartnerId         Int?
+  pushToken             String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -98,6 +101,7 @@ model Animal {
   vaccinations  Vaccination[]
   weightRecords WeightRecord[]
   communicationLogs CommunicationLog[]
+  medicalRecordNotes MedicalNote[]
 }
 
 model AnimalPhoto {
@@ -290,6 +294,8 @@ model Organization {
   campaigns        VetCampaign[]
   vaccinations     Vaccination[]
   communicationLogs CommunicationLog[]
+  clinicChatSessions ClinicChatSession[]
+  medicalNotes       MedicalNote[]
 }
 
 model OrganizationMember {
@@ -624,4 +630,56 @@ enum Species {
   RABBIT
   REPTILE
   OTHER
+}
+
+model GlobalOffer {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  discount    String?
+  imageUrl    String?
+  tag         String?  @default("Premium")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ClinicChatSession {
+  id             String       @id @default(cuid())
+  userId         String
+  organizationId String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  messages       ClinicChatMessage[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([userId, organizationId])
+}
+
+model ClinicChatMessage {
+  id          String            @id @default(cuid())
+  sessionId   String
+  session     ClinicChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  senderType  String            // "USER" or "CLINIC"
+  content     String
+  isRead      Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+}
+
+model MedicalNote {
+  id             String       @id @default(cuid())
+  animalId       String
+  organizationId String
+  vetId          String
+  title          String
+  content        String
+  attachments    String?      // Could be an array of URLs or JSON
+  type           String       @default("GENERAL") // GENERAL, SURGERY, ALLERGY, LAB
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  animal         Animal       @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  vet            User         @relation(fields: [vetId], references: [id])
 }

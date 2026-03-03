@@ -70,6 +70,14 @@ export const translations = {
             dog: "Perro",
             cat: "Gato"
         },
+        scanHelp: {
+            title: "¿No puedes escanear el QR?",
+            description: "Ingresa el código de 6 dígitos que está impreso debajo del código QR de la medalla.",
+            placeholder: "ABC123",
+            button: "Buscar",
+            error: "No se encontró el código",
+            invalidLength: "El código debe tener entre 5 y 10 caracteres."
+        },
         dashboard: {
             greeting: "Hola,",
             stats: {
@@ -224,33 +232,6 @@ export const translations = {
             loading: "Cargando formulario...",
             errorMsg: "Ocurrió un error al procesar la mascota"
         },
-        vet: {
-            dashboard: "DASHBOARD CLÍNICA VETERINARIA",
-            subtitle: "Gestión administrativa y alertas inteligentes para este consultorio.",
-            stats: {
-                clients: "CLIENTES CRM",
-                pets: "MASCOTAS",
-                alerts: "ALERTAS ACTIVAS",
-                conversion: "CONVERSIÓN"
-            },
-            tabs: {
-                summary: "Resumen",
-                clients: "Clientes CRM",
-                pets: "Mascotas",
-                alerts: "Alertas & Campañas",
-                sales: "Ventas/Pedidos"
-            },
-            sections: {
-                vaccines: "Supervisión de Vacunas",
-                consumption: "Supervisión de Consumo"
-            },
-            proActive: {
-                title: "Potencia tus Ventas con Supervisión Humana",
-                desc: "Las alertas automáticas pueden ser ignoradas. Un mensaje personalizado enviado por un profesional de confianza aumenta la conversión de visitas en un 40%.",
-                btn: "Panel de Comunicaciones",
-                dataPoint: "El 85% de los dueños prefieren recibir recordatorios personalizados por WhatsApp."
-            }
-        },
         admin: {
             panel: "PANEL ADMINISTRATIVO",
             control: "Localipet Control",
@@ -269,7 +250,230 @@ export const translations = {
             },
             recentScans: "Escaneos Recientes",
             newUsers: "Nuevos Usuarios",
-            noScans: "No se han registrado escaneos recientemente"
+            noScans: "No se han registrado escaneos recientemente",
+            platformStatus: "Estado de la Plataforma",
+            linkedTags: "Tags Vinculados",
+            finderMessages: "Mensajes Finder",
+            unknownLocation: "Ubicación desconocida",
+            noName: "Sin Nombre",
+            usersList: {
+                title: "Listado de Usuarios",
+                tableUser: "Usuario",
+                tableRole: "Rol",
+                tableLocation: "Ubicación",
+                tablePets: "Mascotas",
+                tableRegistration: "Registro",
+                noLocation: "No especificado"
+            },
+            vetsList: {
+                title: "Organizaciones y Clínicas",
+                tableOrg: "Organización",
+                tableType: "Tipo",
+                tableLocation: "Ubicación",
+                tableContact: "Contacto",
+                tableStatus: "Estado",
+                tableRegistration: "Registro",
+                verified: "Verificada",
+                pending: "Pendiente",
+                noVets: "No hay organizaciones registradas",
+                noVetsDesc: "Aún no se han unido clínicas veterinarias a la red.",
+                noPhone: "Sin Teléfono",
+                noEmail: "Sin Email"
+            },
+            qrGenerator: {
+                title: "Constructor de Tags",
+                description: "Herramienta exclusiva de administración para producción masiva.",
+                newBatch: "Generar Nuevo Lote",
+                quantity: "Cantidad (Max 1000)",
+                generateBtn: "Generar Lote",
+                success: "¡Lote generado con éxito!",
+                dashboardTitle: "Dashboard de Impresión",
+                dashboardDesc: "Gestiona y exporta los códigos para fabricación masiva de tags.",
+                exportBtn: "Exportar CSV",
+                totalUnassigned: "Total sin asignar",
+                outputFormat: "Formato de Salida",
+                lastGenerated: "Últimos Códigos Generados",
+                tableToken: "Token",
+                tableShortCode: "ShortCode",
+                tableUrl: "URL del Tag",
+                tableDate: "Fecha",
+                tableAction: "Acción",
+                error: "Error al generar códigos"
+            },
+            petsList: {
+                title: "Listado de Mascotas",
+                tablePet: "Mascota",
+                tableOwner: "Dueño Responsable",
+                tableSpecies: "Especie/Raza",
+                tableQr: "Vínculo QR",
+                tableStatus: "Estado",
+                tableDate: "Fecha",
+                tableActions: "Acciones Manuales",
+                statusLost: "Perdido",
+                statusProtected: "Protegido",
+                statusBlocked: "Bloqueada",
+                notLinked: "Sin vincular"
+            },
+            animalActions: {
+                confirm: "¿Estás seguro de realizar esta acción manual?",
+                error: "Error al procesar la solicitud",
+                markFound: "Marcar como Encontrado",
+                markLost: "Marcar como Perdido",
+                unlink: "Desvincular Tag QR",
+                deactivate: "Desactivar Cuenta",
+                activate: "Activar Cuenta"
+            }
+        },
+        vet: {
+            dashboard: "Dashboard de Clínica",
+            subtitle: "Gestión Inteligente y Crecimiento",
+            noOrgTitle: "Sin Organización Vinculada",
+            noOrgDesc: "Debes estar vinculado a una clínica veterinaria para acceder al ERP.",
+            myClinics: "Mis Clínicas:",
+            notAuthorized: "No autorizado",
+            panelSubtitle: "Inteligencia Clínica para Consultorios",
+            stats: {
+                clients: "CLIENTES CRM",
+                pets: "MASCOTAS",
+                alerts: "ALERTAS ACTIVAS",
+                conversion: "CONVERSIÓN"
+            },
+            tabs: {
+                summary: "Resumen",
+                clients: "Clientes CRM",
+                pets: "Mascotas",
+                alerts: "Alertas & Campañas",
+                sales: "Ventas/Pedidos",
+                chat: "Chat en Vivo"
+            },
+            sections: {
+                vaccines: "Supervisión de Vacunas",
+                consumption: "Supervisión de Consumo"
+            },
+            proActive: {
+                title: "Potencia tus Ventas con Supervisión Humana",
+                desc: "Las alertas automáticas pueden ser ignoradas. Un mensaje personalizado enviado por un profesional de confianza aumenta la conversión de visitas en un 40%.",
+                btn: "Panel de Comunicaciones",
+                dataPoint: "El 85% de los dueños prefieren recibir recordatorios personalizados por WhatsApp."
+            },
+            animalsList: {
+                title: "Base de Pacientes",
+                description: "Gestiona el historial y hábitos de consumo de todas las mascotas registradas.",
+                search: "Buscar por nombre o dueño...",
+                dogs: "Perros",
+                cats: "Gatos",
+                other: "Otras especies",
+                owner: "Dueño",
+                vaccine: "Vacuna",
+                diet: "Dieta",
+                notRegistered: "No registrada",
+                profileBtn: "Perfil Clínico",
+                linkPet: "Vincular Mascota",
+                linkPetDesc: "Escanea un QR para asociarla a la clínica",
+                noQr: "Sin QR"
+            },
+            orderModal: {
+                newSale: "Nueva Venta",
+                title: "Registrar Venta de Alimento",
+                success: "¡Venta Registrada!",
+                successDesc: "El consumo de {name} se está calculando ahora mismo para las próximas alertas.",
+                patientSummary: "Resumen del Paciente:",
+                foodBrand: "Marca de Alimento:",
+                foodPlaceholder: "Ej: Royal Canin Pediatric Dog",
+                packageSize: "Tamaño Pack (Kg):",
+                dailyGrams: "Consumo Diario (g):",
+                alertNotice: "Esto actualizará las alarmas de consumo. El sistema detectará que {name} terminará su alimento en aproximadamente {days} días y disparará una alerta a los {alertDays} días.",
+                submit: "Finalizar Venta",
+                processing: "Procesando..."
+            },
+            alerts: {
+                caring: "💖 Modo Cariñoso",
+                professional: "👔 Profesional",
+                notSupervisor: "Sin vacunas por supervisar",
+                supervise: "Supervisar",
+                pet: "Mascota",
+                vaccineTitle: "Supervisión de Vacunas",
+                consumptionTitle: "Supervisión de Consumo",
+                repose: "Reponer {title}",
+                enoughStock: "Stock suficiente en todos los clientes",
+                modalTitle: "Supervisión de Alerta",
+                modalDesc: "Revisa el mensaje para {name}",
+                sent: "¡Notificación Enviada!",
+                sentDesc: "Se ha registrado el envío de {type} vía {channel}.",
+                channelLabel: "Canal de Envío:",
+                customMessage: "Mensaje Personalizado:",
+                modeT: "Modo {tone}",
+                placeholder: "Escribe el mensaje aquí...",
+                cancel: "Cancelar",
+                sendBtn: "Enviar y Registrar",
+                error: "Error al registrar la comunicación",
+                vaccineFormal: "Estimado cliente, le informamos que {name} tiene pendiente su vacuna para el día indicado. Le sugerimos agendar una cita.",
+                vaccineCaring: "¡Hola! 🐾 Queríamos recordarte con mucho cariño que a {name} le toca pronto su vacuna. ¡Es super importante para su salud! 💖",
+                foodFormal: "Le informamos que el stock de alimento para {name} está próximo a terminarse.",
+                foodCaring: "¡Ey! Notamos que a {name} le debe quedar poquito de su comida favorita. 🦴🦴 ¡Si quieres te lo separamos hoy mismo!",
+                campaignFormal: "Oferta exclusiva para {name} disponible por tiempo limitado.",
+                campaignCaring: "¡Mira qué buena noticia! 🎉 Tenemos una sorpresa para {name}. ¡Le va a encantar!"
+            },
+            inventory: {
+                title: "Ventas & Inventario",
+                description: "Control de ingresos y trazabilidad de productos para {name}.",
+                statsSales: "Ventas Registradas",
+                statsStock: "Stock Crítico (Alarmas)",
+                statsConversion: "Conversión de Alarmas",
+                tableTitle: "Registro de Ventas",
+                searchPlaceholder: "Buscar venta...",
+                tableClient: "Cliente / Mascota",
+                tableOrderId: "ID Orden",
+                tableAmount: "Monto",
+                tableDate: "Fecha",
+                tableAction: "Acción",
+                noSales: "No hay ventas registradas aún",
+                noSalesDesc: "Usa el botón de \"Venta\" en las fichas de mascota para empezar.",
+                predictiveTitle: "Sincroniza tus Pedidos con el Consumo",
+                predictiveBadge: "Inteligencia Predictiva Localipet",
+                predictiveDesc: "Localipet analiza en tiempo real cuánto alimento le queda a cada uno de tus pacientes. Optimiza tus pedidos a proveedores basándote en la demanda próxima real, no en suposiciones.",
+                stockAlarms: "Alarmas de Stock",
+                estimatedDemand: "Demanda Estimada (30d)",
+                habitsNotice: "Conversión basada en hábitos registrados"
+            },
+            clientsList: {
+                title: "CRM de Clientes",
+                description: "Gestiona la base de datos de dueños de mascotas asociados a tu red de trabajo.",
+                tableClient: "Cliente",
+                tableContact: "Contacto",
+                tablePets: "Mascotas Vinculadas",
+                tableLastVisit: "Última Visita",
+                tableActions: "Acciones",
+                noPhone: "Sin Teléfono",
+                noPets: "Sin mascotas",
+                id: "ID",
+                userPrefix: "Usuario"
+            },
+            redGrowth: {
+                title: "Crecimiento de Red",
+                description: "Cada vez que escaneas un código QR de Localipet en tu clínica, el cliente queda automáticamente vinculado a tu ERP si aún no tiene veterinario asignado.",
+                opportunity: "Oportunidad:",
+                salesMonth: "Ventas Mes"
+            },
+            commsManager: {
+                title: "Gestor de Comunicaciones",
+                description: "Activa alarmas inteligentes y crea campañas para tus clientes más fieles.",
+                newCampaign: "Nueva Campaña",
+                vaccines: "Vacunas",
+                food: "Alimento",
+                grooming: "Estética",
+                statusActiveAuto: "Activo (Auto)",
+                statusActiveAI: "Activo (IA)",
+                statusManual: "Manual",
+                channelLabel: "Canal: APP + WhatsApp",
+                activeCampaigns: "Campañas Activas",
+                noCampaigns: "No hay campañas activas actualmente",
+                noCampaignsDesc: "Crea una oferta para clientes con bajo stock de alimento.",
+                recentActivity: "Actividad Reciente",
+                viewMetrics: "Ver Métricas",
+                expires: "Expira:",
+                ago: "hace"
+            }
         }
     },
     pt: {
@@ -340,6 +544,14 @@ export const translations = {
             mestizo: "Sem Raça Definida",
             dog: "Cão",
             cat: "Gato"
+        },
+        scanHelp: {
+            title: "Não consegue ler o QR?",
+            description: "Insira o código de 6 dígitos que está impresso abaixo do código QR da medalha.",
+            placeholder: "ABC123",
+            button: "Procurar",
+            error: "Código não encontrado",
+            invalidLength: "O código deve ter entre 5 e 10 caracteres."
         },
         dashboard: {
             greeting: "Olá,",
@@ -495,33 +707,6 @@ export const translations = {
             loading: "A carregar formulário...",
             errorMsg: "Ocorreu um erro ao processar o animal"
         },
-        vet: {
-            dashboard: "DASHBOARD CLÍNICA VETERINÁRIA",
-            subtitle: "Gestão administrativa e alertas inteligentes para este consultório.",
-            stats: {
-                clients: "CLIENTES CRM",
-                pets: "ANIMAIS",
-                alerts: "ALERTAS ATIVOS",
-                conversion: "CONVERSÃO"
-            },
-            tabs: {
-                summary: "Resumo",
-                clients: "Clientes CRM",
-                pets: "Animais",
-                alerts: "Alertas & Campanhas",
-                sales: "Vendas/Pedidos"
-            },
-            sections: {
-                vaccines: "Supervisão de Vacinas",
-                consumption: "Supervisão de Consumo"
-            },
-            proActive: {
-                title: "Potencialize as suas Vendas com Supervisão Humana",
-                desc: "Os alertas automáticos podem ser ignorados. Uma mensagem personalizada enviada por um profissional de confiança aumenta a conversão de visitas em 40%.",
-                btn: "Painel de Comunicações",
-                dataPoint: "85% dos tutores preferem receber lembretes personalizados via WhatsApp."
-            }
-        },
         admin: {
             panel: "PAINEL ADMINISTRATIVO",
             control: "Localipet Control",
@@ -540,7 +725,230 @@ export const translations = {
             },
             recentScans: "Leituras Recentes",
             newUsers: "Novos Usuários",
-            noScans: "Não foram registradas leituras recentemente"
+            noScans: "Não foram registradas leituras recentemente",
+            platformStatus: "Estado da Plataforma",
+            linkedTags: "Tags Vinculados",
+            finderMessages: "Mensagens Finder",
+            unknownLocation: "Localização desconhecida",
+            noName: "Sem Nome",
+            usersList: {
+                title: "Lista de Usuários",
+                tableUser: "Usuário",
+                tableRole: "Função",
+                tableLocation: "Localização",
+                tablePets: "Animais",
+                tableRegistration: "Registro",
+                noLocation: "Não especificado"
+            },
+            vetsList: {
+                title: "Organizações e Clínicas",
+                tableOrg: "Organização",
+                tableType: "Tipo",
+                tableLocation: "Localização",
+                tableContact: "Contato",
+                tableStatus: "Estado",
+                tableRegistration: "Registro",
+                verified: "Verificada",
+                pending: "Pendente",
+                noVets: "Não há organizações registradas",
+                noVetsDesc: "Ainda não se juntaram clínicas veterinárias à rede.",
+                noPhone: "Sem Telefone",
+                noEmail: "Sem Email"
+            },
+            qrGenerator: {
+                title: "Construtor de Tags",
+                description: "Ferramenta exclusiva de administração para produção em massa.",
+                newBatch: "Gerar Novo Lote",
+                quantity: "Quantidade (Max 1000)",
+                generateBtn: "Gerar Lote",
+                success: "Lote gerado com sucesso!",
+                dashboardTitle: "Painel de Impressão",
+                dashboardDesc: "Gerencie e exporte os códigos para fabricação em massa de tags.",
+                exportBtn: "Exportar CSV",
+                totalUnassigned: "Total sem atribuir",
+                outputFormat: "Formato de Saída",
+                lastGenerated: "Últimos Códigos Gerados",
+                tableToken: "Token",
+                tableShortCode: "ShortCode",
+                tableUrl: "URL do Tag",
+                tableDate: "Data",
+                tableAction: "Ação",
+                error: "Erro ao gerar códigos"
+            },
+            petsList: {
+                title: "Lista de Animais",
+                tablePet: "Animal",
+                tableOwner: "Dono Responsável",
+                tableSpecies: "Espécie/Raça",
+                tableQr: "Vínculo QR",
+                tableStatus: "Estado",
+                tableDate: "Data",
+                tableActions: "Ações Manuais",
+                statusLost: "Perdido",
+                statusProtected: "Protegido",
+                statusBlocked: "Bloqueado",
+                notLinked: "Sem vincular"
+            },
+            animalActions: {
+                confirm: "Tem certeza de que deseja realizar esta ação manual?",
+                error: "Erro ao processar a solicitação",
+                markFound: "Marcar como Encontrado",
+                markLost: "Marcar como Perdido",
+                unlink: "Desvincular Tag QR",
+                deactivate: "Desativar Conta",
+                activate: "Ativar Conta"
+            }
+        },
+        vet: {
+            dashboard: "Painel da Clínica",
+            subtitle: "Gestão Inteligente e Crescimento",
+            noOrgTitle: "Sem Organização Vinculada",
+            noOrgDesc: "Você deve estar vinculado a uma clínica veterinária para acessar o ERP.",
+            myClinics: "Minhas Clínicas:",
+            notAuthorized: "Não autorizado",
+            panelSubtitle: "Inteligência Clínica para Consultórios",
+            stats: {
+                clients: "CLIENTES CRM",
+                pets: "ANIMAIS",
+                alerts: "ALERTAS ATIVOS",
+                conversion: "CONVERSÃO"
+            },
+            tabs: {
+                summary: "Resumo",
+                clients: "Clientes CRM",
+                pets: "Animais",
+                alerts: "Alertas & Campanhas",
+                sales: "Vendas/Pedidos",
+                chat: "Chat ao Vivo"
+            },
+            sections: {
+                vaccines: "Supervisão de Vacinas",
+                consumption: "Supervisão de Consumo"
+            },
+            proActive: {
+                title: "Potencialize as suas Vendas com Supervisão Humana",
+                desc: "Os alertas automáticos podem ser ignorados. Uma mensagem personalizada enviada por um profissional de confiança aumenta a conversão de visitas em 40%.",
+                btn: "Painel de Comunicações",
+                dataPoint: "85% dos tutores preferem receber lembretes personalizados via WhatsApp."
+            },
+            animalsList: {
+                title: "Base de Pacientes",
+                description: "Gerencie o histórico e hábitos de consumo de todos os animais registrados.",
+                search: "Procurar por nome ou tutor...",
+                dogs: "Cães",
+                cats: "Gatos",
+                other: "Outras espécies",
+                owner: "Tutor",
+                vaccine: "Vacina",
+                diet: "Dieta",
+                notRegistered: "Não registrada",
+                profileBtn: "Perfil Clínico",
+                linkPet: "Vincular Animal",
+                linkPetDesc: "Leia um QR para associá-lo à clínica",
+                noQr: "Sem QR"
+            },
+            orderModal: {
+                newSale: "Nova Venda",
+                title: "Registrar Venda de Alimento",
+                success: "Venda Registrada!",
+                successDesc: "O consumo de {name} está sendo calculado agora mesmo para os próximos alertas.",
+                patientSummary: "Resumo do Paciente:",
+                foodBrand: "Marca do Alimento:",
+                foodPlaceholder: "Ex: Royal Canin Pediatric Dog",
+                packageSize: "Tamanho Pack (Kg):",
+                dailyGrams: "Consumo Diário (g):",
+                alertNotice: "Isso atualizará os alarmes de consumo. O sistema detectará que {name} terminará o alimento em aproximadamente {days} dias e disparará um alerta aos {alertDays} dias.",
+                submit: "Finalizar Venda",
+                processing: "Processando..."
+            },
+            alerts: {
+                caring: "💖 Modo Carinhoso",
+                professional: "👔 Profissional",
+                notSupervisor: "Sem vacinas para supervisionar",
+                supervise: "Supervisionar",
+                pet: "Animal",
+                vaccineTitle: "Supervisão de Vacinas",
+                consumptionTitle: "Supervisão de Consumo",
+                repose: "Repor {title}",
+                enoughStock: "Stock suficiente em todos os clientes",
+                modalTitle: "Supervisão de Alerta",
+                modalDesc: "Revise a mensagem para {name}",
+                sent: "Notificação Enviada!",
+                sentDesc: "Foi registrado o envio de {type} via {channel}.",
+                channelLabel: "Canal de Envio:",
+                customMessage: "Mensagem Personalizada:",
+                modeT: "Modo {tone}",
+                placeholder: "Escreva a mensagem aqui...",
+                cancel: "Cancelar",
+                sendBtn: "Enviar e Registrar",
+                error: "Erro ao registrar a comunicação",
+                vaccineFormal: "Prezado cliente, informamos que {name} tem pendente sua vacina para o dia indicado. Sugerimos agendar uma consulta.",
+                vaccineCaring: "Olá! 🐾 Queríamos lembrar com muito carinho que {name} terá em breve sua vacina. É super importante para sua saúde! 💖",
+                foodFormal: "Informamos que o estoque de alimento para {name} está próximo do fim.",
+                foodCaring: "Olá! 🐾 O alimento de {name} deve estar quase acabando. Não quer garantir o próximo pack com a gente? 🦴",
+                campaignFormal: "Campanha Especial: {name} tem benefícios exclusivos este mês. Aproveite!",
+                campaignCaring: "Olha que boa notícia! 🎉 Temos uma surpresa para {name}. Vai adorar!"
+            },
+            inventory: {
+                title: "Vendas & Inventário",
+                description: "Controlo de receitas e rastreabilidade de produtos para {name}.",
+                statsSales: "Vendas Registradas",
+                statsStock: "Stock Crítico (Alarmes)",
+                statsConversion: "Conversão de Alarmes",
+                tableTitle: "Registo de Vendas",
+                searchPlaceholder: "Procurar venda...",
+                tableClient: "Cliente / Animal",
+                tableOrderId: "ID da Encomenda",
+                tableAmount: "Valor",
+                tableDate: "Data",
+                tableAction: "Ação",
+                noSales: "Não há vendas registadas ainda",
+                noSalesDesc: "Use o botão \"Venda\" nas fichas de animal para começar.",
+                predictiveTitle: "Sincronize os seus Pedidos com o Consumo",
+                predictiveBadge: "Inteligência Preditiva Localipet",
+                predictiveDesc: "Localipet analisa em tempo real quanto alimento resta a cada um dos seus pacientes. Otimize os seus pedidos a fornecedores com base na procura real próxima, não em suposições.",
+                stockAlarms: "Alarmes de Stock",
+                estimatedDemand: "Procura Estimada (30d)",
+                habitsNotice: "Conversão baseada em hábitos registados"
+            },
+            clientsList: {
+                title: "CRM de Clientes",
+                description: "Gerencie o banco de dados de donos de animais associados à sua rede de trabalho.",
+                tableClient: "Cliente",
+                tableContact: "Contato",
+                tablePets: "Pets Vinculados",
+                tableLastVisit: "Última Visita",
+                tableActions: "Ações",
+                noPhone: "Sem Telefone",
+                noPets: "Sem pets",
+                id: "ID",
+                userPrefix: "Usuário"
+            },
+            redGrowth: {
+                title: "Crescimento de Rede",
+                description: "Sempre que você digitaliza um código QR Localipet em sua clínica, o cliente é vinculado automaticamente ao seu ERP se ainda não tiver um veterinário atribuído.",
+                opportunity: "Oportunidade:",
+                salesMonth: "Vendas Mês"
+            },
+            commsManager: {
+                title: "Gestor de Comunicações",
+                description: "Ative alarmes inteligentes e crie campanhas para os seus clientes mais fiéis.",
+                newCampaign: "Nova Campanha",
+                vaccines: "Vacinas",
+                food: "Alimento",
+                grooming: "Estética",
+                statusActiveAuto: "Ativo (Auto)",
+                statusActiveAI: "Ativo (IA)",
+                statusManual: "Manual",
+                channelLabel: "Canal: APP + WhatsApp",
+                activeCampaigns: "Campanhas Ativas",
+                noCampaigns: "Não há campanhas ativas no momento",
+                noCampaignsDesc: "Crie uma oferta para clientes com baixo estoque de alimento.",
+                recentActivity: "Atividade Recente",
+                viewMetrics: "Ver Métricas",
+                expires: "Expira:",
+                ago: "atrás"
+            }
         }
     }
 };

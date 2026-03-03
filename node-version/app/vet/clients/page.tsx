@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { Users, Mail, Phone, Calendar, ArrowRight, PawPrint, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import { getLocale } from "@/lib/locale";
+import { translations } from "@/lib/i18n";
 
 export default async function VetClientsPage({ searchParams }: { searchParams: { orgId?: string } }) {
     const session = await auth();
@@ -10,8 +12,11 @@ export default async function VetClientsPage({ searchParams }: { searchParams: {
         include: { organization: true }
     });
 
+    const locale = await getLocale();
+    const t = translations[locale];
+
     const activeOrgId = searchParams.orgId || userMemberships[0]?.organizationId;
-    if (!activeOrgId) return <div>No autorizado</div>;
+    if (!activeOrgId) return <div>{t.vet.notAuthorized}</div>;
 
     // Fetch clients for this organization
     const clients = await prisma.organizationClient.findMany({
@@ -32,9 +37,9 @@ export default async function VetClientsPage({ searchParams }: { searchParams: {
                 <div>
                     <h2 className="text-3xl font-black text-gray-900 italic tracking-tight flex items-center gap-3">
                         <Users className="w-8 h-8 text-primary" />
-                        CRM de Clientes
+                        {t.vet.clientsList.title}
                     </h2>
-                    <p className="text-gray-400 font-medium italic">Gestiona la base de datos de dueños de mascotas asociados a tu red de trabajo.</p>
+                    <p className="text-gray-400 font-medium italic">{t.vet.clientsList.description}</p>
                 </div>
             </div>
 
@@ -43,11 +48,11 @@ export default async function VetClientsPage({ searchParams }: { searchParams: {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-100">
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Cliente</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Contacto</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Mascotas Vinculadas</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Última Visita</th>
-                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Acciones</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.vet.clientsList.tableClient}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.vet.clientsList.tableContact}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.vet.clientsList.tablePets}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.vet.clientsList.tableLastVisit}</th>
+                                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">{t.vet.clientsList.tableActions}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50 bg-white">
@@ -57,9 +62,9 @@ export default async function VetClientsPage({ searchParams }: { searchParams: {
                                         <div className="flex flex-col">
                                             <span className="font-black text-gray-900 text-lg">
                                                 {client.user.firstName} {client.user.lastName}
-                                                {!client.user.firstName && "Usuario #" + client.id.substring(0, 4)}
+                                                {!client.user.firstName && `${t.vet.clientsList.userPrefix} #` + client.id.substring(0, 4)}
                                             </span>
-                                            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">ID: {client.id.substring(0, 8)}</span>
+                                            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">{t.vet.clientsList.id}: {client.id.substring(0, 8)}</span>
                                         </div>
                                     </td>
                                     <td className="px-8 py-6">
@@ -70,7 +75,7 @@ export default async function VetClientsPage({ searchParams }: { searchParams: {
                                             </span>
                                             <span className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
                                                 <Phone className="w-3 h-3" />
-                                                Sin Teléfono
+                                                {t.vet.clientsList.noPhone}
                                             </span>
                                         </div>
                                     </td>
@@ -87,7 +92,7 @@ export default async function VetClientsPage({ searchParams }: { searchParams: {
                                                 </div>
                                             ))}
                                             {client.user.animals.length === 0 && (
-                                                <span className="text-xs text-gray-300 italic">Sin mascotas</span>
+                                                <span className="text-xs text-gray-300 italic">{t.vet.clientsList.noPets}</span>
                                             )}
                                         </div>
                                     </td>
@@ -116,15 +121,15 @@ export default async function VetClientsPage({ searchParams }: { searchParams: {
             <div className="bg-gradient-to-br from-blue-600 to-primary p-12 rounded-[3.5rem] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-primary/30 relative overflow-hidden">
                 <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-white/10 blur-[80px] rounded-full"></div>
                 <div className="relative z-10 text-center md:text-left">
-                    <h3 className="text-3xl font-black mb-4 italic tracking-tight">Crecimiento de Red</h3>
+                    <h3 className="text-3xl font-black mb-4 italic tracking-tight">{t.vet.redGrowth.title}</h3>
                     <p className="text-blue-100 text-lg font-medium italic opacity-80 max-w-xl">
-                        Cada vez que escaneas un código QR de Localipet en tu clínica, el cliente queda automáticamente vinculado a tu ERP si aún no tiene veterinario asignado.
+                        {t.vet.redGrowth.description}
                     </p>
                 </div>
                 <div className="bg-white text-primary p-10 rounded-[2.5rem] flex flex-col items-center gap-3 shadow-xl relative z-10 min-w-[280px]">
                     <ShoppingBag className="w-12 h-12" />
-                    <p className="text-gray-400 font-black uppercase text-xs tracking-widest">Oportunidad:</p>
-                    <p className="text-2xl font-black italic whitespace-nowrap">{(clients.length * 1.5).toFixed(0)} Ventas Mes</p>
+                    <p className="text-gray-400 font-black uppercase text-xs tracking-widest">{t.vet.redGrowth.opportunity}</p>
+                    <p className="text-2xl font-black italic whitespace-nowrap">{(clients.length * 1.5).toFixed(0)} {t.vet.redGrowth.salesMonth}</p>
                 </div>
             </div>
         </div>
