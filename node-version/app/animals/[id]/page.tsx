@@ -8,6 +8,7 @@ import ToggleLostButton from "@/components/ToggleLostButton";
 import WeightHistory from "@/components/WeightHistory";
 import VaccinationList from "@/components/VaccinationList";
 import DownloadButtons from "@/components/DownloadButtons";
+import UserMedicalNotes from "@/components/UserMedicalNotes";
 
 export default async function AnimalDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const session = await auth();
@@ -22,6 +23,13 @@ export default async function AnimalDetailPage({ params }: { params: Promise<{ i
             },
             weightRecords: {
                 orderBy: { dateRecorded: 'desc' }
+            },
+            medicalRecordNotes: {
+                include: {
+                    organization: true,
+                    vet: true
+                },
+                orderBy: { createdAt: 'desc' }
             },
             owner: {
                 include: {
@@ -126,6 +134,8 @@ export default async function AnimalDetailPage({ params }: { params: Promise<{ i
                         <WeightHistory animalId={animal.id} records={animal.weightRecords} />
                         <VaccinationList animalId={animal.id} vaccinations={animal.vaccinations} />
                     </div>
+
+                    <UserMedicalNotes notes={animal.medicalRecordNotes as any} />
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Link href={`/animals/${animal.id}/scans`} className="card p-4 hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/20">
