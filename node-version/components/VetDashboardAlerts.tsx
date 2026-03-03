@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { BellRing, Calendar, ShoppingBag, HeartPulse, ShoppingCart } from "lucide-react";
 import VetAlertModal from "./VetAlertModal";
