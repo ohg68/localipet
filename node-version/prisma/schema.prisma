@@ -663,6 +663,7 @@ model ClinicChatMessage {
   session     ClinicChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   senderType  String            // "USER" or "CLINIC"
   content     String
+  imageUrl    String?
   isRead      Boolean           @default(false)
   createdAt   DateTime          @default(now())
 }

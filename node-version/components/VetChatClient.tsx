@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Send, User as UserIcon, RefreshCw, Smartphone } from "lucide-react";
+import { Send, User as UserIcon, RefreshCw, Smartphone, Image as ImageIcon, X } from "lucide-react";
 import clsx from "clsx";
+import Image from "next/image";
 
 export default function VetChatClient({ orgId, locale }: { orgId: string, locale: string }) {
     const [sessions, setSessions] = useState<any[]>([]);
@@ -11,6 +12,8 @@ export default function VetChatClient({ orgId, locale }: { orgId: string, locale
     const [isLoading, setIsLoading] = useState(true);
     const [isSending, setIsSending] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const fetchSessions = async () => {
         try {
@@ -47,10 +50,13 @@ export default function VetChatClient({ orgId, locale }: { orgId: string, locale
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!message.trim() || !activeSession) return;
+        if ((!message.trim() && !selectedImage) || !activeSession) return;
 
         const currentMsg = message;
+        const currentImg = selectedImage;
+
         setMessage("");
+        setSelectedImage(null);
         setIsSending(true);
 
         try {
@@ -59,7 +65,8 @@ export default function VetChatClient({ orgId, locale }: { orgId: string, locale
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     sessionId: activeSession.id,
-                    content: currentMsg
+                    content: currentMsg,
+                    imageUrl: currentImg
                 })
             });
 
@@ -70,6 +77,17 @@ export default function VetChatClient({ orgId, locale }: { orgId: string, locale
             console.error("Error sending message:", error);
         } finally {
             setIsSending(false);
+        }
+    };
+
+    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -162,6 +180,15 @@ export default function VetChatClient({ orgId, locale }: { orgId: string, locale
                                             "p-4 rounded-3xl shadow-sm text-sm font-medium",
                                             isClinic ? "bg-primary text-white rounded-br-none" : "bg-white text-gray-800 border border-gray-100 rounded-bl-none"
                                         )}>
+                                            {msg.imageUrl && (
+                                                <div className="mb-2 max-w-sm rounded-xl overflow-hidden shadow-sm">
+                                                    <img
+                                                        src={msg.imageUrl}
+                                                        alt="Sent image"
+                                                        className="w-full h-auto object-cover max-h-64"
+                                                    />
+                                                </div>
+                                            )}
                                             {msg.content}
                                         </div>
                                         <span className="text-[10px] text-gray-400 mt-1 font-bold italic px-2">
@@ -176,18 +203,46 @@ export default function VetChatClient({ orgId, locale }: { orgId: string, locale
 
                     {/* Input y Send */}
                     <div className="p-4 bg-white border-t border-gray-100">
+                        {selectedImage && (
+                            <div className="mb-3 p-2 bg-gray-50 rounded-2xl flex items-center gap-3 animate-in slide-in-from-bottom-2">
+                                <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-gray-200">
+                                    <img src={selectedImage} alt="Preview" className="w-full h-full object-cover" />
+                                    <button
+                                        onClick={() => setSelectedImage(null)}
+                                        className="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl-lg"
+                                    >
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </div>
+                                <p className="text-xs font-bold text-gray-500 italic">Imagen lista para enviar...</p>
+                            </div>
+                        )}
                         <form onSubmit={handleSendMessage} className="flex gap-2 relative items-center">
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleImageSelect}
+                                accept="image/*"
+                                className="hidden"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                className="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-primary/5 rounded-full transition-all"
+                            >
+                                <ImageIcon className="w-6 h-6" />
+                            </button>
                             <input
                                 type="text"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
-                                placeholder="Escribe un mensaje al dueño de la mascota..."
+                                placeholder="Escribe un mensaje..."
                                 className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-6 py-4 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all pr-16 text-gray-800 font-medium"
                                 disabled={isSending}
                             />
                             <button
                                 type="submit"
-                                disabled={!message.trim() || isSending}
+                                disabled={(!message.trim() && !selectedImage) || isSending}
                                 className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white disabled:opacity-50 transition-opacity hover:bg-brand-600"
                             >
                                 <Send className="w-5 h-5 ml-1" />

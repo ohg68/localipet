@@ -84,9 +84,9 @@ export async function POST(request: Request) {
         }
 
         const userId = decodedToken.id;
-        const { sessionId, content } = await request.json();
+        const { sessionId, content, imageUrl } = await request.json();
 
-        if (!sessionId || !content) {
+        if (!sessionId || (!content && !imageUrl)) {
             return NextResponse.json({ error: 'Faltan datos' }, { status: 400 });
         }
 
@@ -102,7 +102,8 @@ export async function POST(request: Request) {
         const message = await prisma.clinicChatMessage.create({
             data: {
                 sessionId,
-                content,
+                content: content || (imageUrl ? '📷 Imagen' : ''),
+                imageUrl,
                 senderType: 'USER' // Desde la app manda el usuario
             }
         });

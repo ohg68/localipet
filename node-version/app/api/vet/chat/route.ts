@@ -46,7 +46,7 @@ export async function POST(request: Request) {
         if (!sessionAuth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
         const body = await request.json();
-        const { sessionId, content } = body;
+        const { sessionId, content, imageUrl } = body;
 
         const chatSession = await prisma.clinicChatSession.findUnique({
             where: { id: sessionId }
@@ -66,7 +66,8 @@ export async function POST(request: Request) {
         const msg = await prisma.clinicChatMessage.create({
             data: {
                 sessionId,
-                content,
+                content: content || (imageUrl ? '📷 Imagen' : ''),
+                imageUrl,
                 senderType: 'CLINIC'
             }
         });
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
                 to: userProfile.pushToken,
                 type: 'expo',
                 title: 'Nuevo Mensaje de la Clínica',
-                message: content,
+                message: imageUrl ? '📷 Te han enviado una imagen' : content,
                 data: { route: 'clinic-chat' }
             });
         }
