@@ -1,0 +1,43 @@
+[
+  {
+    "id": "6e0ce704-2c95-4c85-bde6-6f3fb942d1ed",
+    "status": "IN_QUEUE",
+    "platform": "ANDROID",
+    "artifacts": {},
+    "fingerprint": {
+      "id": "019cb5a9-1a8f-743c-9250-64ee832568f1",
+      "hash": "cab8f42c7699244085c6713102f90dd1465d1ec1"
+    },
+    "initiatingActor": {
+      "id": "9b291b91-d535-4c84-b501-a29c3c26fcf7",
+      "displayName": "ohg68"
+    },
+    "logFiles": [
+      "https://job-logs.eascdn.net/production/6e0ce704-2c95-4c85-bde6-6f3fb942d1ed/1772574531622-56045e7d-21ca-4e7f-9502-03d8a2a5e7b5.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20260303%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260303T215111Z&X-Goog-Expires=900&X-Goog-SignedHeaders=host&X-Goog-Signature=2aeaf43afdee33b7a0f141f411d90c59108275eeb8026a2f7b4ca709c544cff4b662f91b1e6e27a0ea5b671587fb2f97cd0f6fe30d80ab094f917e943b72da1d03220c4351d59182401f5057a2b8f2ef0f078c8ee8bff8028f8e1ea10edde0344d8071e713189933195818578a262a882afd2d24b495c8dfe22a80b7595d40ce65d0551d1f01ee88e9b8068f34bc597b461a700375931fc747cb9de7c4ccebe0002907b32a698f66b4e87506563fae4817783bbe5ace8b49f9eed308a31fd4091461c7df0e33a75128af50cf0b8db971d0c1f023ddff28727c5d85545d3c8e5ae9d13056fbcea28d8f786e3183b83a7604d6357ac36feeb6ba8354dc53085227"
+    ],
+    "project": {
+      "id": "a0fddb47-bcc1-487e-a40d-7f1ccd667f3c",
+      "name": "mobile",
+      "slug": "mobile",
+      "ownerAccount": {
+        "id": "be63a673-7873-43a9-8bcf-795528a7b6b7",
+        "name": "ohg68"
+      }
+    },
+    "distribution": "INTERNAL",
+    "buildProfile": "preview",
+    "sdkVersion": "54.0.0",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "1",
+    "gitCommitHash": "ed834d65f3146f459d51124ec0ff59447b3d7ba5",
+    "gitCommitMessage": "chore: cleanup redundant and wrongly named middleware files",
+    "initialQueuePosition": 1000,
+    "queuePosition": 976,
+    "estimatedWaitTimeLeftSeconds": 5363,
+    "priority": "NORMAL",
+    "createdAt": "2026-03-03T21:48:51.262Z",
+    "updatedAt": "2026-03-03T21:48:51.799Z",
+    "expirationDate": "2026-03-17T21:48:51.331Z",
+    "isForIosSimulator": false
+  }
+]
