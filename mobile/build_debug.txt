@@ -1,0 +1,16 @@
+2026-03-10T18:12:10.005Z eas:@expo/plugin-warn-if-update-available:hooks:init start (require) /opt/homebrew/lib/node_modules/eas-cli/node_modules/@expo/plugin-warn-if-update-available/lib/hooks/init/check-update.js
+2026-03-10T18:12:10.012Z eas:@expo/plugin-warn-if-update-available:hooks:init done
+2026-03-10T18:12:12.072Z eas:build init version: @oclif/core@1.26.2 argv: [ '--platform', 'android', '--profile', 'preview', '--non-interactive' ]
+2026-03-10T18:12:29.866Z eas:log:debug Error: Cannot find module 'expo-dev-client/package.json'
+Require stack:
+- /Users/osvaldo/Documents/Proyectos/localipet/mobile/noop.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1455:15)
+    at resolveFileName (/opt/homebrew/lib/node_modules/eas-cli/node_modules/resolve-from/index.js:29:39)
+    at resolveFrom (/opt/homebrew/lib/node_modules/eas-cli/node_modules/resolve-from/index.js:43:9)
+    at module.exports (/opt/homebrew/lib/node_modules/eas-cli/node_modules/resolve-from/index.js:46:47)
+    at isExpoDevClientInstalled (/opt/homebrew/lib/node_modules/eas-cli/build/build/utils/devClient.js:77:36)
+    at ensureExpoDevClientInstalledForDevClientBuildsAsync (/opt/homebrew/lib/node_modules/eas-cli/build/build/utils/devClient.js:18:9)
+    at runBuildAndSubmitAsync (/opt/homebrew/lib/node_modules/eas-cli/build/build/runBuildAndSubmit.js:85:79)
+    at async Build.runAsync (/opt/homebrew/lib/node_modules/eas-cli/build/commands/build/index.js:125:35)
+    at async Build.run (/opt/homebrew/lib/node_modules/eas-cli/build/commandUtils/EasCommand.js:168:16)
+    at async Build._run (/opt/homebrew/lib/node_modules/eas-cli/node_modules/@oclif/core/lib/command.js:80:22)
